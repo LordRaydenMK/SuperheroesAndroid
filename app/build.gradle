@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlinx-serialization'
 
 android {
     compileSdkVersion 29
@@ -14,6 +14,37 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        if (project.hasProperty("marvel_public_api_key")) {
+            def marvelPublicKey = '"' + project.property("marvel_public_api_key") + '"'
+            def marvelPrivateKey = '"' + project.property("marvel_private_api_key") + '"'
+            buildConfigField("String", "MARVEL_PUBLIC_API_KEY", marvelPublicKey)
+            buildConfigField("String", "MARVEL_PRIVATE_API_KEY", marvelPrivateKey)
+        } else {
+            // the app needs `marvel_public_api_key` and `marvel_private_api_key`
+            // as gradle properties to run
+            // to get one visit: https://developer.marvel.com/account
+            throw new GradleException("Please provide the Marvel API keys as gradle properties")
+        }
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    // For Kotlin projects
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
+    testOptions {
+        unitTests.all {
+            useJUnitPlatform()
+        }
     }
 
     buildTypes {
@@ -29,9 +60,40 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.core:core-ktx:1.3.1'
     implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0'
+    def lifecycle = "2.2.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle"
+    implementation 'androidx.fragment:fragment-ktx:1.2.5'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+
+
     implementation 'com.jakewharton.timber:timber:4.7.1'
-    testImplementation 'junit:junit:4.13'
+    implementation "io.coil-kt:coil:1.0.0-rc1"
+
+    implementation "io.reactivex.rxjava2:rxjava:2.2.19"
+    implementation 'com.akaita.java:rxjava2-debug:1.4.0'
+    implementation "io.reactivex.rxjava2:rxkotlin:2.4.0"
+
+    def rxbinding = "3.1.0"
+    implementation "com.jakewharton.rxbinding3:rxbinding:$rxbinding"
+    implementation "com.jakewharton.rxbinding3:rxbinding-core:$rxbinding"
+    implementation "com.jakewharton.rxbinding3:rxbinding-appcompat:$rxbinding"
+    implementation "com.jakewharton.rxbinding3:rxbinding-recyclerview:$rxbinding"
+
+    def retrofit = "2.9.0"
+    def okhttp = "4.8.1"
+    implementation "com.squareup.retrofit2:retrofit:$retrofit"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit"
+    implementation "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.6.0"
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-core:1.0.0-RC"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp"
+
+    def kotest = "4.2.0"
+    testImplementation "io.kotest:kotest-runner-junit5-jvm:$kotest"
+    testImplementation "io.kotest:kotest-assertions-core-jvm:$kotest"
+    testImplementation 'com.jraska.livedata:testing-ktx:1.1.2'
+    testImplementation "com.squareup.okhttp3:mockwebserver:$okhttp"
+
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
