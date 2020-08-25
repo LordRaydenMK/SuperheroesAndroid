@@ -2,7 +2,8 @@ package io.github.lordraydenmk.superheroesapp
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import timber.log.Timber
+import androidx.fragment.app.commit
+import io.github.lordraydenmk.superheroesapp.superheroes.SuperheroesFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -10,6 +11,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        Timber.d("Hello timber!")
+        if (savedInstanceState == null) {
+            supportFragmentManager.commit {
+                add(R.id.container, SuperheroesFragment())
+            }
+        }
     }
 }
