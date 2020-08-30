@@ -1,6 +1,7 @@
 package io.github.lordraydenmk.superheroesapp.superheroes.presentation
 
 import io.github.lordraydenmk.superheroesapp.AppModule
+import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.common.Paginated
 import io.github.lordraydenmk.superheroesapp.common.PaginatedEnvelope
 import io.github.lordraydenmk.superheroesapp.superheroes.data.SuperheroDto
@@ -39,16 +40,13 @@ class SuperheroesKtTest : FunSpec({
 
     test("FirstLoad - service fails with exception - Loading then Problem") {
         val error = Exception("Unauthorised")
-        val service = object : SuperheroesService {
-            override fun getSuperheroes(): Single<PaginatedEnvelope<SuperheroDto>> =
-                Single.error(error)
-        }
+        val service = testSuperheroService(error)
 
         val viewModel = testViewModel()
         val module = object : SuperheroesDependencies, AppModule by AppModule.create(service),
             SuperheroesVM by viewModel {}
 
-        val problem = Problem("Unauthorised")
+        val problem = Problem(R.string.error_unrecoverable, false)
 
         module.program(Observable.just(FirstLoad)).subscribe()
 

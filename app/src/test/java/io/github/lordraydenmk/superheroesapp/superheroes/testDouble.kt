@@ -16,9 +16,15 @@ import io.reactivex.subjects.ReplaySubject
 
 fun testSuperheroService(superheroes: List<SuperheroDto>): SuperheroesService =
     object : SuperheroesService {
+
         override fun getSuperheroes(): Single<PaginatedEnvelope<SuperheroDto>> =
             Single.just(PaginatedEnvelope(200, "Marvel rocks!", Paginated(superheroes)))
     }
+
+fun testSuperheroService(t: Throwable): SuperheroesService = object : SuperheroesService {
+
+    override fun getSuperheroes(): Single<PaginatedEnvelope<SuperheroDto>> = Single.error(t)
+}
 
 fun testViewModel(): SuperheroesVM = object : SuperheroesVM {
 

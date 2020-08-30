@@ -27,12 +27,25 @@ class SuperheroesScreenTest {
     }
 
     @Test
-    fun problemState_errorViewDisplayed() {
+    fun recoverableProblemState_errorViewDisplayedWithRetryText() {
         val scenario = launchInContainer { parent -> SuperheroesScreen(parent) }
-        scenario.onView { view -> view.bind(Problem("Big problem!")) }
+        scenario.onView { view -> view.bind(Problem(R.string.error_recoverable_network, true)) }
 
         onView(withId(R.id.tvError)).check(matches(isDisplayed()))
-        onView(withId(R.id.tvError)).check(matches(withText("Big problem!")))
+        onView(withId(R.id.tvError)).check(matches(withText("We could not connect to our server. Please check your internet connection \n\nTap to retry!")))
+
+        onView(withId(R.id.progressSuperheroes)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.rvSuperheroes)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.tvCopyright)).check(matches(not(isDisplayed())))
+    }
+
+    @Test
+    fun unrecoverableProblemState_errorViewDisplayed() {
+        val scenario = launchInContainer { parent -> SuperheroesScreen(parent) }
+        scenario.onView { view -> view.bind(Problem(R.string.error_unrecoverable, false)) }
+
+        onView(withId(R.id.tvError)).check(matches(isDisplayed()))
+        onView(withId(R.id.tvError)).check(matches(withText("Ooops… Something went wrong!")))
 
         onView(withId(R.id.progressSuperheroes)).check(matches(not(isDisplayed())))
         onView(withId(R.id.rvSuperheroes)).check(matches(not(isDisplayed())))

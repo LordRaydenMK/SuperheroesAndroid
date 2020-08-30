@@ -1,9 +1,10 @@
 package io.github.lordraydenmk.superheroesapp.superheroes.presentation
 
 import io.github.lordraydenmk.superheroesapp.AppModule
+import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.common.fork
 import io.github.lordraydenmk.superheroesapp.common.unit
-import io.github.lordraydenmk.superheroesapp.superheroes.domain.Superhero
+import io.github.lordraydenmk.superheroesapp.superheroes.data.superheroes
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
@@ -15,7 +16,7 @@ fun SuperheroesDependencies.program(actions: Observable<SuperheroesAction>): Obs
         when (action) {
             FirstLoad -> refreshSuperheroes()
             Refresh -> refreshSuperheroes()
-        }.fork(Schedulers.computation()) { addToDisposable(it) }
+        }.fork(Schedulers.computation(), this::addToDisposable)
             .unit()
     }
 
@@ -26,14 +27,7 @@ fun SuperheroesDependencies.refreshSuperheroes(): Observable<Unit> =
 
 
 fun SuperheroesDependencies.loadSuperheroes(): Observable<SuperheroesViewState> =
-    getSuperheroes()
-        .observeOn(Schedulers.computation())
-        .map { Pair(it.data.results, it.attributionText) }
-        .map { (superheroes, attributionText) ->
-            superheroes.map {
-                Superhero.create(it.id, it.name, it.thumbnail.path, it.thumbnail.extension)
-            } to attributionText
-        }
+    superheroes()
         .map { (superheroes, attributionText) ->
             superheroes.map {
                 SuperheroViewEntity(it.id, it.name, it.thumbnail)
@@ -46,4 +40,13 @@ fun SuperheroesDependencies.loadSuperheroes(): Observable<SuperheroesViewState> 
         .toObservable()
         .startWith(Loading)
         .doOnError { Timber.e(it, "Error loading characters :/") }
-        .onErrorReturn { Problem(it.message ?: "Something went wrong :/") }
+        .onErrorReturn { t ->
+            when (t) {
+                is SuperheroException -> when (t.error) {
+                    is NetworkError -> Problem(R.string.error_recoverable_network, true)
+                    is ServerError -> Problem(R.string.error_recoverable_server, true)
+                    is Unrecoverable -> Problem(R.string.error_unrecoverable, false)
+                }
+                else -> Problem(R.string.error_unrecoverable, false)
+            }
+        }
