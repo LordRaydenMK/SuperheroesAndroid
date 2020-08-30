@@ -1,6 +1,7 @@
 package io.github.lordraydenmk.superheroesapp.superheroes.presentation
 
 import io.github.lordraydenmk.superheroesapp.AppModule
+import io.github.lordraydenmk.superheroesapp.common.Paginated
 import io.github.lordraydenmk.superheroesapp.common.PaginatedEnvelope
 import io.github.lordraydenmk.superheroesapp.superheroes.data.SuperheroDto
 import io.github.lordraydenmk.superheroesapp.superheroes.data.SuperheroesService
@@ -10,6 +11,7 @@ import io.github.lordraydenmk.superheroesapp.superheroes.testViewModel
 import io.kotest.core.spec.style.FunSpec
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.subjects.PublishSubject
 import okhttp3.HttpUrl.Companion.toHttpUrl
 
 class SuperheroesKtTest : FunSpec({
@@ -54,5 +56,38 @@ class SuperheroesKtTest : FunSpec({
             .awaitCount(2)
             .assertValues(Loading, problem)
             .assertNotComplete()
+    }
+
+    test("First load then refresh - service fails, then succeeds - Loading, Problem, Loading Content") {
+        val error = Exception("Unauthorised")
+        val superhero = SuperheroDto(42, "Ant Man", ThumbnailDto("https://antman", "jpg"))
+        val service = object : SuperheroesService {
+            var i = 0
+            override fun getSuperheroes(): Single<PaginatedEnvelope<SuperheroDto>> = when (i) {
+                0 -> Single.error(error)
+                1 -> Single.just(PaginatedEnvelope(200, "Marvel", Paginated(listOf(superhero))))
+                else -> throw IllegalStateException("This should not happen")
+            }.also { i++ }
+        }
+
+        val viewModel = testViewModel()
+        val module = object : SuperheroesDependencies, AppModule by AppModule.create(service),
+            SuperheroesVM by viewModel {}
+
+        val actions = PublishSubject.create<SuperheroesAction>()
+        module.program(actions).subscribe()
+        actions.onNext(FirstLoad)
+
+        val test = viewModel.viewState.test()
+
+        test.awaitCount(2)
+            .assertValueAt(0, Loading)
+            .assertValueAt(1) { it is Problem }
+
+        actions.onNext(Refresh)
+
+        test.awaitCount(4)
+            .assertValueAt(2, Loading)
+            .assertValueAt(3) { it is Content }
     }
 })
