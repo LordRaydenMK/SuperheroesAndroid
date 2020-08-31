@@ -23,4 +23,7 @@ data class SuperheroException(val error: SuperheroError) : Throwable() {
             is ServerError -> "Looks like the Marvel backend has issues"
             is Unrecoverable -> "Logic bug!"
         }
+
+    // http://normanmaurer.me/blog/2013/11/09/The-hidden-performance-costs-of-instantiating-Throwables/
+    override fun fillInStackTrace(): Throwable = this
 }
