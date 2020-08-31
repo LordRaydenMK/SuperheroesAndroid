@@ -18,3 +18,5 @@ data class Superhero(val id: SuperheroId, val name: String, val thumbnail: HttpU
         }
     }
 }
+
+data class Superheroes(val superheroes: List<Superhero>, val attribution: String)

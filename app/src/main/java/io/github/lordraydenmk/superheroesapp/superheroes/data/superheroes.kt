@@ -1,6 +1,7 @@
 package io.github.lordraydenmk.superheroesapp.superheroes.data
 
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.Superhero
+import io.github.lordraydenmk.superheroesapp.superheroes.domain.Superheroes
 import io.github.lordraydenmk.superheroesapp.superheroes.presentation.NetworkError
 import io.github.lordraydenmk.superheroesapp.superheroes.presentation.ServerError
 import io.github.lordraydenmk.superheroesapp.superheroes.presentation.SuperheroException
@@ -10,18 +11,18 @@ import io.reactivex.schedulers.Schedulers
 import retrofit2.HttpException
 import java.io.IOException
 
-fun SuperheroesService.superheroes(): Single<Pair<List<Superhero>, String>> =
+fun SuperheroesService.superheroes(): Single<Superheroes> =
     getSuperheroes()
         .onErrorResumeNext(::refineError)
         .observeOn(Schedulers.computation())
         .map { Pair(it.data.results, it.attributionText) }
         .map { (superheroDtos, attributionText) ->
-            val superhero = superheroDtos.map { superheroDto ->
+            val superheroes = superheroDtos.map { superheroDto ->
                 with(superheroDto) {
                     Superhero.create(id, name, thumbnail.path, thumbnail.extension)
                 }
             }
-            superhero to attributionText
+            Superheroes(superheroes, attributionText)
         }
 
 private fun <A> refineError(throwable: Throwable): Single<A> = when (throwable) {

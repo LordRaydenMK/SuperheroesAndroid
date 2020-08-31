@@ -2,6 +2,7 @@ package io.github.lordraydenmk.superheroesapp.superheroes.data
 
 import io.github.lordraydenmk.superheroesapp.common.PaginatedEnvelope
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.Superhero
+import io.github.lordraydenmk.superheroesapp.superheroes.domain.Superheroes
 import io.github.lordraydenmk.superheroesapp.superheroes.presentation.NetworkError
 import io.github.lordraydenmk.superheroesapp.superheroes.presentation.ServerError
 import io.github.lordraydenmk.superheroesapp.superheroes.presentation.SuperheroException
@@ -25,7 +26,7 @@ class SuperheroesKtTest : FunSpec({
         service.superheroes()
             .test()
             .awaitCount(1)
-            .assertValue(listOf(hulk) to "Marvel rocks!")
+            .assertValue(Superheroes(listOf(hulk), "Marvel rocks!"))
     }
 
     test("superheroes - service with 5XX exception - ServerError") {
