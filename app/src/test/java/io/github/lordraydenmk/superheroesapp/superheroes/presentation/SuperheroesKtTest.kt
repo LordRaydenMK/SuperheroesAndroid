@@ -87,5 +87,6 @@ class SuperheroesKtTest : FunSpec({
         test.awaitCount(4)
             .assertValueAt(2, Loading)
             .assertValueAt(3) { it is Content }
+            .assertNotComplete()
     }
 })
