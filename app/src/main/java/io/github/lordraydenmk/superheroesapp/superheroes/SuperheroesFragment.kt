@@ -29,7 +29,7 @@ class SuperheroesFragment : Fragment(R.layout.superheroes_fragment) {
 
         with(module) {
             val renderObservable =
-                viewState.flatMap {
+                viewState.switchMap {
                     Observable.fromCallable { screen.bind(it) }
                         .evalOn(AndroidSchedulers.mainThread())
                 }
