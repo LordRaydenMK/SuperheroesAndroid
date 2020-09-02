@@ -22,7 +22,7 @@ class SuperheroesScreenTest {
         onView(withId(R.id.progressSuperheroes)).check(matches(isDisplayed()))
 
         onView(withId(R.id.rvSuperheroes)).check(matches(not(isDisplayed())))
-        onView(withId(R.id.tvCopyright)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.copyrightLayout)).check(matches(not(isDisplayed())))
         onView(withId(R.id.tvError)).check(matches(not(isDisplayed())))
     }
 
@@ -36,7 +36,7 @@ class SuperheroesScreenTest {
 
         onView(withId(R.id.progressSuperheroes)).check(matches(not(isDisplayed())))
         onView(withId(R.id.rvSuperheroes)).check(matches(not(isDisplayed())))
-        onView(withId(R.id.tvCopyright)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.copyrightLayout)).check(matches(not(isDisplayed())))
     }
 
     @Test
@@ -49,7 +49,7 @@ class SuperheroesScreenTest {
 
         onView(withId(R.id.progressSuperheroes)).check(matches(not(isDisplayed())))
         onView(withId(R.id.rvSuperheroes)).check(matches(not(isDisplayed())))
-        onView(withId(R.id.tvCopyright)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.copyrightLayout)).check(matches(not(isDisplayed())))
     }
 
     @Test
@@ -69,8 +69,7 @@ class SuperheroesScreenTest {
         scenario.onView { view -> view.bind(viewState) }
 
         onView(withId(R.id.rvSuperheroes)).check(matches(isDisplayed()))
-        onView(withId(R.id.tvCopyright)).check(matches(isDisplayed()))
-        onView(withId(R.id.tvCopyright)).check(matches(withText("Copyright Marvel")))
+        onView(withId(R.id.copyrightLayout)).check(matches(withText("Copyright Marvel")))
 
         onView(withId(R.id.progressSuperheroes)).check(matches(not(isDisplayed())))
         onView(withId(R.id.tvError)).check(matches(not(isDisplayed())))

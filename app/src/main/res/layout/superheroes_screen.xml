@@ -41,7 +41,7 @@
         android:id="@+id/groupSuperheroesContent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="rvSuperheroes,tvCopyright" />
+        app:constraint_referenced_ids="rvSuperheroes,copyrightLayout" />
 
     <TextView
         android:id="@+id/tvError"
