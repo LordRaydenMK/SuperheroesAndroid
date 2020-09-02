@@ -4,6 +4,7 @@ import io.github.lordraydenmk.superheroesapp.AppModule
 import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.common.Paginated
 import io.github.lordraydenmk.superheroesapp.common.PaginatedEnvelope
+import io.github.lordraydenmk.superheroesapp.common.ViewModelAlgebra
 import io.github.lordraydenmk.superheroesapp.superheroes.data.ResourceList
 import io.github.lordraydenmk.superheroesapp.superheroes.data.SuperheroDto
 import io.github.lordraydenmk.superheroesapp.superheroes.data.SuperheroesService
@@ -39,9 +40,9 @@ class SuperheroesKtTest : FunSpec({
         val superhero = superheroDto(42, "Ant Man", "https://antman", "jpg")
         val service = testSuperheroService(listOf(superhero))
 
-        val viewModel = testViewModel()
+        val viewModel = testViewModel<SuperheroesViewState, Long>()
         val module = object : SuperheroesDependencies, AppModule by AppModule.create(service),
-            SuperheroesVM by viewModel {}
+            ViewModelAlgebra<SuperheroesViewState, Long> by viewModel {}
 
         val content = Content(
             listOf(SuperheroViewEntity(42, "Ant Man", "https://antman.jpg".toHttpUrl())),
@@ -60,9 +61,9 @@ class SuperheroesKtTest : FunSpec({
         val error = Exception("Unauthorised")
         val service = testSuperheroService(error)
 
-        val viewModel = testViewModel()
+        val viewModel = testViewModel<SuperheroesViewState, Long>()
         val module = object : SuperheroesDependencies, AppModule by AppModule.create(service),
-            SuperheroesVM by viewModel {}
+            ViewModelAlgebra<SuperheroesViewState, Long> by viewModel {}
 
         val problem = Problem(R.string.error_unrecoverable, false)
 
@@ -89,14 +90,15 @@ class SuperheroesKtTest : FunSpec({
                 fail("This should not be called")
         }
 
-        val viewModel = testViewModel()
+        val viewModel = testViewModel<SuperheroesViewState, Long>()
         val module = object : SuperheroesDependencies, AppModule by AppModule.create(service),
-            SuperheroesVM by viewModel {}
+            ViewModelAlgebra<SuperheroesViewState, Long> by viewModel {}
 
         val actions = PublishSubject.create<SuperheroesAction>()
         module.program(actions).subscribe()
         actions.onNext(FirstLoad)
 
+        // Somehow this breaks Type Inference after adding rxjava2-extensions ¯\_(ツ)_/¯
         val test = viewModel.viewState.test()
 
         test.awaitCount(2)
@@ -108,6 +110,22 @@ class SuperheroesKtTest : FunSpec({
         test.awaitCount(4)
             .assertValueAt(2, Loading)
             .assertValueAt(3) { it is Content }
+            .assertNotComplete()
+    }
+
+    test("ShowDetails - Details effect") {
+        val viewModel = testViewModel<SuperheroesViewState, Long>()
+        val module = object : SuperheroesDependencies,
+            AppModule by AppModule.create(testSuperheroService(emptyList())),
+            ViewModelAlgebra<SuperheroesViewState, Long> by viewModel {}
+
+        with(module) {
+            program(Observable.just(LoadDetails(42))).subscribe()
+        }
+
+        viewModel.effects.test()
+            .awaitCount(1)
+            .assertValue(42)
             .assertNotComplete()
     }
 })

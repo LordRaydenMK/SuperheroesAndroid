@@ -2,6 +2,7 @@ package io.github.lordraydenmk.superheroesapp.superheroes.presentation
 
 import io.github.lordraydenmk.superheroesapp.AppModule
 import io.github.lordraydenmk.superheroesapp.R
+import io.github.lordraydenmk.superheroesapp.common.ViewModelAlgebra
 import io.github.lordraydenmk.superheroesapp.common.fork
 import io.github.lordraydenmk.superheroesapp.common.unit
 import io.github.lordraydenmk.superheroesapp.superheroes.data.superheroes
@@ -9,13 +10,14 @@ import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 
-interface SuperheroesDependencies : AppModule, SuperheroesVM
+interface SuperheroesDependencies : AppModule, ViewModelAlgebra<SuperheroesViewState, Long>
 
 fun SuperheroesDependencies.program(actions: Observable<SuperheroesAction>): Observable<Unit> =
     actions.flatMap { action ->
         when (action) {
             FirstLoad -> refreshSuperheroes()
             Refresh -> refreshSuperheroes()
+            is LoadDetails -> runEffect(action.id).toObservable()
         }.fork(Schedulers.computation(), this::addToDisposable)
             .unit()
     }

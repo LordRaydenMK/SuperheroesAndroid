@@ -23,8 +23,10 @@ class SuperheroesScreen(container: ViewGroup) {
         }
     }
 
-    val actions: Observable<SuperheroesAction> = binding.tvError.clicks()
-        .map { Refresh }
+    val actions: Observable<SuperheroesAction> = Observable.merge(
+        binding.tvError.clicks().map { Refresh },
+        superheroesAdapter.actions.map { LoadDetails(it) }
+    )
 
     fun bind(viewState: SuperheroesViewState) {
         binding.groupSuperheroesContent.isVisible = viewState is Content

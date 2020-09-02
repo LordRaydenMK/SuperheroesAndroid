@@ -14,4 +14,9 @@
             app:destination="@+id/superheroDetails" />
     </fragment>
 
+    <fragment
+        android:id="@+id/superheroDetails"
+        android:name="io.github.lordraydenmk.superheroesapp.superheroes.superherodetails.SuperheroDetailsFragment"
+        tools:layout="@layout/superhero_details_screen" />
+
 </navigation>

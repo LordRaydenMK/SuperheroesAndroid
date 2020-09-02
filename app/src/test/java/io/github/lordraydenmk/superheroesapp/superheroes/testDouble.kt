@@ -2,10 +2,9 @@ package io.github.lordraydenmk.superheroesapp.superheroes
 
 import io.github.lordraydenmk.superheroesapp.common.Paginated
 import io.github.lordraydenmk.superheroesapp.common.PaginatedEnvelope
+import io.github.lordraydenmk.superheroesapp.common.ViewModelAlgebra
 import io.github.lordraydenmk.superheroesapp.superheroes.data.SuperheroDto
 import io.github.lordraydenmk.superheroesapp.superheroes.data.SuperheroesService
-import io.github.lordraydenmk.superheroesapp.superheroes.presentation.SuperheroesVM
-import io.github.lordraydenmk.superheroesapp.superheroes.presentation.SuperheroesViewState
 import io.kotest.assertions.fail
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -33,18 +32,25 @@ fun testSuperheroService(t: Throwable): SuperheroesService = object : Superheroe
         fail("This should not be called")
 }
 
-fun testViewModel(): SuperheroesVM = object : SuperheroesVM {
+fun <VS, E> testViewModel(): ViewModelAlgebra<VS, E> = object : ViewModelAlgebra<VS, E> {
 
     val cd = CompositeDisposable()
 
-    private val _viewState = ReplaySubject.create<SuperheroesViewState>()
-    override val viewState: Observable<SuperheroesViewState>
+    private val _viewState = ReplaySubject.create<VS>()
+    override val viewState: Observable<VS>
         get() = _viewState
 
-    override fun setState(vs: SuperheroesViewState): Completable =
+    override fun setState(vs: VS): Completable =
         Completable.fromCallable { _viewState.onNext(vs) }
 
     override fun addToDisposable(d: Disposable) {
         cd += d
     }
+
+    private val _effects = ReplaySubject.create<E>()
+    override val effects: Observable<E>
+        get() = _effects
+
+    override fun runEffect(effect: E): Completable =
+        Completable.fromCallable { _effects.onNext(effect) }
 }

@@ -7,9 +7,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.jakewharton.rxbinding3.view.clicks
 import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.databinding.SuperheroesItemBinding
 import io.github.lordraydenmk.superheroesapp.superheroes.presentation.SuperheroesAdapter.SuperheroViewHolder
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 
 private val diffCallback = object : DiffUtil.ItemCallback<SuperheroViewEntity>() {
 
@@ -27,6 +30,10 @@ private val diffCallback = object : DiffUtil.ItemCallback<SuperheroViewEntity>()
 
 class SuperheroesAdapter : ListAdapter<SuperheroViewEntity, SuperheroViewHolder>(diffCallback) {
 
+    private val _actions = PublishSubject.create<Long>()
+    val actions: Observable<Long>
+        get() = _actions
+
     init {
         setHasStableIds(true)
     }
@@ -34,7 +41,10 @@ class SuperheroesAdapter : ListAdapter<SuperheroViewEntity, SuperheroViewHolder>
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SuperheroViewHolder {
         val binding =
             SuperheroesItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return SuperheroViewHolder(binding, binding.root)
+        val holder = SuperheroViewHolder(binding, binding.root)
+        holder.clicks.map { getItem(it).id }
+            .subscribe(_actions)
+        return holder
     }
 
     override fun onBindViewHolder(holder: SuperheroViewHolder, position: Int) {
@@ -49,6 +59,9 @@ class SuperheroesAdapter : ListAdapter<SuperheroViewEntity, SuperheroViewHolder>
         private val binding: SuperheroesItemBinding,
         itemView: View
     ) : RecyclerView.ViewHolder(itemView) {
+
+        val clicks: Observable<Int> = itemView.clicks()
+            .map { adapterPosition }
 
         fun bind(item: SuperheroViewEntity) = with(binding) {
             ivSuperhero.load(item.imageUrl) {
