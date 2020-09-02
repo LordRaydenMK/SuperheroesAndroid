@@ -26,23 +26,16 @@
         android:id="@+id/rvSuperheroes"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/tvCopyright"
+        app:layout_constraintBottom_toTopOf="@id/copyrightLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         tools:itemCount="6"
         tools:listitem="@layout/superheroes_item" />
 
-    <TextView
-        android:id="@+id/tvCopyright"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#CCCCCCCC"
-        android:padding="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:text="Data provided by Marvel. © 2020 MARVEL" />
+    <include
+        android:id="@+id/copyrightLayout"
+        layout="@layout/copyright_layout" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/groupSuperheroesContent"

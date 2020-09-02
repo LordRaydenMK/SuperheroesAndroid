@@ -37,7 +37,7 @@ class SuperheroesScreen(container: ViewGroup) {
             }
             is Content -> {
                 superheroesAdapter.submitList(viewState.superheroes)
-                binding.tvCopyright.text = viewState.copyright
+                binding.copyrightLayout.tvCopyright.text = viewState.copyright
             }
             is Problem -> bindErrorView(viewState)
         }
