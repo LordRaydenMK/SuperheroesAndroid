@@ -44,4 +44,11 @@
         android:id="@+id/superheroContent"
         layout="@layout/superhero_details_content" />
 
+    <include
+        android:id="@+id/copyrightLayout"
+        layout="@layout/copyright_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom" />
+
 </merge>

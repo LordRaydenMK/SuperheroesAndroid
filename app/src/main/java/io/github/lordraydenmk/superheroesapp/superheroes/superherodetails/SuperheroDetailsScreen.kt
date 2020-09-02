@@ -1,4 +1,4 @@
-package io.github.lordraydenmk.superheroesapp.superherodetails
+package io.github.lordraydenmk.superheroesapp.superheroes.superherodetails
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -38,13 +38,14 @@ class SuperheroDetailsScreen(
 
                 when (viewState) {
                     Loading -> Unit
-                    is Content -> bindContent(viewState.superhero)
+                    is Content -> bindContent(viewState)
                     is Problem -> bindError(viewState)
                 }
             }
         }
 
-    private fun bindContent(superhero: SuperheroDetailsViewEntity) = with(binding) {
+    private fun bindContent(viewState: Content) = with(binding) {
+        val superhero = viewState.superhero
         toolbar.title = superhero.name
         imgSuperhero.load(superhero.thumbnail) {
             placeholder(R.drawable.ic_hourglass_bottom_black)
@@ -59,6 +60,7 @@ class SuperheroDetailsScreen(
             tvEventsCount.text = superhero.events.string(resources)
             tvSeriesCount.text = superhero.series.string(resources)
         }
+        copyrightLayout.tvCopyright.text = viewState.attribution
     }
 
     private fun bindError(problem: Problem) = with(binding.superheroContent) {

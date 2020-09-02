@@ -1,4 +1,4 @@
-package io.github.lordraydenmk.superheroesapp.superherodetails
+package io.github.lordraydenmk.superheroesapp.superheroes.superherodetails
 
 import androidx.annotation.StringRes
 import io.github.lordraydenmk.superheroesapp.common.PlaceholderString

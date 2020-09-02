@@ -1,4 +1,4 @@
-package io.github.lordraydenmk.superheroesapp.superherodetails
+package io.github.lordraydenmk.superheroesapp.superheroes.superherodetails
 
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroId
 
