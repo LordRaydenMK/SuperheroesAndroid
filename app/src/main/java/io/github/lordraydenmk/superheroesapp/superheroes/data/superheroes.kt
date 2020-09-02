@@ -1,6 +1,8 @@
 package io.github.lordraydenmk.superheroesapp.superheroes.data
 
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.Superhero
+import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroDetails
+import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroId
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.Superheroes
 import io.github.lordraydenmk.superheroesapp.superheroes.presentation.NetworkError
 import io.github.lordraydenmk.superheroesapp.superheroes.presentation.ServerError
@@ -20,6 +22,13 @@ fun SuperheroesService.superheroes(): Single<Superheroes> =
             val superheroes = superheroDtos.map { it.toDomain() }
             Superheroes(superheroes, attributionText)
         }
+
+fun SuperheroesService.superheroDetails(id: SuperheroId): Single<SuperheroDetails> =
+    getSuperheroDetails(id)
+        .observeOn(Schedulers.computation())
+        .onErrorResumeNext(::refineError)
+        .map { Pair(it.data.results.first().toDomain(), it.attributionText) }
+        .map { (superhero, attributionText) -> SuperheroDetails(superhero, attributionText) }
 
 private fun SuperheroDto.toDomain(): Superhero = Superhero.create(
     id = id,

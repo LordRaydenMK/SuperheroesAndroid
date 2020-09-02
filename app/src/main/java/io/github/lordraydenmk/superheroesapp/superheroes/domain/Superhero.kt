@@ -47,3 +47,5 @@ data class Superhero(
 }
 
 data class Superheroes(val superheroes: List<Superhero>, val attribution: String)
+
+data class SuperheroDetails(val superhero: Superhero, val attribution: String)
