@@ -17,13 +17,20 @@ fun SuperheroesService.superheroes(): Single<Superheroes> =
         .observeOn(Schedulers.computation())
         .map { Pair(it.data.results, it.attributionText) }
         .map { (superheroDtos, attributionText) ->
-            val superheroes = superheroDtos.map { superheroDto ->
-                with(superheroDto) {
-                    Superhero.create(id, name, thumbnail.path, thumbnail.extension)
-                }
-            }
+            val superheroes = superheroDtos.map { it.toDomain() }
             Superheroes(superheroes, attributionText)
         }
+
+private fun SuperheroDto.toDomain(): Superhero = Superhero.create(
+    id = id,
+    name = name,
+    thumbnailPath = thumbnail.path,
+    thumbnailExt = thumbnail.extension,
+    comicsCount = comics.available,
+    storiesCount = stories.available,
+    eventsCount = events.available,
+    seriesCount = series.available
+)
 
 private fun <A> refineError(throwable: Throwable): Single<A> = when (throwable) {
     is HttpException -> {

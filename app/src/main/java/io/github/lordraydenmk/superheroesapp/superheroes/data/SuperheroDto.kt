@@ -6,4 +6,15 @@ import kotlinx.serialization.Serializable
 data class ThumbnailDto(val path: String, val extension: String)
 
 @Serializable
-data class SuperheroDto(val id: Long, val name: String, val thumbnail: ThumbnailDto)
+data class ResourceList(val available: Int)
+
+@Serializable
+data class SuperheroDto(
+    val id: Long,
+    val name: String,
+    val thumbnail: ThumbnailDto,
+    val comics: ResourceList,
+    val stories: ResourceList,
+    val events: ResourceList,
+    val series: ResourceList
+)
