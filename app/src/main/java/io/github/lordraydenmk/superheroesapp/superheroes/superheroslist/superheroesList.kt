@@ -35,7 +35,7 @@ fun SuperheroesDependencies.loadSuperheroes(): Observable<SuperheroesViewState> 
                 SuperheroViewEntity(it.id, it.name, it.thumbnail)
             } to attributionText
         }
-        .doOnSuccess { Timber.d("Success, first -> ${it.second}") }
+        .doOnSuccess { Timber.d("Success, first -> ${it.first.first()}") }
         .map<SuperheroesViewState> { (superheroes, attributionText) ->
             Content(superheroes, attributionText)
         }
