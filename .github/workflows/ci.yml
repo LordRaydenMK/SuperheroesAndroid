@@ -16,12 +16,16 @@ jobs:
     
       - name: Build the app
         run: ./gradlew assemble -Pmarvel_public_api_key=fake_key -Pmarvel_private_api_key=fake_key
-        
-      - name: Run Instrumentation Tests
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          cmd: ./gradlew connectedCheck -Pmarvel_public_api_key=fake_key -Pmarvel_private_api_key=fake_key --stacktrace
-          api: 29
-          tag: default
-          abi: x86
-      
+
+
+  test:
+    runs-on: macos-latest
+    steps:
+    - name: checkout
+      uses: actions/checkout@v2
+
+    - name: Run Espresso Tests
+      uses: reactivecircus/android-emulator-runner@v2
+      with:
+        api-level: 29
+        script: ./gradlew connectedCheck -Pmarvel_public_api_key=fake_key -Pmarvel_private_api_key=fake_key --stacktrace      
