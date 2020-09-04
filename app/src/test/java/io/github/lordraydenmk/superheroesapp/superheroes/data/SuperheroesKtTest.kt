@@ -3,6 +3,7 @@ package io.github.lordraydenmk.superheroesapp.superheroes.data
 import io.github.lordraydenmk.superheroesapp.common.PaginatedEnvelope
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.Resource
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.Superhero
+import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroDetails
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.Superheroes
 import io.github.lordraydenmk.superheroesapp.superheroes.presentation.NetworkError
 import io.github.lordraydenmk.superheroesapp.superheroes.presentation.ServerError
@@ -81,5 +82,33 @@ class SuperheroesKtTest : FunSpec({
                 it is SuperheroException &&
                         it.error == Unrecoverable(exception)
             }
+    }
+
+    test("superheroDetails - service with success - converts to domain") {
+        val hulkDto = SuperheroDto(
+            42,
+            "Hulk",
+            ThumbnailDto("https://hulk", "jpg"),
+            ResourceList(1),
+            ResourceList(2),
+            ResourceList(3),
+            ResourceList(4)
+        )
+        val service = testSuperheroService(listOf(hulkDto))
+
+
+        val hulk = Superhero(
+            42,
+            "Hulk",
+            "https://hulk.jpg".toHttpUrl(),
+            Resource(1),
+            Resource(2),
+            Resource(3),
+            Resource(4)
+        )
+        service.superheroDetails(42)
+            .test()
+            .awaitCount(1)
+            .assertValue(SuperheroDetails(hulk, "Marvel rocks!"))
     }
 })

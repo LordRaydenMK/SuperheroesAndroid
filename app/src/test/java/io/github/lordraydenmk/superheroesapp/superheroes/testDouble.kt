@@ -5,7 +5,6 @@ import io.github.lordraydenmk.superheroesapp.common.PaginatedEnvelope
 import io.github.lordraydenmk.superheroesapp.common.ViewModelAlgebra
 import io.github.lordraydenmk.superheroesapp.superheroes.data.SuperheroDto
 import io.github.lordraydenmk.superheroesapp.superheroes.data.SuperheroesService
-import io.kotest.assertions.fail
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -21,7 +20,7 @@ fun testSuperheroService(superheroes: List<SuperheroDto>): SuperheroesService =
             Single.just(PaginatedEnvelope(200, "Marvel rocks!", Paginated(superheroes)))
 
         override fun getSuperheroDetails(characterId: Long): Single<PaginatedEnvelope<SuperheroDto>> =
-            fail("This should not be called")
+            Single.just(PaginatedEnvelope(200, "Marvel rocks!", Paginated(superheroes)))
     }
 
 fun testSuperheroService(t: Throwable): SuperheroesService = object : SuperheroesService {
@@ -29,7 +28,7 @@ fun testSuperheroService(t: Throwable): SuperheroesService = object : Superheroe
     override fun getSuperheroes(): Single<PaginatedEnvelope<SuperheroDto>> = Single.error(t)
 
     override fun getSuperheroDetails(characterId: Long): Single<PaginatedEnvelope<SuperheroDto>> =
-        fail("This should not be called")
+        Single.error(t)
 }
 
 fun <VS, E> testViewModel(): ViewModelAlgebra<VS, E> = object : ViewModelAlgebra<VS, E> {
