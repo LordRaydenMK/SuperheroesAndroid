@@ -26,7 +26,7 @@ class SuperheroesFragment : Fragment(R.layout.superheroes_fragment) {
 
         val screen = SuperheroesScreen(view as ViewGroup)
 
-        val module: SuperheroesDependencies = object : SuperheroesDependencies,
+        val module: SuperheroesModule = object : SuperheroesModule,
             AppModule by requireActivity().appModule(),
             ViewModelAlgebra<SuperheroesViewState, Long> by viewModel {}
 

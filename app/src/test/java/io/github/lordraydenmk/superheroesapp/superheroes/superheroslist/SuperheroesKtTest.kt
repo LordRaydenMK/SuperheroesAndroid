@@ -41,7 +41,7 @@ class SuperheroesKtTest : FunSpec({
         val service = testSuperheroService(listOf(superhero))
 
         val viewModel = testViewModel<SuperheroesViewState, Long>()
-        val module = object : SuperheroesDependencies, AppModule by AppModule.create(service),
+        val module = object : SuperheroesModule, AppModule by AppModule.create(service),
             ViewModelAlgebra<SuperheroesViewState, Long> by viewModel {}
 
         val content = Content(
@@ -62,7 +62,7 @@ class SuperheroesKtTest : FunSpec({
         val service = testSuperheroService(error)
 
         val viewModel = testViewModel<SuperheroesViewState, Long>()
-        val module = object : SuperheroesDependencies, AppModule by AppModule.create(service),
+        val module = object : SuperheroesModule, AppModule by AppModule.create(service),
             ViewModelAlgebra<SuperheroesViewState, Long> by viewModel {}
 
         val problem = Problem(R.string.error_unrecoverable, false)
@@ -91,7 +91,7 @@ class SuperheroesKtTest : FunSpec({
         }
 
         val viewModel = testViewModel<SuperheroesViewState, Long>()
-        val module = object : SuperheroesDependencies, AppModule by AppModule.create(service),
+        val module = object : SuperheroesModule, AppModule by AppModule.create(service),
             ViewModelAlgebra<SuperheroesViewState, Long> by viewModel {}
 
         val actions = PublishSubject.create<SuperheroesAction>()
@@ -115,7 +115,7 @@ class SuperheroesKtTest : FunSpec({
 
     test("ShowDetails - Details effect") {
         val viewModel = testViewModel<SuperheroesViewState, Long>()
-        val module = object : SuperheroesDependencies,
+        val module = object : SuperheroesModule,
             AppModule by AppModule.create(testSuperheroService(emptyList())),
             ViewModelAlgebra<SuperheroesViewState, Long> by viewModel {}
 

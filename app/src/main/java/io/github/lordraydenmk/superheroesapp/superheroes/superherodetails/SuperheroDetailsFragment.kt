@@ -29,7 +29,7 @@ class SuperheroDetailsFragment : Fragment(R.layout.superhero_details_fragment) {
         super.onViewCreated(view, savedInstanceState)
         val screen = SuperheroDetailsScreen(view as ViewGroup, superheroId)
 
-        val module = SuperheroDetailsDependencies.create(requireActivity().appModule(), viewModel)
+        val module = SuperheroDetailsModule.create(requireActivity().appModule(), viewModel)
 
         with(module) {
             val firstLoad = Observable.just(savedInstanceState == null)

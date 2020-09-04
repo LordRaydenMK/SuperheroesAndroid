@@ -16,7 +16,7 @@ import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.Unrecove
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 
-interface SuperheroDetailsDependencies : AppModule,
+interface SuperheroDetailsModule : AppModule,
     ViewModelAlgebra<SuperheroDetailsViewState, Unit> {
 
     companion object {
@@ -24,14 +24,14 @@ interface SuperheroDetailsDependencies : AppModule,
         fun create(
             appModule: AppModule,
             viewModel: ViewModelAlgebra<SuperheroDetailsViewState, Unit>
-        ): SuperheroDetailsDependencies =
-            object : SuperheroDetailsDependencies,
+        ): SuperheroDetailsModule =
+            object : SuperheroDetailsModule,
                 AppModule by appModule,
                 ViewModelAlgebra<SuperheroDetailsViewState, Unit> by viewModel {}
     }
 }
 
-fun SuperheroDetailsDependencies.program(actions: Observable<SuperheroDetailsAction>): Observable<Unit> =
+fun SuperheroDetailsModule.program(actions: Observable<SuperheroDetailsAction>): Observable<Unit> =
     actions.flatMap { action ->
         when (action) {
             is FirstLoad -> loadSuperheroes(action.superheroId)
@@ -42,7 +42,7 @@ fun SuperheroDetailsDependencies.program(actions: Observable<SuperheroDetailsAct
     }
 
 
-fun SuperheroDetailsDependencies.loadSuperheroes(superheroId: SuperheroId): Observable<Unit> =
+fun SuperheroDetailsModule.loadSuperheroes(superheroId: SuperheroId): Observable<Unit> =
     superheroDetails(superheroId)
         .map { (superhero, attribution) -> superhero.toViewEntity() to attribution }
         .map<SuperheroDetailsViewState> { Content(it.first, it.second) }

@@ -40,7 +40,7 @@ class SuperheroDetailsKtTest : FunSpec({
         val service = testSuperheroService(listOf(hulkDto))
 
         val viewModel = testViewModel<SuperheroDetailsViewState, Unit>()
-        val module = SuperheroDetailsDependencies.create(AppModule.create(service), viewModel)
+        val module = SuperheroDetailsModule.create(AppModule.create(service), viewModel)
 
         with(module) {
             program(Observable.just(FirstLoad(42))).subscribe()
@@ -66,7 +66,7 @@ class SuperheroDetailsKtTest : FunSpec({
         val service = testSuperheroService(error)
 
         val viewModel = testViewModel<SuperheroDetailsViewState, Unit>()
-        val module = SuperheroDetailsDependencies.create(AppModule.create(service), viewModel)
+        val module = SuperheroDetailsModule.create(AppModule.create(service), viewModel)
 
         with(module) {
             program(Observable.just(FirstLoad(42))).subscribe()
