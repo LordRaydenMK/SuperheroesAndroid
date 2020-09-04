@@ -9,7 +9,7 @@ import io.reactivex.subjects.ReplaySubject
 
 class TestViewModel<VS, E> : ViewModelAlgebra<VS, E> {
 
-    val cd = CompositeDisposable()
+    private val cd = CompositeDisposable()
 
     private val _viewState = ReplaySubject.create<VS>()
     override val viewState: Observable<VS>
