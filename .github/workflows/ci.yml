@@ -10,9 +10,17 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     
-    - name: Checkout the code
-      uses: actions/checkout@v2
+      - name: Checkout the code
+        uses: actions/checkout@v2
     
-    - name: Build the app
-      run: ./gradlew build
+      - name: Build the app
+        run: ./gradlew assemble
+        
+      - name: Run Instrumentation Tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          cmd: ./gradlew connectedCheck --stacktrace
+          api: 29
+          tag: default
+          abi: x86
       
