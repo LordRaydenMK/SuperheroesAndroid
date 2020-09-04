@@ -50,6 +50,7 @@ class SuperheroesKtTest : FunSpec({
 
         service.superheroes()
             .test()
+            .awaitCount(1)
             .assertError {
                 it is SuperheroException &&
                         it.error == ServerError(500, "Response.error()")
@@ -62,6 +63,7 @@ class SuperheroesKtTest : FunSpec({
 
         service.superheroes()
             .test()
+            .awaitCount(1)
             .assertError {
                 it is SuperheroException &&
                         it.error == NetworkError(exception)
@@ -74,6 +76,7 @@ class SuperheroesKtTest : FunSpec({
 
         service.superheroes()
             .test()
+            .awaitCount(1)
             .assertError {
                 it is SuperheroException &&
                         it.error == Unrecoverable(exception)
