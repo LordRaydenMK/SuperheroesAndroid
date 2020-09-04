@@ -32,6 +32,10 @@ android {
         viewBinding true
     }
 
+    sourceSets {
+        test.java.srcDirs += "src/testFixtures/kotlin"
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8

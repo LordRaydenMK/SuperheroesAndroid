@@ -4,13 +4,13 @@ import io.github.lordraydenmk.superheroesapp.AppModule
 import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.common.Paginated
 import io.github.lordraydenmk.superheroesapp.common.PaginatedEnvelope
+import io.github.lordraydenmk.superheroesapp.common.TestViewModel
 import io.github.lordraydenmk.superheroesapp.common.ViewModelAlgebra
 import io.github.lordraydenmk.superheroesapp.superheroes.data.ResourceList
 import io.github.lordraydenmk.superheroesapp.superheroes.data.SuperheroDto
 import io.github.lordraydenmk.superheroesapp.superheroes.data.SuperheroesService
 import io.github.lordraydenmk.superheroesapp.superheroes.data.ThumbnailDto
 import io.github.lordraydenmk.superheroesapp.superheroes.testSuperheroService
-import io.github.lordraydenmk.superheroesapp.superheroes.testViewModel
 import io.kotest.assertions.fail
 import io.kotest.core.spec.style.FunSpec
 import io.reactivex.Observable
@@ -36,13 +36,19 @@ class SuperheroesListKtTest : FunSpec({
             ResourceList(0)
         )
 
+    fun testModule(
+        service: SuperheroesService,
+        viewModel: ViewModelAlgebra<SuperheroesViewState, SuperheroesEffect>
+    ): SuperheroesModule = object : SuperheroesModule, AppModule by AppModule.create(service),
+        ViewModelAlgebra<SuperheroesViewState, SuperheroesEffect> by viewModel {}
+
+
     test("FirstLoad - service returns a single superhero - Loading then Content list with 1 item") {
         val superhero = superheroDto(42, "Ant Man", "https://antman", "jpg")
         val service = testSuperheroService(listOf(superhero))
 
-        val viewModel = testViewModel<SuperheroesViewState, SuperheroesEffect>()
-        val module = object : SuperheroesModule, AppModule by AppModule.create(service),
-            ViewModelAlgebra<SuperheroesViewState, SuperheroesEffect> by viewModel {}
+        val viewModel = TestViewModel<SuperheroesViewState, SuperheroesEffect>()
+        val module = testModule(service, viewModel)
 
         val content = Content(
             listOf(SuperheroViewEntity(42, "Ant Man", "https://antman.jpg".toHttpUrl())),
@@ -61,9 +67,8 @@ class SuperheroesListKtTest : FunSpec({
         val error = Exception("Unauthorised")
         val service = testSuperheroService(error)
 
-        val viewModel = testViewModel<SuperheroesViewState, SuperheroesEffect>()
-        val module = object : SuperheroesModule, AppModule by AppModule.create(service),
-            ViewModelAlgebra<SuperheroesViewState, SuperheroesEffect> by viewModel {}
+        val viewModel = TestViewModel<SuperheroesViewState, SuperheroesEffect>()
+        val module = testModule(service, viewModel)
 
         val problem = Problem(R.string.error_unrecoverable, false)
 
@@ -90,9 +95,8 @@ class SuperheroesListKtTest : FunSpec({
                 fail("This should not be called")
         }
 
-        val viewModel = testViewModel<SuperheroesViewState, SuperheroesEffect>()
-        val module = object : SuperheroesModule, AppModule by AppModule.create(service),
-            ViewModelAlgebra<SuperheroesViewState, SuperheroesEffect> by viewModel {}
+        val viewModel = TestViewModel<SuperheroesViewState, SuperheroesEffect>()
+        val module = testModule(service, viewModel)
 
         val actions = PublishSubject.create<SuperheroesAction>()
         module.program(actions).subscribe()
@@ -114,10 +118,8 @@ class SuperheroesListKtTest : FunSpec({
     }
 
     test("ShowDetailsAction - NavigateToDetails effect") {
-        val viewModel = testViewModel<SuperheroesViewState, SuperheroesEffect>()
-        val module = object : SuperheroesModule,
-            AppModule by AppModule.create(testSuperheroService(emptyList())),
-            ViewModelAlgebra<SuperheroesViewState, SuperheroesEffect> by viewModel {}
+        val viewModel = TestViewModel<SuperheroesViewState, SuperheroesEffect>()
+        val module = testModule(testSuperheroService(emptyList()), viewModel)
 
         with(module) {
             program(Observable.just(LoadDetails(42))).subscribe()
