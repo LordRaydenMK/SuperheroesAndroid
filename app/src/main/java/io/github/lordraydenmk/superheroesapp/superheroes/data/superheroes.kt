@@ -15,8 +15,8 @@ import java.io.IOException
 
 fun SuperheroesService.superheroes(): Single<Superheroes> =
     getSuperheroes()
-        .onErrorResumeNext(::refineError)
         .observeOn(Schedulers.computation())
+        .onErrorResumeNext(::refineError)
         .map { Pair(it.data.results, it.attributionText) }
         .map { (superheroDtos, attributionText) ->
             val superheroes = superheroDtos.map { it.toDomain() }
@@ -41,6 +41,17 @@ private fun SuperheroDto.toDomain(): Superhero = Superhero.create(
     seriesCount = series.available
 )
 
+/**
+ * We treat errors as recoverable (e.g. the server is down, or the internet is slow...) where if
+ * the user retries it is likely they will succeed the next time
+ *
+ * and non-recoverable (e.g. wrong token, bad JSON etc..) which indicate bugs and can't be recovered
+ * if the user retries
+ *
+ * Note: the classification of which errors are recoverable or not will depend on the app.
+ * Here the API key is hardcoded so 401 is non-recoverable, in an app where the user logs in with
+ * username and password a 401 is recoverable
+ */
 private fun <A> refineError(throwable: Throwable): Single<A> = when (throwable) {
     is HttpException -> {
         val exception = when (throwable.code()) {

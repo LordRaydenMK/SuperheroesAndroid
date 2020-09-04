@@ -6,8 +6,10 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.ReplaySubject
 
+// Cached unit Observable
 val unit: Observable<Unit> = Observable.just(Unit)
 
+// Ignore output
 fun <A> Observable<A>.unit(): Observable<Unit> = flatMap { unit }
 
 data class ObservableFiber<A>(val join: Observable<A>, val cancel: Disposable)
