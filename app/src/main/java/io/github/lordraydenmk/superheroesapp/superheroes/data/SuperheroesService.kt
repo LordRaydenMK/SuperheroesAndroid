@@ -7,7 +7,7 @@ import retrofit2.http.Path
 
 interface SuperheroesService {
 
-    @GET("characters")
+    @GET("characters?limit=100")
     fun getSuperheroes(): Single<PaginatedEnvelope<SuperheroDto>>
 
     @GET("characters/{characterId}")
