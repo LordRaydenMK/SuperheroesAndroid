@@ -35,6 +35,7 @@ class SuperheroDetailsScreen(
                 progress.isVisible = viewState is Loading
                 tvError.isVisible = viewState is Problem
                 layoutContent.isVisible = viewState is Content
+                binding.copyrightLayout.tvCopyright.isVisible = viewState is Content
 
                 when (viewState) {
                     Loading -> Unit
