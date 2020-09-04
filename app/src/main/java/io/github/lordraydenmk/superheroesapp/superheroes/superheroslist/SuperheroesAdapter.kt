@@ -1,4 +1,4 @@
-package io.github.lordraydenmk.superheroesapp.superheroes.presentation
+package io.github.lordraydenmk.superheroesapp.superheroes.superheroslist
 
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +10,7 @@ import coil.load
 import com.jakewharton.rxbinding3.view.clicks
 import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.databinding.SuperheroesItemBinding
-import io.github.lordraydenmk.superheroesapp.superheroes.presentation.SuperheroesAdapter.SuperheroViewHolder
+import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.SuperheroesAdapter.SuperheroViewHolder
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 

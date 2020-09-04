@@ -1,4 +1,4 @@
-package io.github.lordraydenmk.superheroesapp.superheroes.presentation
+package io.github.lordraydenmk.superheroesapp.superheroes.superheroslist
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

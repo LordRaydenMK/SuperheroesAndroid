@@ -1,4 +1,4 @@
-package io.github.lordraydenmk.superheroesapp.superheroes
+package io.github.lordraydenmk.superheroesapp.superheroes.superheroslist
 
 import android.os.Bundle
 import android.view.View
@@ -13,7 +13,6 @@ import io.github.lordraydenmk.superheroesapp.appModule
 import io.github.lordraydenmk.superheroesapp.common.ViewModelAlgebra
 import io.github.lordraydenmk.superheroesapp.common.autoDispose
 import io.github.lordraydenmk.superheroesapp.common.evalOn
-import io.github.lordraydenmk.superheroesapp.superheroes.presentation.*
 import io.github.lordraydenmk.superheroesapp.superheroes.superherodetails.SuperheroDetailsFragment
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers

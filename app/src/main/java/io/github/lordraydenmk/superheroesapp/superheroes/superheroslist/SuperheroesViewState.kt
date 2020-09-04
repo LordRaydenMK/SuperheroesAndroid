@@ -1,4 +1,4 @@
-package io.github.lordraydenmk.superheroesapp.superheroes.presentation
+package io.github.lordraydenmk.superheroesapp.superheroes.superheroslist
 
 import androidx.annotation.StringRes
 import okhttp3.HttpUrl

@@ -5,7 +5,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import io.github.lordraydenmk.superheroesapp.ScreenScenario.Companion.launchInContainer
-import io.github.lordraydenmk.superheroesapp.superheroes.presentation.*
+import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.*
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test

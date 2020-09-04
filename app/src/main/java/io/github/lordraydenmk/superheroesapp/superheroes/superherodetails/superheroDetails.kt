@@ -9,10 +9,10 @@ import io.github.lordraydenmk.superheroesapp.common.unit
 import io.github.lordraydenmk.superheroesapp.superheroes.data.superheroDetails
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.Superhero
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroId
-import io.github.lordraydenmk.superheroesapp.superheroes.presentation.NetworkError
-import io.github.lordraydenmk.superheroesapp.superheroes.presentation.ServerError
-import io.github.lordraydenmk.superheroesapp.superheroes.presentation.SuperheroException
-import io.github.lordraydenmk.superheroesapp.superheroes.presentation.Unrecoverable
+import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.NetworkError
+import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.ServerError
+import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.SuperheroException
+import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.Unrecoverable
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 
