@@ -28,7 +28,7 @@ class SuperheroesFragment : Fragment(R.layout.superheroes_fragment) {
 
         val module: SuperheroesModule = object : SuperheroesModule,
             AppModule by requireActivity().appModule(),
-            ViewModelAlgebra<SuperheroesViewState, Long> by viewModel {}
+            ViewModelAlgebra<SuperheroesViewState, SuperheroesEffect> by viewModel {}
 
         with(module) {
             val renderObservable =
@@ -53,11 +53,12 @@ class SuperheroesFragment : Fragment(R.layout.superheroes_fragment) {
         super.onStart()
 
         viewModel.effects
+            .ofType(NavigateToDetails::class.java)
             .flatMap {
                 Observable.fromCallable {
                     findNavController().navigate(
                         R.id.action_details,
-                        SuperheroDetailsFragment.newBundle(it)
+                        SuperheroDetailsFragment.newBundle(it.superheroId)
                     )
                 }
             }

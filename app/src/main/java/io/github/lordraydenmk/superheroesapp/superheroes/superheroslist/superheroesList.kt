@@ -15,14 +15,14 @@ import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 
-interface SuperheroesModule : AppModule, ViewModelAlgebra<SuperheroesViewState, Long>
+interface SuperheroesModule : AppModule, ViewModelAlgebra<SuperheroesViewState, SuperheroesEffect>
 
 fun SuperheroesModule.program(actions: Observable<SuperheroesAction>): Observable<Unit> =
     actions.flatMap { action ->
         when (action) {
             FirstLoad -> refreshSuperheroes()
             Refresh -> refreshSuperheroes()
-            is LoadDetails -> runEffect(action.id).toObservable()
+            is LoadDetails -> runEffect(NavigateToDetails(action.id)).toObservable()
         }.fork(Schedulers.computation(), this::addToDisposable)
             .unit()
     }
@@ -31,7 +31,6 @@ fun SuperheroesModule.refreshSuperheroes(): Observable<Unit> =
     loadSuperheroes()
         .flatMapCompletable { setState(it) }
         .andThen(unit)
-
 
 fun SuperheroesModule.loadSuperheroes(): Observable<SuperheroesViewState> =
     superheroes()
