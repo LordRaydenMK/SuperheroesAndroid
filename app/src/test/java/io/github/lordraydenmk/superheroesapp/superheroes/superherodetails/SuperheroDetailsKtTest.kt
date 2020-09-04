@@ -3,11 +3,13 @@ package io.github.lordraydenmk.superheroesapp.superheroes.superherodetails
 import io.github.lordraydenmk.superheroesapp.AppModule
 import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.common.PlaceholderString
+import io.github.lordraydenmk.superheroesapp.common.TestViewModel
+import io.github.lordraydenmk.superheroesapp.common.ViewModelAlgebra
 import io.github.lordraydenmk.superheroesapp.superheroes.data.ResourceList
 import io.github.lordraydenmk.superheroesapp.superheroes.data.SuperheroDto
+import io.github.lordraydenmk.superheroesapp.superheroes.data.SuperheroesService
 import io.github.lordraydenmk.superheroesapp.superheroes.data.ThumbnailDto
 import io.github.lordraydenmk.superheroesapp.superheroes.testSuperheroService
-import io.github.lordraydenmk.superheroesapp.superheroes.testViewModel
 import io.kotest.core.spec.style.FunSpec
 import io.reactivex.Observable
 import okhttp3.HttpUrl.Companion.toHttpUrl
@@ -35,12 +37,19 @@ class SuperheroDetailsKtTest : FunSpec({
             ResourceList(series)
         )
 
+    fun module(
+        service: SuperheroesService,
+        viewModelAlgebra: ViewModelAlgebra<SuperheroDetailsViewState, SuperheroDetailsEffect>
+    ) = object : SuperheroDetailsModule, AppModule by AppModule.create(service),
+        ViewModelAlgebra<SuperheroDetailsViewState, SuperheroDetailsEffect> by viewModelAlgebra {}
+
+
     test("FirstLoad - service with success - Superhero") {
         val hulkDto = superheroDto(42, "Hulk", "https://hulk", "jpg", 1, 2, 3, 4)
         val service = testSuperheroService(listOf(hulkDto))
 
-        val viewModel = testViewModel<SuperheroDetailsViewState, Unit>()
-        val module = SuperheroDetailsModule.create(AppModule.create(service), viewModel)
+        val viewModel = TestViewModel<SuperheroDetailsViewState, SuperheroDetailsEffect>()
+        val module = module(service, viewModel)
 
         with(module) {
             program(Observable.just(FirstLoad(42))).subscribe()
@@ -65,8 +74,8 @@ class SuperheroDetailsKtTest : FunSpec({
         val error = IOException("Bang")
         val service = testSuperheroService(error)
 
-        val viewModel = testViewModel<SuperheroDetailsViewState, Unit>()
-        val module = SuperheroDetailsModule.create(AppModule.create(service), viewModel)
+        val viewModel = TestViewModel<SuperheroDetailsViewState, SuperheroDetailsEffect>()
+        val module = module(service, viewModel)
 
         with(module) {
             program(Observable.just(FirstLoad(42))).subscribe()
@@ -76,6 +85,20 @@ class SuperheroDetailsKtTest : FunSpec({
                 .awaitCount(2)
                 .assertValueAt(0, Loading)
                 .assertValueAt(1, Problem(R.string.error_recoverable_network, Refresh(42)))
+        }
+    }
+
+    test("Action Up - NavigateUp Effect") {
+        val viewModel = TestViewModel<SuperheroDetailsViewState, SuperheroDetailsEffect>()
+        val module = module(testSuperheroService(emptyList()), viewModel)
+
+        with(module) {
+            program(Observable.just(Up)).subscribe()
+
+            viewModel.effects
+                .test()
+                .awaitCount(1)
+                .assertValue(NavigateUp)
         }
     }
 })

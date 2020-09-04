@@ -7,8 +7,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.Event
 import androidx.navigation.fragment.findNavController
+import io.github.lordraydenmk.superheroesapp.AppModule
 import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.appModule
+import io.github.lordraydenmk.superheroesapp.common.ViewModelAlgebra
 import io.github.lordraydenmk.superheroesapp.common.autoDispose
 import io.github.lordraydenmk.superheroesapp.common.evalOn
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroId
@@ -29,7 +31,9 @@ class SuperheroDetailsFragment : Fragment(R.layout.superhero_details_fragment) {
         super.onViewCreated(view, savedInstanceState)
         val screen = SuperheroDetailsScreen(view as ViewGroup, superheroId)
 
-        val module = SuperheroDetailsModule.create(requireActivity().appModule(), viewModel)
+        val module = object : SuperheroDetailsModule,
+            AppModule by requireActivity().appModule(),
+            ViewModelAlgebra<SuperheroDetailsViewState, SuperheroDetailsEffect> by viewModel {}
 
         with(module) {
             val firstLoad = Observable.just(savedInstanceState == null)

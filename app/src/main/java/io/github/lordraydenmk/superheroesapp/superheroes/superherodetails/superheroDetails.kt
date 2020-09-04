@@ -14,26 +14,14 @@ import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 
 interface SuperheroDetailsModule : AppModule,
-    ViewModelAlgebra<SuperheroDetailsViewState, Unit> {
-
-    companion object {
-
-        fun create(
-            appModule: AppModule,
-            viewModel: ViewModelAlgebra<SuperheroDetailsViewState, Unit>
-        ): SuperheroDetailsModule =
-            object : SuperheroDetailsModule,
-                AppModule by appModule,
-                ViewModelAlgebra<SuperheroDetailsViewState, Unit> by viewModel {}
-    }
-}
+    ViewModelAlgebra<SuperheroDetailsViewState, SuperheroDetailsEffect>
 
 fun SuperheroDetailsModule.program(actions: Observable<SuperheroDetailsAction>): Observable<Unit> =
     actions.flatMap { action ->
         when (action) {
             is FirstLoad -> loadSuperheroes(action.superheroId)
             is Refresh -> loadSuperheroes(action.superheroId)
-            Up -> runEffect(Unit).toObservable()
+            Up -> runEffect(NavigateUp).toObservable()
         }.fork(Schedulers.computation(), this::addToDisposable)
             .unit()
     }
