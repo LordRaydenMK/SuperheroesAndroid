@@ -1,13 +1,13 @@
 package io.github.lordraydenmk.superheroesapp.superheroes.data
 
+import io.github.lordraydenmk.superheroesapp.superheroes.NetworkError
+import io.github.lordraydenmk.superheroesapp.superheroes.ServerError
+import io.github.lordraydenmk.superheroesapp.superheroes.SuperheroException
+import io.github.lordraydenmk.superheroesapp.superheroes.Unrecoverable
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.Superhero
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroDetails
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroId
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.Superheroes
-import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.NetworkError
-import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.ServerError
-import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.SuperheroException
-import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.Unrecoverable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import retrofit2.HttpException

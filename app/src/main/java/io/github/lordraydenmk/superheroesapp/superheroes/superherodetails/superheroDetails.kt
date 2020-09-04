@@ -2,17 +2,14 @@ package io.github.lordraydenmk.superheroesapp.superheroes.superherodetails
 
 import io.github.lordraydenmk.superheroesapp.AppModule
 import io.github.lordraydenmk.superheroesapp.R
-import io.github.lordraydenmk.superheroesapp.common.PlaceholderString
-import io.github.lordraydenmk.superheroesapp.common.ViewModelAlgebra
-import io.github.lordraydenmk.superheroesapp.common.fork
-import io.github.lordraydenmk.superheroesapp.common.unit
+import io.github.lordraydenmk.superheroesapp.common.*
+import io.github.lordraydenmk.superheroesapp.superheroes.NetworkError
+import io.github.lordraydenmk.superheroesapp.superheroes.ServerError
+import io.github.lordraydenmk.superheroesapp.superheroes.SuperheroException
+import io.github.lordraydenmk.superheroesapp.superheroes.Unrecoverable
 import io.github.lordraydenmk.superheroesapp.superheroes.data.superheroDetails
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.Superhero
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroId
-import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.NetworkError
-import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.ServerError
-import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.SuperheroException
-import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.Unrecoverable
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 
@@ -48,6 +45,7 @@ fun SuperheroDetailsModule.loadSuperheroes(superheroId: SuperheroId): Observable
         .map<SuperheroDetailsViewState> { Content(it.first, it.second) }
         .toObservable()
         .startWith(Loading)
+        .logOnError("Error in loadSuperheroes $superheroId")
         .onErrorReturn { t -> t.toProblem(superheroId) }
         .flatMapCompletable { setState(it) }
         .toObservable()

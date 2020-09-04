@@ -1,15 +1,11 @@
 package io.github.lordraydenmk.superheroesapp.superheroes.data
 
 import io.github.lordraydenmk.superheroesapp.common.PaginatedEnvelope
+import io.github.lordraydenmk.superheroesapp.superheroes.*
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.Resource
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.Superhero
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroDetails
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.Superheroes
-import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.NetworkError
-import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.ServerError
-import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.SuperheroException
-import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.Unrecoverable
-import io.github.lordraydenmk.superheroesapp.superheroes.testSuperheroService
 import io.kotest.core.spec.style.FunSpec
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.ResponseBody.Companion.toResponseBody

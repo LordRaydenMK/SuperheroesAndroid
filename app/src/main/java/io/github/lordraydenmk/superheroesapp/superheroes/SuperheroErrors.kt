@@ -1,4 +1,4 @@
-package io.github.lordraydenmk.superheroesapp.superheroes.superheroslist
+package io.github.lordraydenmk.superheroesapp.superheroes
 
 sealed class SuperheroError
 

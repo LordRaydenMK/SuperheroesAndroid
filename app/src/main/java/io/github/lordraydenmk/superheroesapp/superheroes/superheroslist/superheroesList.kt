@@ -4,7 +4,12 @@ import io.github.lordraydenmk.superheroesapp.AppModule
 import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.common.ViewModelAlgebra
 import io.github.lordraydenmk.superheroesapp.common.fork
+import io.github.lordraydenmk.superheroesapp.common.logOnError
 import io.github.lordraydenmk.superheroesapp.common.unit
+import io.github.lordraydenmk.superheroesapp.superheroes.NetworkError
+import io.github.lordraydenmk.superheroesapp.superheroes.ServerError
+import io.github.lordraydenmk.superheroesapp.superheroes.SuperheroException
+import io.github.lordraydenmk.superheroesapp.superheroes.Unrecoverable
 import io.github.lordraydenmk.superheroesapp.superheroes.data.superheroes
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
@@ -41,7 +46,7 @@ fun SuperheroesModule.loadSuperheroes(): Observable<SuperheroesViewState> =
         }
         .toObservable()
         .startWith(Loading)
-        .doOnError { Timber.e(it, "Error loading characters :/") }
+        .logOnError("Error in loadSuperheroes")
         .onErrorReturn { t ->
             when (t) {
                 is SuperheroException -> when (t.error) {

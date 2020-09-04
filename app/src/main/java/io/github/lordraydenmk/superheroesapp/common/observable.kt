@@ -1,10 +1,12 @@
 package io.github.lordraydenmk.superheroesapp.common
 
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.ReplaySubject
+import timber.log.Timber
 
 // Cached unit Observable
 val unit: Observable<Unit> = Observable.just(Unit)
@@ -52,3 +54,13 @@ fun <A> Observable<A>.evalOn(
 ): Observable<A> = unit.observeOn(scheduler)
     .flatMap { this }
     .observeOn(returnOn)
+
+/**
+ * Uses [Timber] to log when an error happens.
+ *
+ * This does NOT handle the error
+ */
+fun <A> Observable<A>.logOnError(msg: String? = null): Observable<A> =
+    onErrorResumeNext { t: Throwable ->
+        Completable.fromCallable { Timber.e(t, msg) }.andThen(Observable.error(t))
+    }
