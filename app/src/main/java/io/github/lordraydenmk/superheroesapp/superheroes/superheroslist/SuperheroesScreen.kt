@@ -6,10 +6,12 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import com.jakewharton.rxbinding3.view.clicks
 import io.github.lordraydenmk.superheroesapp.R
+import io.github.lordraydenmk.superheroesapp.common.Screen
 import io.github.lordraydenmk.superheroesapp.databinding.SuperheroesScreenBinding
+import io.reactivex.Completable
 import io.reactivex.Observable
 
-class SuperheroesScreen(container: ViewGroup) {
+class SuperheroesScreen(container: ViewGroup) : Screen<SuperheroesAction, SuperheroesViewState> {
 
     private val binding =
         SuperheroesScreenBinding.inflate(LayoutInflater.from(container.context), container)
@@ -23,12 +25,12 @@ class SuperheroesScreen(container: ViewGroup) {
         }
     }
 
-    val actions: Observable<SuperheroesAction> = Observable.merge(
+    override val actions: Observable<SuperheroesAction> = Observable.merge(
         binding.tvError.clicks().map { Refresh },
         superheroesAdapter.actions.map { LoadDetails(it) }
     )
 
-    fun bind(viewState: SuperheroesViewState) {
+    override fun bind(viewState: SuperheroesViewState): Completable = Completable.fromCallable {
         binding.groupSuperheroesContent.isVisible = viewState is Content
         binding.progressSuperheroes.isVisible = viewState is Loading
         binding.tvError.isVisible = viewState is Problem

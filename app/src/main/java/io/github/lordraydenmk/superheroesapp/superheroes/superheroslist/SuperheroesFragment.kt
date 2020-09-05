@@ -33,7 +33,7 @@ class SuperheroesFragment : Fragment(R.layout.superheroes_fragment) {
         with(module) {
             val renderObservable =
                 viewState.switchMap {
-                    Observable.fromCallable { screen.bind(it) }
+                    screen.bind(it).toObservable<Unit>()
                         .evalOn(AndroidSchedulers.mainThread())
                 }
 

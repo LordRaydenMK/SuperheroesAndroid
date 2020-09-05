@@ -17,7 +17,7 @@ class SuperheroesScreenTest {
     @Test
     fun loadingState_progressBarDisplayed() {
         val scenario = launchInContainer { parent -> SuperheroesScreen(parent) }
-        scenario.onView { view -> view.bind(Loading) }
+        scenario.onView { view -> view.bind(Loading).subscribe() }
 
         onView(withId(R.id.progressSuperheroes)).check(matches(isDisplayed()))
 
@@ -29,7 +29,9 @@ class SuperheroesScreenTest {
     @Test
     fun recoverableProblemState_errorViewDisplayedWithRetryText() {
         val scenario = launchInContainer { parent -> SuperheroesScreen(parent) }
-        scenario.onView { view -> view.bind(Problem(R.string.error_recoverable_network, true)) }
+        scenario.onView { view ->
+            view.bind(Problem(R.string.error_recoverable_network, true)).subscribe()
+        }
 
         onView(withId(R.id.tvError)).check(matches(isDisplayed()))
         onView(withId(R.id.tvError)).check(matches(withText("We could not connect to our server. Please check your internet connection \n\nTap to retry!")))
@@ -42,7 +44,9 @@ class SuperheroesScreenTest {
     @Test
     fun unrecoverableProblemState_errorViewDisplayed() {
         val scenario = launchInContainer { parent -> SuperheroesScreen(parent) }
-        scenario.onView { view -> view.bind(Problem(R.string.error_unrecoverable, false)) }
+        scenario.onView { view ->
+            view.bind(Problem(R.string.error_unrecoverable, false)).subscribe()
+        }
 
         onView(withId(R.id.tvError)).check(matches(isDisplayed()))
         onView(withId(R.id.tvError)).check(matches(withText("Ooops… Something went wrong!")))
@@ -66,7 +70,7 @@ class SuperheroesScreenTest {
         )
         val scenario = launchInContainer { parent -> SuperheroesScreen(parent) }
 
-        scenario.onView { view -> view.bind(viewState) }
+        scenario.onView { view -> view.bind(viewState).subscribe() }
 
         onView(withId(R.id.rvSuperheroes)).check(matches(isDisplayed()))
         onView(withId(R.id.copyrightLayout)).check(matches(withText("Copyright Marvel")))
