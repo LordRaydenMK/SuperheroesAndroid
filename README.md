@@ -2,9 +2,9 @@
 
 A sample project using the Marvel API to show a list of superheroes and some stats about them.
 
-![Superheroes List](/images/superheroes.png)
-![Superhero Details](/images/details.png)
-![Error Loading](/images/error.png)
+| Superheroes List | Superhero Details | Error & Retry |
+-------------------|-------------------|----------------
+|![Superheroes List](/images/superheroes.png) | ![Superhero Details](/images/details.png) | ![Error Loading](/images/error.png) |
 
 ## Marvel API KEY
 
