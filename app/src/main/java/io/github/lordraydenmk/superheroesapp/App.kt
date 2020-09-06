@@ -18,6 +18,7 @@ class App : Application() {
 
         // Enable RxJava assembly stack collection, to make RxJava crash reports clear and unique
         // Make sure this is called AFTER setting up any Crash reporting mechanism as Crashlytics
+        // See https://github.com/akaita/RxJava2Debug for more
         RxJava2Debug.enableRxJava2AssemblyTracking()
     }
 }
