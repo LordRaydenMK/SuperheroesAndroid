@@ -8,6 +8,7 @@ import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import okhttp3.logging.HttpLoggingInterceptor.Level
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 
@@ -48,7 +49,11 @@ interface AppModule : SuperheroesService {
         private val client = OkHttpClient.Builder()
             .addInterceptor(authInterceptor)
             .addInterceptor(userAgentInterceptor)
-            .addInterceptor(HttpLoggingInterceptor().apply { setLevel(HttpLoggingInterceptor.Level.BASIC) })
+            .apply {
+                if (BuildConfig.DEBUG) {
+                    addInterceptor(HttpLoggingInterceptor().apply { setLevel(Level.BASIC) })
+                }
+            }
             .build()
 
         private val contentType = "application/json".toMediaType()
