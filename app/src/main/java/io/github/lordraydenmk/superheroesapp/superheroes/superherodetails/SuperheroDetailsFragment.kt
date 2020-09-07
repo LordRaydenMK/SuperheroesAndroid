@@ -5,11 +5,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle.Event
 import androidx.navigation.fragment.findNavController
 import io.github.lordraydenmk.superheroesapp.AppModule
 import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.appModule
+import io.github.lordraydenmk.superheroesapp.common.EffectsObserver
 import io.github.lordraydenmk.superheroesapp.common.ViewModelAlgebra
 import io.github.lordraydenmk.superheroesapp.common.autoDispose
 import io.github.lordraydenmk.superheroesapp.common.evalOn
@@ -26,6 +26,15 @@ class SuperheroDetailsFragment : Fragment(R.layout.superhero_details_fragment) {
     }
 
     private val viewModel by viewModels<SuperheroDetailsViewModel>()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        lifecycle.addObserver(EffectsObserver(viewModel.effects) { effect ->
+            when (effect) {
+                NavigateUp -> findNavController().navigateUp()
+            }
+        })
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -51,16 +60,6 @@ class SuperheroDetailsFragment : Fragment(R.layout.superhero_details_fragment) {
                 .subscribe()
                 .autoDispose(viewLifecycleOwner.lifecycle)
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        viewModel.effects
-            .observeOn(AndroidSchedulers.mainThread())
-            .flatMap { Observable.fromCallable { findNavController().navigateUp() } }
-            .subscribe()
-            .autoDispose(lifecycle, Event.ON_STOP)
     }
 
     companion object {

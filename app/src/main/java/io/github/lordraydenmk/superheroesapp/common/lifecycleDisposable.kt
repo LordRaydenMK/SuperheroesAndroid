@@ -7,28 +7,21 @@ import androidx.lifecycle.LifecycleOwner
 import io.reactivex.disposables.Disposable
 
 /**
- * Holds a [Disposable] and disposes it at the [Lifecycle.Event] specified by [lifecycleEvent]
+ * Holds a [Disposable] and disposes it at [Lifecycle.Event.ON_DESTROY]
  *
  * Useful for handling [Disposable] in a [LifecycleOwner] like a Fragment or Activity
  */
 class LifecycleDisposable(
-    private val disposable: Disposable,
-    private val lifecycleEvent: Lifecycle.Event
+    private val disposable: Disposable
 ) : DefaultLifecycleObserver {
 
-    override fun onStop(owner: LifecycleOwner) {
-        if (lifecycleEvent == Lifecycle.Event.ON_STOP) disposable.dispose()
-        super.onStop(owner)
-    }
-
     override fun onDestroy(owner: LifecycleOwner) {
-        if (lifecycleEvent == Lifecycle.Event.ON_DESTROY) disposable.dispose()
+        disposable.dispose()
         super.onDestroy(owner)
     }
 }
 
 @MainThread
 fun Disposable.autoDispose(
-    lifecycle: Lifecycle,
-    lifecycleEvent: Lifecycle.Event = Lifecycle.Event.ON_DESTROY
-) = lifecycle.addObserver(LifecycleDisposable(this, lifecycleEvent))
+    lifecycle: Lifecycle
+) = lifecycle.addObserver(LifecycleDisposable(this))
