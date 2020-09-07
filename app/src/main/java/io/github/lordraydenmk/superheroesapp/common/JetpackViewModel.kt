@@ -1,6 +1,8 @@
 package io.github.lordraydenmk.superheroesapp.common
 
 import androidx.lifecycle.ViewModel
+import arrow.core.left
+import arrow.core.right
 import hu.akarnokd.rxjava2.subjects.UnicastWorkSubject
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -24,11 +26,16 @@ class JetpackViewModel<VS, E> : ViewModel(), ViewModelAlgebra<VS, E> {
 
     private val disposables = CompositeDisposable()
 
-    private val _viewState = BehaviorSubject.create<VS>()
+    private val _viewState = BehaviorSubject.createDefault<Option<VS>>(Unit.left())
     override val viewState: Observable<VS>
-        get() = _viewState
+        get() = _viewState.flatMap { stateOption ->
+            stateOption.fold({ Observable.never() }, { Observable.just(it) })
+        }
 
-    override fun setState(vs: VS): Completable = Completable.fromCallable { _viewState.onNext(vs) }
+    override fun isEmpty(): Observable<Boolean> = _viewState.map { it.isLeft() }
+
+    override fun setState(vs: VS): Completable =
+        Completable.fromCallable { _viewState.onNext(vs.right()) }
 
     private val _viewEffects = UnicastWorkSubject.create<E>()
     override val effects: Observable<E>

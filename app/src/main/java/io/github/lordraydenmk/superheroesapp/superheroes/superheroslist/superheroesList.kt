@@ -20,11 +20,15 @@ interface SuperheroesModule : AppModule, ViewModelAlgebra<SuperheroesViewState, 
 fun SuperheroesModule.program(actions: Observable<SuperheroesAction>): Observable<Unit> =
     actions.flatMap { action ->
         when (action) {
-            FirstLoad -> refreshSuperheroes()
             Refresh -> refreshSuperheroes()
             is LoadDetails -> runEffect(NavigateToDetails(action.id)).toObservable()
         }.fork(Schedulers.computation(), this::addToDisposable)
             .unit()
+    }.mergeWith(firstLoad())
+
+fun SuperheroesModule.firstLoad(): Observable<Unit> =
+    isEmpty().flatMap { empty ->
+        if (empty) refreshSuperheroes() else Observable.empty()
     }
 
 fun SuperheroesModule.refreshSuperheroes(): Observable<Unit> =

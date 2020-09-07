@@ -16,18 +16,24 @@ import io.reactivex.schedulers.Schedulers
 interface SuperheroDetailsModule : AppModule,
     ViewModelAlgebra<SuperheroDetailsViewState, SuperheroDetailsEffect>
 
-fun SuperheroDetailsModule.program(actions: Observable<SuperheroDetailsAction>): Observable<Unit> =
+fun SuperheroDetailsModule.program(
+    superheroId: SuperheroId,
+    actions: Observable<SuperheroDetailsAction>
+): Observable<Unit> =
     actions.flatMap { action ->
         when (action) {
-            is FirstLoad -> loadSuperheroes(action.superheroId)
-            is Refresh -> loadSuperheroes(action.superheroId)
+            is Refresh -> loadSuperhero(action.superheroId)
             Up -> runEffect(NavigateUp).toObservable()
         }.fork(Schedulers.computation(), this::addToDisposable)
             .unit()
+    }.mergeWith(firstLoad(superheroId))
+
+fun SuperheroDetailsModule.firstLoad(superheroId: SuperheroId): Observable<Unit> =
+    isEmpty().flatMap { empty ->
+        if (empty) loadSuperhero(superheroId) else Observable.empty()
     }
 
-
-fun SuperheroDetailsModule.loadSuperheroes(superheroId: SuperheroId): Observable<Unit> =
+fun SuperheroDetailsModule.loadSuperhero(superheroId: SuperheroId): Observable<Unit> =
     superheroDetails(superheroId)
         .map { (superhero, attribution) -> superhero.toViewEntity() to attribution }
         .map<SuperheroDetailsViewState> { Content(it.first, it.second) }

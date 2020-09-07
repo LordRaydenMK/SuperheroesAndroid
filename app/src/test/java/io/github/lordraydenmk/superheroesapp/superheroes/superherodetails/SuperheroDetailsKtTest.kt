@@ -52,7 +52,7 @@ class SuperheroDetailsKtTest : FunSpec({
         val module = module(service, viewModel)
 
         with(module) {
-            program(Observable.just(FirstLoad(42))).subscribe()
+            program(42, Observable.empty()).subscribe()
 
             val hulk = SuperheroDetailsViewEntity(
                 "Hulk",
@@ -78,7 +78,7 @@ class SuperheroDetailsKtTest : FunSpec({
         val module = module(service, viewModel)
 
         with(module) {
-            program(Observable.just(FirstLoad(42))).subscribe()
+            program(42, Observable.empty()).subscribe()
 
             viewModel.viewState
                 .test()
@@ -93,7 +93,7 @@ class SuperheroDetailsKtTest : FunSpec({
         val module = module(testSuperheroService(emptyList()), viewModel)
 
         with(module) {
-            program(Observable.just(Up)).subscribe()
+            program(42, Observable.just(Up)).subscribe()
 
             viewModel.effects
                 .test()

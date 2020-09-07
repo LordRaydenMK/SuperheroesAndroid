@@ -15,6 +15,9 @@ class TestViewModel<VS, E> : ViewModelAlgebra<VS, E> {
     override val viewState: Observable<VS>
         get() = _viewState
 
+    override fun isEmpty(): Observable<Boolean> =
+        Observable.fromCallable { _viewState.values.isEmpty() }
+
     override fun setState(vs: VS): Completable =
         Completable.fromCallable { _viewState.onNext(vs) }
 

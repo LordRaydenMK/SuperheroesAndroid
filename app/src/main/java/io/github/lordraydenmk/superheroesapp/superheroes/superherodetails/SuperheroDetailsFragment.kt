@@ -14,7 +14,6 @@ import io.github.lordraydenmk.superheroesapp.common.ViewModelAlgebra
 import io.github.lordraydenmk.superheroesapp.common.autoDispose
 import io.github.lordraydenmk.superheroesapp.common.evalOn
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroId
-import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 
 class SuperheroDetailsFragment : Fragment(R.layout.superhero_details_fragment) {
@@ -45,17 +44,13 @@ class SuperheroDetailsFragment : Fragment(R.layout.superhero_details_fragment) {
             ViewModelAlgebra<SuperheroDetailsViewState, SuperheroDetailsEffect> by viewModel {}
 
         with(module) {
-            val firstLoad = Observable.just(savedInstanceState == null)
-                .filter { it }
-                .map<SuperheroDetailsAction> { FirstLoad(superheroId) }
-
             val render = viewState.switchMap {
                 screen.bind(it)
                     .toObservable<Unit>()
                     .evalOn(AndroidSchedulers.mainThread())
             }
 
-            program(firstLoad.mergeWith(screen.actions))
+            program(superheroId, screen.actions)
                 .mergeWith(render)
                 .subscribe()
                 .autoDispose(viewLifecycleOwner.lifecycle)

@@ -14,7 +14,6 @@ import io.github.lordraydenmk.superheroesapp.common.ViewModelAlgebra
 import io.github.lordraydenmk.superheroesapp.common.autoDispose
 import io.github.lordraydenmk.superheroesapp.common.evalOn
 import io.github.lordraydenmk.superheroesapp.superheroes.superherodetails.SuperheroDetailsFragment
-import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 
 class SuperheroesFragment : Fragment(R.layout.superheroes_fragment) {
@@ -50,12 +49,7 @@ class SuperheroesFragment : Fragment(R.layout.superheroes_fragment) {
                         .evalOn(AndroidSchedulers.mainThread())
                 }
 
-            val firstLoadAction =
-                Observable.just(savedInstanceState == null)
-                    .filter { it }
-                    .map { FirstLoad }
-
-            program(Observable.merge(screen.actions, firstLoadAction))
+            program(screen.actions)
                 .mergeWith(renderObservable)
                 .subscribe()
                 .autoDispose(viewLifecycleOwner.lifecycle)

@@ -75,7 +75,8 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
-
+    def arrow = "0.10.5"
+    implementation "io.arrow-kt:arrow-core:$arrow"
 
     implementation 'com.jakewharton.timber:timber:4.7.1'
     implementation "io.coil-kt:coil:1.0.0-rc1"

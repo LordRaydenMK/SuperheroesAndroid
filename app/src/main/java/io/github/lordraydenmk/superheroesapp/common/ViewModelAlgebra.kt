@@ -20,6 +20,8 @@ interface ViewModelAlgebra<VS, E> {
 
     val viewState: Observable<VS>
 
+    fun isEmpty(): Observable<Boolean>
+
     fun setState(vs: VS): Completable
 
     val effects: Observable<E>

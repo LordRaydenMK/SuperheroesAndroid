@@ -25,6 +25,24 @@ class JetpackViewModelTest : FunSpec({
             .assertNotComplete()
     }
 
+    test("isEmpty - new view model - true") {
+        val viewModel = JetpackViewModel<String, Nothing>()
+
+        viewModel.isEmpty().test()
+            .assertValue(true)
+            .assertNotComplete()
+    }
+
+    test("isEmpty - view model with state - false") {
+        val viewModel = JetpackViewModel<String, Nothing>()
+
+        viewModel.setState("Hello world").subscribe()
+
+        viewModel.isEmpty().test()
+            .assertValue(false)
+            .assertNotComplete()
+    }
+
     test("runEffect - no subscribers - adds effect to queue") {
         val viewModel = JetpackViewModel<Nothing, String>()
 

@@ -55,7 +55,7 @@ class SuperheroesListKtTest : FunSpec({
             "Marvel rocks!"
         )
 
-        module.program(Observable.just(FirstLoad)).subscribe()
+        module.program(Observable.empty()).subscribe()
 
         viewModel.viewState.test()
             .awaitCount(2)
@@ -72,7 +72,7 @@ class SuperheroesListKtTest : FunSpec({
 
         val problem = Problem(R.string.error_unrecoverable, false)
 
-        module.program(Observable.just(FirstLoad)).subscribe()
+        module.program(Observable.empty()).subscribe()
 
         viewModel.viewState.test()
             .awaitCount(2)
@@ -100,7 +100,6 @@ class SuperheroesListKtTest : FunSpec({
 
         val actions = PublishSubject.create<SuperheroesAction>()
         module.program(actions).subscribe()
-        actions.onNext(FirstLoad)
 
         // Somehow this breaks Type Inference after adding rxjava2-extensions ¯\_(ツ)_/¯
         val test = viewModel.viewState.test()
