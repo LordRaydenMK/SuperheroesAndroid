@@ -79,7 +79,7 @@ dependencies {
     implementation "io.arrow-kt:arrow-core:$arrow"
 
     implementation 'com.jakewharton.timber:timber:4.7.1'
-    implementation "io.coil-kt:coil:1.0.0-rc1"
+    implementation "io.coil-kt:coil:1.1.0"
 
     implementation "io.reactivex.rxjava2:rxjava:2.2.20"
     implementation 'com.akaita.java:rxjava2-debug:1.4.0'
