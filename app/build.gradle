@@ -97,7 +97,7 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofit"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit"
     implementation "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.6.0"
-    implementation "org.jetbrains.kotlinx:kotlinx-serialization-core:1.0.0-RC"
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-core:1.0.1"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp"
 
     def kotest = "4.3.2"
