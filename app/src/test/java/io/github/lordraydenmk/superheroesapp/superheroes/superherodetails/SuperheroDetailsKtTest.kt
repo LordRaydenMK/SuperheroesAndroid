@@ -5,7 +5,7 @@ import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.common.ErrorTextRes
 import io.github.lordraydenmk.superheroesapp.common.PlaceholderString
 import io.github.lordraydenmk.superheroesapp.common.TestViewModel
-import io.github.lordraydenmk.superheroesapp.common.ViewModelAlgebra
+import io.github.lordraydenmk.superheroesapp.common.presentation.ViewModelAlgebra
 import io.github.lordraydenmk.superheroesapp.superheroes.data.ResourceList
 import io.github.lordraydenmk.superheroesapp.superheroes.data.SuperheroDto
 import io.github.lordraydenmk.superheroesapp.superheroes.data.SuperheroesService

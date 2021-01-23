@@ -1,4 +1,4 @@
-package io.github.lordraydenmk.superheroesapp.common
+package io.github.lordraydenmk.superheroesapp.common.rx
 
 import androidx.annotation.MainThread
 import androidx.lifecycle.DefaultLifecycleObserver

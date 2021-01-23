@@ -1,9 +1,10 @@
-package io.github.lordraydenmk.superheroesapp.common
+package io.github.lordraydenmk.superheroesapp.common.presentation
 
 import androidx.lifecycle.ViewModel
 import arrow.core.left
 import arrow.core.right
 import hu.akarnokd.rxjava2.subjects.UnicastWorkSubject
+import io.github.lordraydenmk.superheroesapp.common.Option
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -22,7 +23,7 @@ import io.reactivex.subjects.BehaviorSubject
  *
  * Note: there can be ONLY one subscriber for effects
  */
-class JetpackViewModel<VS, E> : ViewModel(), ViewModelAlgebra<VS, E> {
+class JetpackViewModel<VS : Any, E : Any> : ViewModel(), ViewModelAlgebra<VS, E> {
 
     private val disposables = CompositeDisposable()
 

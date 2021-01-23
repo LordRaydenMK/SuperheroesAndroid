@@ -1,4 +1,4 @@
-package io.github.lordraydenmk.superheroesapp.common
+package io.github.lordraydenmk.superheroesapp.common.presentation
 
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -16,7 +16,7 @@ import io.reactivex.disposables.Disposable
  *
  * @see [JetpackViewModel]
  */
-interface ViewModelAlgebra<VS, E> {
+interface ViewModelAlgebra<VS : Any, E : Any> {
 
     val viewState: Observable<VS>
 

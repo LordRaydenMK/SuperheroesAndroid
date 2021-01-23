@@ -7,7 +7,7 @@ import coil.load
 import com.jakewharton.rxbinding3.appcompat.navigationClicks
 import com.jakewharton.rxbinding3.view.clicks
 import io.github.lordraydenmk.superheroesapp.R
-import io.github.lordraydenmk.superheroesapp.common.Screen
+import io.github.lordraydenmk.superheroesapp.common.presentation.Screen
 import io.github.lordraydenmk.superheroesapp.common.setTextResource
 import io.github.lordraydenmk.superheroesapp.databinding.SuperheroDetailsScreenBinding
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroId

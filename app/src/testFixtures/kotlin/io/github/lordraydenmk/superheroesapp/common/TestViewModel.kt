@@ -1,5 +1,6 @@
 package io.github.lordraydenmk.superheroesapp.common
 
+import io.github.lordraydenmk.superheroesapp.common.presentation.ViewModelAlgebra
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -7,7 +8,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.subjects.ReplaySubject
 
-class TestViewModel<VS, E> : ViewModelAlgebra<VS, E> {
+class TestViewModel<VS : Any, E : Any> : ViewModelAlgebra<VS, E> {
 
     private val cd = CompositeDisposable()
 

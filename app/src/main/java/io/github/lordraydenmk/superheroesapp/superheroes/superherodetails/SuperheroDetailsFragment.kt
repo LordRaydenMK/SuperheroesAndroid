@@ -9,10 +9,10 @@ import androidx.navigation.fragment.findNavController
 import io.github.lordraydenmk.superheroesapp.AppModule
 import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.appModule
-import io.github.lordraydenmk.superheroesapp.common.EffectsObserver
-import io.github.lordraydenmk.superheroesapp.common.ViewModelAlgebra
-import io.github.lordraydenmk.superheroesapp.common.autoDispose
-import io.github.lordraydenmk.superheroesapp.common.evalOn
+import io.github.lordraydenmk.superheroesapp.common.presentation.ViewModelAlgebra
+import io.github.lordraydenmk.superheroesapp.common.rx.EffectsObserver
+import io.github.lordraydenmk.superheroesapp.common.rx.autoDispose
+import io.github.lordraydenmk.superheroesapp.common.rx.evalOn
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroId
 import io.reactivex.android.schedulers.AndroidSchedulers
 

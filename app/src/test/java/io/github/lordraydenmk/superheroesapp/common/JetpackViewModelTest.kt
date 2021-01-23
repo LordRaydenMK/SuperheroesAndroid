@@ -1,5 +1,6 @@
 package io.github.lordraydenmk.superheroesapp.common
 
+import io.github.lordraydenmk.superheroesapp.common.presentation.JetpackViewModel
 import io.kotest.core.spec.style.FunSpec
 
 class JetpackViewModelTest : FunSpec({

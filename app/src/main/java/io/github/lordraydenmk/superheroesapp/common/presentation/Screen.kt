@@ -1,4 +1,4 @@
-package io.github.lordraydenmk.superheroesapp.common
+package io.github.lordraydenmk.superheroesapp.common.presentation
 
 import io.reactivex.Completable
 import io.reactivex.Observable

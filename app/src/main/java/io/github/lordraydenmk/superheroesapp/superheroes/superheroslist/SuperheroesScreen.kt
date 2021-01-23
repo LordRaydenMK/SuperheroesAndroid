@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import com.jakewharton.rxbinding3.view.clicks
-import io.github.lordraydenmk.superheroesapp.common.Screen
+import io.github.lordraydenmk.superheroesapp.common.presentation.Screen
 import io.github.lordraydenmk.superheroesapp.common.setTextResource
 import io.github.lordraydenmk.superheroesapp.databinding.SuperheroesScreenBinding
 import io.reactivex.Completable

@@ -2,7 +2,12 @@ package io.github.lordraydenmk.superheroesapp.superheroes.superheroslist
 
 import io.github.lordraydenmk.superheroesapp.AppModule
 import io.github.lordraydenmk.superheroesapp.R
-import io.github.lordraydenmk.superheroesapp.common.*
+import io.github.lordraydenmk.superheroesapp.common.ErrorTextRes
+import io.github.lordraydenmk.superheroesapp.common.IdTextRes
+import io.github.lordraydenmk.superheroesapp.common.presentation.ViewModelAlgebra
+import io.github.lordraydenmk.superheroesapp.common.rx.fork
+import io.github.lordraydenmk.superheroesapp.common.rx.logOnError
+import io.github.lordraydenmk.superheroesapp.common.rx.unit
 import io.github.lordraydenmk.superheroesapp.superheroes.NetworkError
 import io.github.lordraydenmk.superheroesapp.superheroes.ServerError
 import io.github.lordraydenmk.superheroesapp.superheroes.SuperheroException
