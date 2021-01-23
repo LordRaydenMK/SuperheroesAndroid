@@ -51,8 +51,7 @@ class SuperheroesFragment : Fragment(R.layout.superheroes_fragment) {
 
             program(screen.actions)
                 .mergeWith(renderObservable)
-                .subscribe()
-                .autoDispose(viewLifecycleOwner.lifecycle)
+                .autoDispose(viewLifecycleOwner)
         }
     }
 }

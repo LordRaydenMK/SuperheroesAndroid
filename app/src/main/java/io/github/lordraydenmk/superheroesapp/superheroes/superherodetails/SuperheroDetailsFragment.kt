@@ -52,8 +52,7 @@ class SuperheroDetailsFragment : Fragment(R.layout.superhero_details_fragment) {
 
             program(superheroId, screen.actions)
                 .mergeWith(render)
-                .subscribe()
-                .autoDispose(viewLifecycleOwner.lifecycle)
+                .autoDispose(viewLifecycleOwner)
         }
     }
 

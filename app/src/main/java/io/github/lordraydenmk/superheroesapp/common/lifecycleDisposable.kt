@@ -4,6 +4,8 @@ import androidx.annotation.MainThread
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 
 /**
@@ -22,6 +24,11 @@ class LifecycleDisposable(
 }
 
 @MainThread
-fun Disposable.autoDispose(
-    lifecycle: Lifecycle
-) = lifecycle.addObserver(LifecycleDisposable(this))
+fun Completable.autoDispose(
+    lifecycleOwner: LifecycleOwner
+): Unit = lifecycleOwner.lifecycle.addObserver(LifecycleDisposable(subscribe()))
+
+@MainThread
+fun <A : Any> Observable<A>.autoDispose(
+    lifecycleOwner: LifecycleOwner
+): Unit = ignoreElements().autoDispose(lifecycleOwner)
