@@ -2,10 +2,7 @@ package io.github.lordraydenmk.superheroesapp.superheroes.superheroslist
 
 import io.github.lordraydenmk.superheroesapp.AppModule
 import io.github.lordraydenmk.superheroesapp.R
-import io.github.lordraydenmk.superheroesapp.common.ViewModelAlgebra
-import io.github.lordraydenmk.superheroesapp.common.fork
-import io.github.lordraydenmk.superheroesapp.common.logOnError
-import io.github.lordraydenmk.superheroesapp.common.unit
+import io.github.lordraydenmk.superheroesapp.common.*
 import io.github.lordraydenmk.superheroesapp.superheroes.NetworkError
 import io.github.lordraydenmk.superheroesapp.superheroes.ServerError
 import io.github.lordraydenmk.superheroesapp.superheroes.SuperheroException
@@ -53,10 +50,10 @@ fun SuperheroesModule.loadSuperheroes(): Observable<SuperheroesViewState> =
         .onErrorReturn { t ->
             when (t) {
                 is SuperheroException -> when (t.error) {
-                    is NetworkError -> Problem(R.string.error_recoverable_network, true)
-                    is ServerError -> Problem(R.string.error_recoverable_server, true)
-                    is Unrecoverable -> Problem(R.string.error_unrecoverable, false)
+                    is NetworkError -> Problem(ErrorTextRes(R.string.error_recoverable_network))
+                    is ServerError -> Problem(ErrorTextRes(R.string.error_recoverable_server))
+                    is Unrecoverable -> Problem(IdTextRes(R.string.error_unrecoverable))
                 }
-                else -> Problem(R.string.error_unrecoverable, false)
+                else -> Problem(IdTextRes(R.string.error_unrecoverable))
             }
         }

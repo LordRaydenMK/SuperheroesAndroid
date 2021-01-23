@@ -2,10 +2,7 @@ package io.github.lordraydenmk.superheroesapp.superheroes.superheroslist
 
 import io.github.lordraydenmk.superheroesapp.AppModule
 import io.github.lordraydenmk.superheroesapp.R
-import io.github.lordraydenmk.superheroesapp.common.Paginated
-import io.github.lordraydenmk.superheroesapp.common.PaginatedEnvelope
-import io.github.lordraydenmk.superheroesapp.common.TestViewModel
-import io.github.lordraydenmk.superheroesapp.common.ViewModelAlgebra
+import io.github.lordraydenmk.superheroesapp.common.*
 import io.github.lordraydenmk.superheroesapp.superheroes.data.ResourceList
 import io.github.lordraydenmk.superheroesapp.superheroes.data.SuperheroDto
 import io.github.lordraydenmk.superheroesapp.superheroes.data.SuperheroesService
@@ -70,7 +67,7 @@ class SuperheroesListKtTest : FunSpec({
         val viewModel = TestViewModel<SuperheroesViewState, SuperheroesEffect>()
         val module = testModule(service, viewModel)
 
-        val problem = Problem(R.string.error_unrecoverable, false)
+        val problem = Problem(IdTextRes(R.string.error_unrecoverable))
 
         module.program(Observable.empty()).subscribe()
 

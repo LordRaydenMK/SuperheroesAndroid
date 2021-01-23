@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import com.jakewharton.rxbinding3.view.clicks
-import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.common.Screen
+import io.github.lordraydenmk.superheroesapp.common.setTextResource
 import io.github.lordraydenmk.superheroesapp.databinding.SuperheroesScreenBinding
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -48,12 +48,7 @@ class SuperheroesScreen(container: ViewGroup) : Screen<SuperheroesAction, Superh
     }
 
     private fun bindErrorView(viewState: Problem) = with(binding) {
-        if (viewState.recoverable) {
-            val retryText = tvError.resources.getString(R.string.error_retry_text)
-            tvError.text = tvError.resources.getString(viewState.stringId, retryText)
-        } else {
-            tvError.setText(viewState.stringId)
-        }
-        tvError.isClickable = viewState.recoverable
+        tvError.setTextResource(viewState.stringId)
+        tvError.isClickable = viewState.isRecoverable
     }
 }
