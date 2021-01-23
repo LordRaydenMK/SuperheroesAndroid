@@ -40,17 +40,17 @@ fun SuperheroDetailsModule.loadSuperhero(superheroId: SuperheroId): Observable<U
         .toObservable()
         .startWith(Loading)
         .logOnError("Error in loadSuperheroes $superheroId")
-        .onErrorReturn { t -> t.toProblem(superheroId) }
+        .onErrorReturn { t -> t.toProblem() }
         .flatMapCompletable { setState(it) }
         .toObservable()
 
-private fun Throwable.toProblem(superheroId: SuperheroId): Problem = when (this) {
+private fun Throwable.toProblem(): Problem = when (this) {
     is SuperheroException -> when (error) {
-        is NetworkError -> Problem(R.string.error_recoverable_network, Refresh(superheroId))
-        is ServerError -> Problem(R.string.error_recoverable_server, Refresh(superheroId))
-        is Unrecoverable -> Problem(R.string.error_unrecoverable, null)
+        is NetworkError -> Problem(ErrorTextRes(R.string.error_recoverable_network))
+        is ServerError -> Problem(ErrorTextRes(R.string.error_recoverable_server))
+        is Unrecoverable -> Problem(IdTextRes(R.string.error_unrecoverable))
     }
-    else -> Problem(R.string.error_unrecoverable, null)
+    else -> Problem(IdTextRes(R.string.error_unrecoverable))
 }
 
 private fun Superhero.toViewEntity(): SuperheroDetailsViewEntity =

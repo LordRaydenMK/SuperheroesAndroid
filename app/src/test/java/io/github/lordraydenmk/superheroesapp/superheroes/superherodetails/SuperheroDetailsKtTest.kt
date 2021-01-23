@@ -2,6 +2,7 @@ package io.github.lordraydenmk.superheroesapp.superheroes.superherodetails
 
 import io.github.lordraydenmk.superheroesapp.AppModule
 import io.github.lordraydenmk.superheroesapp.R
+import io.github.lordraydenmk.superheroesapp.common.ErrorTextRes
 import io.github.lordraydenmk.superheroesapp.common.PlaceholderString
 import io.github.lordraydenmk.superheroesapp.common.TestViewModel
 import io.github.lordraydenmk.superheroesapp.common.ViewModelAlgebra
@@ -84,7 +85,7 @@ class SuperheroDetailsKtTest : FunSpec({
                 .test()
                 .awaitCount(2)
                 .assertValueAt(0, Loading)
-                .assertValueAt(1, Problem(R.string.error_recoverable_network, Refresh(42)))
+                .assertValueAt(1, Problem(ErrorTextRes(R.string.error_recoverable_network)))
         }
     }
 

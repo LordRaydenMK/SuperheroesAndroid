@@ -6,6 +6,8 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import io.github.lordraydenmk.superheroesapp.ScreenScenario.Companion.launchInContainer
+import io.github.lordraydenmk.superheroesapp.common.ErrorTextRes
+import io.github.lordraydenmk.superheroesapp.common.IdTextRes
 import io.github.lordraydenmk.superheroesapp.common.PlaceholderString
 import io.github.lordraydenmk.superheroesapp.superheroes.superherodetails.*
 import okhttp3.HttpUrl.Companion.toHttpUrl
@@ -47,12 +49,7 @@ class SuperheroDetailsScreenTest {
     fun recoverableProblemState_errorViewDisplayedWithRetryText() {
         val scenario = launchInDecoratedContainer()
         scenario.onView { view ->
-            view.bind(
-                Problem(
-                    R.string.error_recoverable_network,
-                    Refresh(42)
-                )
-            ).subscribe()
+            view.bind(Problem(ErrorTextRes(R.string.error_recoverable_network))).subscribe()
         }
 
         onView(withId(R.id.tvError)).check(matches(isDisplayed()))
@@ -71,7 +68,7 @@ class SuperheroDetailsScreenTest {
     fun unrecoverableProblemState_errorViewDisplayed() {
         val scenario = launchInDecoratedContainer()
         scenario.onView { view ->
-            view.bind(Problem(R.string.error_unrecoverable, null)).subscribe()
+            view.bind(Problem(IdTextRes(R.string.error_unrecoverable))).subscribe()
         }
 
         onView(withId(R.id.tvError)).check(matches(isDisplayed()))

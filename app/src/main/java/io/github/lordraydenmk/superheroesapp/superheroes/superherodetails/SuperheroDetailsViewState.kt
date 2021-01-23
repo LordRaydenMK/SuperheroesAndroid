@@ -1,7 +1,8 @@
 package io.github.lordraydenmk.superheroesapp.superheroes.superherodetails
 
-import androidx.annotation.StringRes
+import io.github.lordraydenmk.superheroesapp.common.ErrorTextRes
 import io.github.lordraydenmk.superheroesapp.common.PlaceholderString
+import io.github.lordraydenmk.superheroesapp.common.TextRes
 import okhttp3.HttpUrl
 
 data class SuperheroDetailsViewEntity(
@@ -22,6 +23,7 @@ data class Content(
     val attribution: String
 ) : SuperheroDetailsViewState()
 
-data class Problem(
-    @StringRes val stringId: Int, val action: SuperheroDetailsAction?
-) : SuperheroDetailsViewState()
+data class Problem(val stringId: TextRes) : SuperheroDetailsViewState()
+
+val Problem.isRecoverable: Boolean
+    get() = stringId is ErrorTextRes
