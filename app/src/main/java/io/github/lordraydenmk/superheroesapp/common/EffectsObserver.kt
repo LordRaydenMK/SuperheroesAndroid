@@ -9,7 +9,7 @@ import io.reactivex.disposables.Disposable
  * Observers effects [effects] between onStart and onStop and executes them in a safe environment
  * using [executeEffect]
  */
-class EffectsObserver<E>(
+class EffectsObserver<E : Any>(
     private val effects: Observable<E>,
     private val executeEffect: (E) -> Unit
 ) : DefaultLifecycleObserver {

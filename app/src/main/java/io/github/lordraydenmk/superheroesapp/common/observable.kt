@@ -12,9 +12,9 @@ import timber.log.Timber
 val unit: Observable<Unit> = Observable.just(Unit)
 
 // Ignore output
-fun <A> Observable<A>.unit(): Observable<Unit> = flatMap { unit }
+fun <A : Any> Observable<A>.unit(): Observable<Unit> = flatMap { unit }
 
-data class ObservableFiber<A>(val join: Observable<A>, val cancel: Disposable)
+data class ObservableFiber<A : Any>(val join: Observable<A>, val cancel: Disposable)
 
 /**
  * Fork an [Observable] to run within its own [ObservableFiber].
@@ -25,7 +25,7 @@ data class ObservableFiber<A>(val join: Observable<A>, val cancel: Disposable)
  *
  * Source: https://github.com/47degrees/FunctionalStreamsSpringSample/blob/d79ef70e3ba11d8fda86466891d405c02a409472/StreamingAppDemo/app/src/main/java/com/fortyseven/degrees/streamingapp/predef.kt#L32
  */
-fun <A> Observable<A>.fork(
+fun <A : Any> Observable<A>.fork(
     scheduler: Scheduler,
     addToDisposable: (Disposable) -> Unit
 ): Observable<ObservableFiber<A>> =
@@ -48,7 +48,7 @@ fun <A> Observable<A>.fork(
  *
  *  Source: https://github.com/47degrees/FunctionalStreamsSpringSample/blob/d79ef70e3ba11d8fda86466891d405c02a409472/StreamingAppDemo/app/src/main/java/com/fortyseven/degrees/streamingapp/predef.kt#L71
  */
-fun <A> Observable<A>.evalOn(
+fun <A : Any> Observable<A>.evalOn(
     scheduler: Scheduler,
     returnOn: Scheduler = Schedulers.computation()
 ): Observable<A> = unit.observeOn(scheduler)
@@ -60,7 +60,7 @@ fun <A> Observable<A>.evalOn(
  *
  * This does NOT handle the error
  */
-fun <A> Observable<A>.logOnError(msg: String? = null): Observable<A> =
+fun <A : Any> Observable<A>.logOnError(msg: String? = null): Observable<A> =
     onErrorResumeNext { t: Throwable ->
         Completable.fromCallable { Timber.e(t, msg) }.andThen(Observable.error(t))
     }
