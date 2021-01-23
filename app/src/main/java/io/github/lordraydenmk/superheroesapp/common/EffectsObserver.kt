@@ -3,7 +3,7 @@ package io.github.lordraydenmk.superheroesapp.common
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import io.reactivex.Observable
-import io.reactivex.disposables.Disposable
+import io.reactivex.subjects.PublishSubject
 
 /**
  * Observers effects [effects] between onStart and onStop and executes them in a safe environment
@@ -14,17 +14,20 @@ class EffectsObserver<E : Any>(
     private val executeEffect: (E) -> Unit
 ) : DefaultLifecycleObserver {
 
-    private var disposable: Disposable? = null
+    private val effectObs: (E) -> Observable<Unit> =
+        { value: E -> Observable.fromCallable { executeEffect(value) } }
+
+    private val stopRelay: PublishSubject<Any> = PublishSubject.create()
 
     override fun onStart(owner: LifecycleOwner) {
         super.onStart(owner)
-        disposable = effects.flatMap {
-            Observable.fromCallable { executeEffect(it) }
-        }.subscribe()
+        effects.flatMap(effectObs)
+            .takeUntil(stopRelay)
+            .subscribe()
     }
 
     override fun onStop(owner: LifecycleOwner) {
-        disposable!!.dispose()
+        stopRelay.onNext(Unit)
         super.onStop(owner)
     }
 }
