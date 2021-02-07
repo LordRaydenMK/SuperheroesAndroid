@@ -16,14 +16,16 @@ import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.rx2.asObservable
+import kotlinx.coroutines.rx2.await
 
 interface SuperheroesModule : AppModule, ViewModelAlgebra<SuperheroesViewState, SuperheroesEffect>
 
 fun SuperheroesModule.program(actions: Observable<SuperheroesAction>): Observable<Unit> =
     actions.flatMap { action ->
         when (action) {
-            Refresh -> refreshSuperheroes()
+            Refresh -> refreshSuperheroes().asObservable()
             is LoadDetails -> runEffect(NavigateToDetails(action.id)).toObservable()
         }.fork(Schedulers.computation(), this::addToDisposable)
             .unit()
@@ -31,13 +33,12 @@ fun SuperheroesModule.program(actions: Observable<SuperheroesAction>): Observabl
 
 fun SuperheroesModule.firstLoad(): Observable<Unit> =
     isEmpty().flatMap { empty ->
-        if (empty) refreshSuperheroes() else Observable.empty()
+        if (empty) refreshSuperheroes().asObservable() else Observable.empty()
     }
 
-fun SuperheroesModule.refreshSuperheroes(): Observable<Unit> =
-    loadSuperheroes().asObservable()
-        .flatMapCompletable { setState(it) }
-        .andThen(unit)
+fun SuperheroesModule.refreshSuperheroes(): Flow<Unit> =
+    loadSuperheroes()
+        .map { setState(it).await() }
 
 fun SuperheroesModule.loadSuperheroes(): Flow<SuperheroesViewState> = flow {
     emit(Loading)
