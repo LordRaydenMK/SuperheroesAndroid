@@ -1,5 +1,6 @@
 package io.github.lordraydenmk.superheroesapp.superheroes.data
 
+import arrow.core.identity
 import io.github.lordraydenmk.superheroesapp.superheroes.NetworkError
 import io.github.lordraydenmk.superheroesapp.superheroes.ServerError
 import io.github.lordraydenmk.superheroesapp.superheroes.SuperheroException
@@ -14,15 +15,11 @@ import kotlinx.coroutines.rx2.rxSingle
 import retrofit2.HttpException
 import java.io.IOException
 
-fun SuperheroesService.superheroes(): Single<Superheroes> =
-    rxSingle { getSuperheroes() }
-        .observeOn(Schedulers.computation())
-        .onErrorResumeNext(::refineError)
-        .map { Pair(it.data.results, it.attributionText) }
-        .map { (superheroDtos, attributionText) ->
-            val superheroes = superheroDtos.map { it.toDomain() }
-            Superheroes(superheroes, attributionText)
-        }
+suspend fun SuperheroesService.superheroes(): Superheroes {
+    val superheroesDto = runRefineError { getSuperheroes() }
+    val superheroes = superheroesDto.data.results.map { it.toDomain() }
+    return Superheroes(superheroes, superheroesDto.attributionText)
+}
 
 fun SuperheroesService.superheroDetails(id: SuperheroId): Single<SuperheroDetails> =
     rxSingle { getSuperheroDetails(id) }
@@ -63,4 +60,27 @@ private fun <A> refineError(throwable: Throwable): Single<A> = when (throwable) 
     }
     is IOException -> Single.error(SuperheroException(NetworkError(throwable)))
     else -> Single.error(SuperheroException(Unrecoverable(throwable)))
+}
+
+private suspend fun <A> runRefineError(f: suspend () -> A): A {
+    val result = runCatching { f() }
+    return result.fold(::identity, handleError())
+}
+
+private fun handleError() = { throwable: Throwable ->
+    val refined = when (throwable) {
+        is HttpException ->
+            when (throwable.code()) {
+                in 500..599 -> SuperheroException(
+                    ServerError(
+                        throwable.code(),
+                        throwable.message()
+                    )
+                )
+                else -> SuperheroException(Unrecoverable(throwable))
+            }
+        is IOException -> SuperheroException(NetworkError(throwable))
+        else -> SuperheroException(Unrecoverable(throwable))
+    }
+    throw refined
 }

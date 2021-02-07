@@ -7,6 +7,7 @@ import io.github.lordraydenmk.superheroesapp.superheroes.domain.Superhero
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroDetails
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.Superheroes
 import io.kotest.core.spec.style.FunSpec
+import kotlinx.coroutines.rx2.rxSingle
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.HttpException
@@ -37,7 +38,7 @@ class SuperheroesKtTest : FunSpec({
             Resource(3),
             Resource(4)
         )
-        service.superheroes()
+        rxSingle { service.superheroes() }
             .test()
             .awaitCount(1)
             .assertValue(Superheroes(listOf(hulk), "Marvel rocks!"))
@@ -48,7 +49,7 @@ class SuperheroesKtTest : FunSpec({
         val exception = HttpException(Response.error<PaginatedEnvelope<SuperheroDto>>(500, body))
         val service = testSuperheroService(exception)
 
-        service.superheroes()
+        rxSingle { service.superheroes() }
             .test()
             .awaitCount(1)
             .assertError {
@@ -61,7 +62,7 @@ class SuperheroesKtTest : FunSpec({
         val exception = IOException("No Internet!")
         val service = testSuperheroService(exception)
 
-        service.superheroes()
+        rxSingle { service.superheroes() }
             .test()
             .awaitCount(1)
             .assertError {
@@ -74,7 +75,7 @@ class SuperheroesKtTest : FunSpec({
         val exception = RuntimeException("Bang!")
         val service = testSuperheroService(exception)
 
-        service.superheroes()
+        rxSingle { service.superheroes() }
             .test()
             .awaitCount(1)
             .assertError {
