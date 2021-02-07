@@ -15,6 +15,7 @@ import io.github.lordraydenmk.superheroesapp.superheroes.Unrecoverable
 import io.github.lordraydenmk.superheroesapp.superheroes.data.superheroes
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.rx2.rxSingle
 import timber.log.Timber
 
 interface SuperheroesModule : AppModule, ViewModelAlgebra<SuperheroesViewState, SuperheroesEffect>
@@ -39,7 +40,7 @@ fun SuperheroesModule.refreshSuperheroes(): Observable<Unit> =
         .andThen(unit)
 
 fun SuperheroesModule.loadSuperheroes(): Observable<SuperheroesViewState> =
-    superheroes()
+    rxSingle { superheroes() }
         .map { (superheroes, attributionText) ->
             superheroes.map {
                 SuperheroViewEntity(it.id, it.name, it.thumbnail)
