@@ -10,11 +10,12 @@ import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroId
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.Superheroes
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.rx2.rxSingle
 import retrofit2.HttpException
 import java.io.IOException
 
 fun SuperheroesService.superheroes(): Single<Superheroes> =
-    getSuperheroes()
+    rxSingle { getSuperheroes() }
         .observeOn(Schedulers.computation())
         .onErrorResumeNext(::refineError)
         .map { Pair(it.data.results, it.attributionText) }
@@ -24,7 +25,7 @@ fun SuperheroesService.superheroes(): Single<Superheroes> =
         }
 
 fun SuperheroesService.superheroDetails(id: SuperheroId): Single<SuperheroDetails> =
-    getSuperheroDetails(id)
+    rxSingle { getSuperheroDetails(id) }
         .observeOn(Schedulers.computation())
         .onErrorResumeNext(::refineError)
         .map { Pair(it.data.results.first().toDomain(), it.attributionText) }

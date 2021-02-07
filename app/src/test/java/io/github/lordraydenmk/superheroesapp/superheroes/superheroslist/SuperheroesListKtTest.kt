@@ -15,7 +15,6 @@ import io.github.lordraydenmk.superheroesapp.superheroes.testSuperheroService
 import io.kotest.assertions.fail
 import io.kotest.core.spec.style.FunSpec
 import io.reactivex.Observable
-import io.reactivex.Single
 import io.reactivex.subjects.PublishSubject
 import okhttp3.HttpUrl.Companion.toHttpUrl
 
@@ -86,13 +85,13 @@ class SuperheroesListKtTest : FunSpec({
         val superhero = superheroDto(42, "Ant Man", "https://antman", "jpg")
         val service = object : SuperheroesService {
             var i = 0
-            override fun getSuperheroes(): Single<PaginatedEnvelope<SuperheroDto>> = when (i) {
-                0 -> Single.error(error)
-                1 -> Single.just(PaginatedEnvelope(200, "Marvel", Paginated(listOf(superhero))))
+            override suspend fun getSuperheroes(): PaginatedEnvelope<SuperheroDto> = when (i++) {
+                0 -> throw error
+                1 -> PaginatedEnvelope(200, "Marvel", Paginated(listOf(superhero)))
                 else -> throw IllegalStateException("This should not happen")
-            }.also { i++ }
+            }
 
-            override fun getSuperheroDetails(characterId: Long): Single<PaginatedEnvelope<SuperheroDto>> =
+            override suspend fun getSuperheroDetails(characterId: Long): PaginatedEnvelope<SuperheroDto> =
                 fail("This should not be called")
         }
 
