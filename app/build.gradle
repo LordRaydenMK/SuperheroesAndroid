@@ -80,7 +80,7 @@ dependencies {
     implementation 'com.jakewharton.timber:timber:4.7.1'
     implementation "io.coil-kt:coil:1.1.1"
 
-    implementation "io.reactivex.rxjava2:rxjava:2.2.20"
+    implementation "io.reactivex.rxjava2:rxjava:2.2.21"
     implementation 'com.akaita.java:rxjava2-debug:1.4.0'
     implementation "io.reactivex.rxjava2:rxkotlin:2.4.0"
     implementation "com.github.akarnokd:rxjava2-extensions:0.20.10"
