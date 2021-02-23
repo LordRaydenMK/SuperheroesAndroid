@@ -3,6 +3,7 @@ package io.github.lordraydenmk.superheroesapp.common.presentation
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
+import kotlinx.coroutines.CoroutineScope
 
 /**
  * Defines the algebra (set of operations) for a ViewModel
@@ -19,6 +20,8 @@ import io.reactivex.disposables.Disposable
 interface ViewModelAlgebra<VS : Any, E : Any> {
 
     val viewState: Observable<VS>
+
+    val scope: CoroutineScope
 
     fun isEmpty(): Observable<Boolean>
 

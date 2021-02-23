@@ -15,6 +15,8 @@ import io.github.lordraydenmk.superheroesapp.common.rx.autoDispose
 import io.github.lordraydenmk.superheroesapp.common.rx.evalOn
 import io.github.lordraydenmk.superheroesapp.superheroes.superherodetails.SuperheroDetailsFragment
 import io.reactivex.android.schedulers.AndroidSchedulers
+import kotlinx.coroutines.rx2.asFlow
+import kotlinx.coroutines.rx2.asObservable
 
 class SuperheroesFragment : Fragment(R.layout.superheroes_fragment) {
 
@@ -49,7 +51,8 @@ class SuperheroesFragment : Fragment(R.layout.superheroes_fragment) {
                         .evalOn(AndroidSchedulers.mainThread())
                 }
 
-            program(screen.actions)
+            program(screen.actions.asFlow())
+                .asObservable()
                 .mergeWith(renderObservable)
                 .autoDispose(viewLifecycleOwner)
         }

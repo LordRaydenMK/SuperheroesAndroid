@@ -7,6 +7,8 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.subjects.ReplaySubject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 
 class TestViewModel<VS : Any, E : Any> : ViewModelAlgebra<VS, E> {
 
@@ -15,6 +17,8 @@ class TestViewModel<VS : Any, E : Any> : ViewModelAlgebra<VS, E> {
     private val _viewState = ReplaySubject.create<VS>()
     override val viewState: Observable<VS>
         get() = _viewState
+
+    override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
     override fun isEmpty(): Observable<Boolean> =
         Observable.fromCallable { _viewState.values.isEmpty() }

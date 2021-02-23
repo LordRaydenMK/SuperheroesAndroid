@@ -1,6 +1,7 @@
 package io.github.lordraydenmk.superheroesapp.common.presentation
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import arrow.core.left
 import arrow.core.right
 import hu.akarnokd.rxjava2.subjects.UnicastWorkSubject
@@ -11,6 +12,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.subjects.BehaviorSubject
+import kotlinx.coroutines.CoroutineScope
 
 /**
  * A [ViewModelAlgebra] implemented using [ViewModel] from Jetpack
@@ -32,6 +34,9 @@ class JetpackViewModel<VS : Any, E : Any> : ViewModel(), ViewModelAlgebra<VS, E>
         get() = _viewState.flatMap { stateOption ->
             stateOption.fold({ Observable.never() }, { Observable.just(it) })
         }
+
+    override val scope: CoroutineScope
+        get() = viewModelScope
 
     override fun isEmpty(): Observable<Boolean> = _viewState.map { it.isLeft() }
 
