@@ -14,8 +14,11 @@ import io.github.lordraydenmk.superheroesapp.superheroes.data.ThumbnailDto
 import io.github.lordraydenmk.superheroesapp.superheroes.testSuperheroService
 import io.kotest.assertions.fail
 import io.kotest.core.spec.style.FunSpec
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.rx2.asObservable
 import okhttp3.HttpUrl.Companion.toHttpUrl
 
 class SuperheroesListKtTest : FunSpec({
@@ -55,7 +58,7 @@ class SuperheroesListKtTest : FunSpec({
             "Marvel rocks!"
         )
 
-        module.program(Observable.empty()).subscribe()
+        module.program(emptyFlow()).collect()
 
         viewModel.viewState.test()
             .awaitCount(2)
@@ -72,7 +75,7 @@ class SuperheroesListKtTest : FunSpec({
 
         val problem = Problem(IdTextRes(R.string.error_unrecoverable))
 
-        module.program(Observable.empty()).subscribe()
+        module.program(emptyFlow()).collect()
 
         viewModel.viewState.test()
             .awaitCount(2)
@@ -98,8 +101,8 @@ class SuperheroesListKtTest : FunSpec({
         val viewModel = TestViewModel<SuperheroesViewState, SuperheroesEffect>()
         val module = testModule(service, viewModel)
 
-        val actions = PublishSubject.create<SuperheroesAction>()
-        module.program(actions).subscribe()
+        val actions = MutableSharedFlow<SuperheroesAction>()
+        module.program(actions).asObservable().subscribe()
 
         // Somehow this breaks Type Inference after adding rxjava2-extensions ¯\_(ツ)_/¯
         val test = viewModel.viewState.test()
@@ -108,7 +111,7 @@ class SuperheroesListKtTest : FunSpec({
             .assertValueAt(0, Loading)
             .assertValueAt(1) { it is Problem }
 
-        actions.onNext(Refresh)
+        actions.emit(Refresh)
 
         test.awaitCount(4)
             .assertValueAt(2, Loading)
@@ -121,7 +124,7 @@ class SuperheroesListKtTest : FunSpec({
         val module = testModule(testSuperheroService(emptyList()), viewModel)
 
         with(module) {
-            program(Observable.just(LoadDetails(42))).subscribe()
+            program(flowOf(LoadDetails(42))).collect()
         }
 
         viewModel.effects.test()

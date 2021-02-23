@@ -4,37 +4,43 @@ import io.github.lordraydenmk.superheroesapp.AppModule
 import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.common.ErrorTextRes
 import io.github.lordraydenmk.superheroesapp.common.IdTextRes
+import io.github.lordraydenmk.superheroesapp.common.fork
 import io.github.lordraydenmk.superheroesapp.common.presentation.ViewModelAlgebra
-import io.github.lordraydenmk.superheroesapp.common.rx.fork
-import io.github.lordraydenmk.superheroesapp.common.rx.unit
+import io.github.lordraydenmk.superheroesapp.common.unit
 import io.github.lordraydenmk.superheroesapp.superheroes.NetworkError
 import io.github.lordraydenmk.superheroesapp.superheroes.ServerError
 import io.github.lordraydenmk.superheroesapp.superheroes.SuperheroException
 import io.github.lordraydenmk.superheroesapp.superheroes.Unrecoverable
 import io.github.lordraydenmk.superheroesapp.superheroes.data.superheroes
-import io.reactivex.Observable
-import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.rx2.asObservable
+import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.rx2.asFlow
 import kotlinx.coroutines.rx2.await
 
 interface SuperheroesModule : AppModule, ViewModelAlgebra<SuperheroesViewState, SuperheroesEffect>
 
-fun SuperheroesModule.program(actions: Observable<SuperheroesAction>): Observable<Unit> =
-    actions.flatMap { action ->
+fun SuperheroesModule.program(actions: Flow<SuperheroesAction>): Flow<Unit> {
+    val flow = actions.flatMapMerge { action ->
         when (action) {
-            Refresh -> refreshSuperheroes().asObservable()
-            is LoadDetails -> runEffect(NavigateToDetails(action.id)).toObservable()
-        }.fork(Schedulers.computation(), this::addToDisposable)
+            Refresh -> refreshSuperheroes()
+            is LoadDetails -> runEffect(NavigateToDetails(action.id)).toObservable<Unit>().asFlow()
+        }.fork(Dispatchers.Default, scope)
             .unit()
-    }.mergeWith(firstLoad())
-
-fun SuperheroesModule.firstLoad(): Observable<Unit> =
-    isEmpty().flatMap { empty ->
-        if (empty) refreshSuperheroes().asObservable() else Observable.empty()
     }
+
+    return merge(firstLoad(), flow)
+}
+
+fun SuperheroesModule.firstLoad(): Flow<Unit> =
+    isEmpty().asFlow()
+        .flatMapMerge { empty ->
+            if (empty) refreshSuperheroes() else emptyFlow()
+        }
 
 fun SuperheroesModule.refreshSuperheroes(): Flow<Unit> =
     loadSuperheroes()
