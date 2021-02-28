@@ -59,9 +59,9 @@ class SuperheroDetailsKtTest : FunSpec({
                 "Hulk",
                 "https://hulk.jpg".toHttpUrl(),
                 PlaceholderString(R.string.superhero_details_comics, 1),
-                PlaceholderString(R.string.superhero_details_series, 4),
+                PlaceholderString(R.string.superhero_details_series, 2),
                 PlaceholderString(R.string.superhero_details_events, 3),
-                PlaceholderString(R.string.superhero_details_stories, 2)
+                PlaceholderString(R.string.superhero_details_stories, 4)
             )
             viewModel.viewState
                 .test()
