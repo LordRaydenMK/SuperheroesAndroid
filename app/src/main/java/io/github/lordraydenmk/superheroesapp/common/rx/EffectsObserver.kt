@@ -3,6 +3,7 @@ package io.github.lordraydenmk.superheroesapp.common.rx
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.subjects.PublishSubject
 
 /**
@@ -14,8 +15,10 @@ class EffectsObserver<E : Any>(
     private val executeEffect: (E) -> Unit
 ) : DefaultLifecycleObserver {
 
-    private val effectObs: (E) -> Observable<Unit> =
-        { value: E -> Observable.fromCallable { executeEffect(value) } }
+    private val effectObs: (E) -> Observable<Unit> = { value: E ->
+        Observable.fromCallable { executeEffect(value) }
+            .subscribeOn(AndroidSchedulers.mainThread())
+    }
 
     private val stopRelay: PublishSubject<Any> = PublishSubject.create()
 
