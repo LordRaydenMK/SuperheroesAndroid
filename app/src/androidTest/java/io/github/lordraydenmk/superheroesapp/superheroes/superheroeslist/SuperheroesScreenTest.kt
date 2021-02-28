@@ -1,18 +1,21 @@
-package io.github.lordraydenmk.superheroesapp
+package io.github.lordraydenmk.superheroesapp.superheroes.superheroeslist
 
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.MediumTest
+import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.ScreenScenario.Companion.launchInContainer
 import io.github.lordraydenmk.superheroesapp.common.ErrorTextRes
 import io.github.lordraydenmk.superheroesapp.common.IdTextRes
-import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.*
+import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.Content
+import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.Loading
+import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.Problem
+import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.SuperheroViewEntity
+import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.SuperheroesScreen
 import okhttp3.HttpUrl.Companion.toHttpUrl
-import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@MediumTest
 @RunWith(AndroidJUnit4::class)
 class SuperheroesScreenTest {
 
@@ -21,11 +24,11 @@ class SuperheroesScreenTest {
         val scenario = launchInContainer { parent -> SuperheroesScreen(parent) }
         scenario.onView { view -> view.bind(Loading).subscribe() }
 
-        onView(withId(R.id.progressSuperheroes)).check(matches(isDisplayed()))
-
-        onView(withId(R.id.rvSuperheroes)).check(matches(not(isDisplayed())))
-        onView(withId(R.id.copyrightLayout)).check(matches(not(isDisplayed())))
-        onView(withId(R.id.tvError)).check(matches(not(isDisplayed())))
+        superheroesScreen {
+            assertLoadingDisplayed()
+            assertContentHidden()
+            assertErrorHidden()
+        }
     }
 
     @Test
@@ -35,12 +38,13 @@ class SuperheroesScreenTest {
             view.bind(Problem(ErrorTextRes(R.string.error_recoverable_network))).subscribe()
         }
 
-        onView(withId(R.id.tvError)).check(matches(isDisplayed()))
-        onView(withId(R.id.tvError)).check(matches(withText("We could not connect to our server. Please check your internet connection \n\nTap to retry!")))
-
-        onView(withId(R.id.progressSuperheroes)).check(matches(not(isDisplayed())))
-        onView(withId(R.id.rvSuperheroes)).check(matches(not(isDisplayed())))
-        onView(withId(R.id.copyrightLayout)).check(matches(not(isDisplayed())))
+        val errorText =
+            "We could not connect to our server. Please check your internet connection \n\nTap to retry!"
+        superheroesScreen {
+            assertErrorDisplayed(errorText)
+            assertContentHidden()
+            assertLoadingHidden()
+        }
     }
 
     @Test
@@ -50,12 +54,12 @@ class SuperheroesScreenTest {
             view.bind(Problem(IdTextRes(R.string.error_unrecoverable))).subscribe()
         }
 
-        onView(withId(R.id.tvError)).check(matches(isDisplayed()))
-        onView(withId(R.id.tvError)).check(matches(withText("Ooops… Something went wrong!")))
-
-        onView(withId(R.id.progressSuperheroes)).check(matches(not(isDisplayed())))
-        onView(withId(R.id.rvSuperheroes)).check(matches(not(isDisplayed())))
-        onView(withId(R.id.copyrightLayout)).check(matches(not(isDisplayed())))
+        val errorText = "Ooops… Something went wrong!"
+        superheroesScreen {
+            assertErrorDisplayed(errorText)
+            assertContentHidden()
+            assertLoadingHidden()
+        }
     }
 
     @Test
@@ -74,10 +78,10 @@ class SuperheroesScreenTest {
 
         scenario.onView { view -> view.bind(viewState).subscribe() }
 
-        onView(withId(R.id.rvSuperheroes)).check(matches(isDisplayed()))
-        onView(withId(R.id.copyrightLayout)).check(matches(withText("Copyright Marvel")))
-
-        onView(withId(R.id.progressSuperheroes)).check(matches(not(isDisplayed())))
-        onView(withId(R.id.tvError)).check(matches(not(isDisplayed())))
+        superheroesScreen {
+            assertContentDisplayed("Copyright Marvel")
+            assertLoadingHidden()
+            assertErrorHidden()
+        }
     }
 }
