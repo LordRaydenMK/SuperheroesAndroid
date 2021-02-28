@@ -2,6 +2,7 @@ package io.github.lordraydenmk.superheroesapp.superheroes.superherodetails
 
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.MediumTest
 import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.ScreenScenario
 import io.github.lordraydenmk.superheroesapp.ScreenScenario.Companion.launchInContainer
@@ -12,6 +13,7 @@ import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@MediumTest
 @RunWith(AndroidJUnit4::class)
 class SuperheroDetailsScreenTest {
 

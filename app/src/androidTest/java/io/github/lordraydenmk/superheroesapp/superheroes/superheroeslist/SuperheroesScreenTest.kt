@@ -1,6 +1,7 @@
 package io.github.lordraydenmk.superheroesapp.superheroes.superheroeslist
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.MediumTest
 import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.ScreenScenario.Companion.launchInContainer
 import io.github.lordraydenmk.superheroesapp.common.ErrorTextRes
@@ -14,6 +15,7 @@ import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@MediumTest
 @RunWith(AndroidJUnit4::class)
 class SuperheroesScreenTest {
 
