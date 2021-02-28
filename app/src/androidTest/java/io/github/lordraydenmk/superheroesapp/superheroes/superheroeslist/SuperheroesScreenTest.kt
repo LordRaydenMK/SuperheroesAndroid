@@ -1,6 +1,7 @@
-package io.github.lordraydenmk.superheroesapp
+package io.github.lordraydenmk.superheroesapp.superheroes.superheroeslist
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.ScreenScenario.Companion.launchInContainer
 import io.github.lordraydenmk.superheroesapp.common.ErrorTextRes
 import io.github.lordraydenmk.superheroesapp.common.IdTextRes

@@ -1,10 +1,11 @@
-package io.github.lordraydenmk.superheroesapp
+package io.github.lordraydenmk.superheroesapp.superheroes.superheroeslist
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import io.github.lordraydenmk.superheroesapp.R
 import org.hamcrest.CoreMatchers.not
 
 fun superheroesScreen(f: SuperheroesScreenRobot.() -> Unit) =
