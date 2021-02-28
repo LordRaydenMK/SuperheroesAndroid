@@ -1,15 +1,18 @@
-package io.github.lordraydenmk.superheroesapp
+package io.github.lordraydenmk.superheroesapp.superheroes.superherodetails
 
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import io.github.lordraydenmk.superheroesapp.R
+import io.github.lordraydenmk.superheroesapp.ScreenScenario
 import io.github.lordraydenmk.superheroesapp.ScreenScenario.Companion.launchInContainer
 import io.github.lordraydenmk.superheroesapp.common.ErrorTextRes
 import io.github.lordraydenmk.superheroesapp.common.IdTextRes
 import io.github.lordraydenmk.superheroesapp.common.PlaceholderString
-import io.github.lordraydenmk.superheroesapp.superheroes.superherodetails.*
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
