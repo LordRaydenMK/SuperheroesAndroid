@@ -27,6 +27,11 @@ class SuperheroesScreenRobot {
         onView(withId(errorViewId)).check(matches(withText(errorText)))
     }
 
+    fun assertContentDisplayed(copyrightText: String) {
+        onView(withId(R.id.rvSuperheroes)).check(matches(isDisplayed()))
+        onView(withId(R.id.copyrightLayout)).check(matches(withText(copyrightText)))
+    }
+
     fun assertLoadingHidden() {
         onView(withId(loadingViewId)).check(matches(not(isDisplayed())))
     }

@@ -1,10 +1,5 @@
 package io.github.lordraydenmk.superheroesapp
 
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import io.github.lordraydenmk.superheroesapp.ScreenScenario.Companion.launchInContainer
 import io.github.lordraydenmk.superheroesapp.common.ErrorTextRes
@@ -15,7 +10,6 @@ import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.Problem
 import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.SuperheroViewEntity
 import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.SuperheroesScreen
 import okhttp3.HttpUrl.Companion.toHttpUrl
-import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -81,10 +75,10 @@ class SuperheroesScreenTest {
 
         scenario.onView { view -> view.bind(viewState).subscribe() }
 
-        onView(withId(R.id.rvSuperheroes)).check(matches(isDisplayed()))
-        onView(withId(R.id.copyrightLayout)).check(matches(withText("Copyright Marvel")))
-
-        onView(withId(R.id.progressSuperheroes)).check(matches(not(isDisplayed())))
-        onView(withId(R.id.tvError)).check(matches(not(isDisplayed())))
+        superheroesScreen {
+            assertContentDisplayed("Copyright Marvel")
+            assertLoadingHidden()
+            assertErrorHidden()
+        }
     }
 }
