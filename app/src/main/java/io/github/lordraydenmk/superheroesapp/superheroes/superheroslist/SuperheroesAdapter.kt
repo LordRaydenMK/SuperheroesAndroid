@@ -7,12 +7,19 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import com.jakewharton.rxbinding3.view.clicks
 import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.databinding.SuperheroesItemBinding
 import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.SuperheroesAdapter.SuperheroViewHolder
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import reactivecircus.flowbinding.android.view.clicks
 
 private val diffCallback = object : DiffUtil.ItemCallback<SuperheroViewEntity>() {
 
@@ -28,10 +35,12 @@ private val diffCallback = object : DiffUtil.ItemCallback<SuperheroViewEntity>()
 
 }
 
-class SuperheroesAdapter : ListAdapter<SuperheroViewEntity, SuperheroViewHolder>(diffCallback) {
+class SuperheroesAdapter(
+    private val scope: CoroutineScope
+) : ListAdapter<SuperheroViewEntity, SuperheroViewHolder>(diffCallback) {
 
-    private val _actions = PublishSubject.create<Long>()
-    val actions: Observable<Long>
+    private val _actions = MutableSharedFlow<Long>()
+    val actions: Flow<Long>
         get() = _actions
 
     init {
@@ -42,8 +51,11 @@ class SuperheroesAdapter : ListAdapter<SuperheroViewEntity, SuperheroViewHolder>
         val binding =
             SuperheroesItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         val holder = SuperheroViewHolder(binding, binding.root)
-        holder.clicks.map { getItem(it).id }
-            .subscribe(_actions)
+        scope.launch {
+            holder.clicks.map { getItem(it).id }
+                .onEach { _actions.emit(it) }
+                .collect()
+        }
         return holder
     }
 
@@ -60,7 +72,8 @@ class SuperheroesAdapter : ListAdapter<SuperheroViewEntity, SuperheroViewHolder>
         itemView: View
     ) : RecyclerView.ViewHolder(itemView) {
 
-        val clicks: Observable<Int> = itemView.clicks()
+        val clicks: Flow<Int> = itemView.clicks()
+            .flowOn(Dispatchers.Main)
             .map { adapterPosition }
 
         fun bind(item: SuperheroViewEntity) = with(binding) {
