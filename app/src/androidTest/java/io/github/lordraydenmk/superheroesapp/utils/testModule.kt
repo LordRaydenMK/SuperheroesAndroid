@@ -1,5 +1,6 @@
 package io.github.lordraydenmk.superheroesapp.utils
 
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import io.github.lordraydenmk.superheroesapp.AppModule
@@ -19,6 +20,9 @@ fun testModule(baseUrl: HttpUrl): AppModule {
     val client = OkHttpClient.Builder()
         .apply { addInterceptor(HttpLoggingInterceptor().apply { setLevel(Level.BASIC) }) }
         .build()
+
+    val idlingResource = OkHttp3IdlingResource.create("OkHttp", client)
+    IdlingRegistry.getInstance().register(idlingResource)
 
     val contentType = "application/json".toMediaType()
     val converter = Json {
