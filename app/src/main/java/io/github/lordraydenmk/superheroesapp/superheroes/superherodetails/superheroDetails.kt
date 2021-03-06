@@ -61,10 +61,10 @@ private fun Throwable.toProblem(): Problem = when (this) {
 
 private fun Superhero.toViewEntity(): SuperheroDetailsViewEntity =
     SuperheroDetailsViewEntity(
-        name,
-        thumbnail,
-        PlaceholderString(R.string.superhero_details_comics, comics.available),
-        PlaceholderString(R.string.superhero_details_series, series.available),
-        PlaceholderString(R.string.superhero_details_events, events.available),
-        PlaceholderString(R.string.superhero_details_stories, stories.available),
+        name = name,
+        thumbnail = thumbnail,
+        comics = PlaceholderString(R.string.superhero_details_comics, comics.available),
+        stories = PlaceholderString(R.string.superhero_details_stories, stories.available),
+        events = PlaceholderString(R.string.superhero_details_events, events.available),
+        series = PlaceholderString(R.string.superhero_details_series, series.available),
     )

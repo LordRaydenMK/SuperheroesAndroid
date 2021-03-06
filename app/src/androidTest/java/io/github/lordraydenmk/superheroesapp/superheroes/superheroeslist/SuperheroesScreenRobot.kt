@@ -1,11 +1,14 @@
 package io.github.lordraydenmk.superheroesapp.superheroes.superheroeslist
 
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import io.github.lordraydenmk.superheroesapp.R
+import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.SuperheroesAdapter.SuperheroViewHolder
 import org.hamcrest.CoreMatchers.not
 
 fun superheroesScreen(f: SuperheroesScreenRobot.() -> Unit) =
@@ -19,8 +22,7 @@ class SuperheroesScreenRobot {
     private val errorViewId = R.id.tvError
 
     fun assertLoadingDisplayed() {
-        onView(withId(loadingViewId))
-            .check(matches(isDisplayed()))
+        onView(withId(loadingViewId)).check(matches(isDisplayed()))
     }
 
     fun assertErrorDisplayed(errorText: String) {
@@ -44,5 +46,10 @@ class SuperheroesScreenRobot {
 
     fun assertErrorHidden() {
         onView(withId(errorViewId)).check(matches(not(isDisplayed())))
+    }
+
+    fun openSuperheroDetails() {
+        onView(withId(recyclerViewId))
+            .perform(actionOnItemAtPosition<SuperheroViewHolder>(0, click()))
     }
 }

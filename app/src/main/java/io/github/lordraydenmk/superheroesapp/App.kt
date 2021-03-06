@@ -6,9 +6,9 @@ import com.akaita.java.rxjava2debug.RxJava2Debug
 import io.github.lordraydenmk.superheroesapp.common.CrashReportingTree
 import timber.log.Timber
 
-class App : Application() {
+class App : Application(), ModuleOwner {
 
-    val appModule by lazy { AppModule.create() }
+    override val appModule by lazy { AppModule.create() }
 
     override fun onCreate() {
         super.onCreate()
@@ -23,4 +23,4 @@ class App : Application() {
     }
 }
 
-fun Context.appModule(): AppModule = (applicationContext as App).appModule
+fun Context.appModule(): AppModule = (applicationContext as ModuleOwner).appModule
