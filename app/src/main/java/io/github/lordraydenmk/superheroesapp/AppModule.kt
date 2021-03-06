@@ -3,6 +3,7 @@ package io.github.lordraydenmk.superheroesapp
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import io.github.lordraydenmk.superheroesapp.common.md5
 import io.github.lordraydenmk.superheroesapp.superheroes.data.SuperheroesService
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
@@ -61,6 +62,7 @@ interface AppModule : SuperheroesService {
             ignoreUnknownKeys = true
         }
 
+        @OptIn(ExperimentalSerializationApi::class)
         private val retrofit = Retrofit.Builder()
             .baseUrl("https://gateway.marvel.com/v1/public/")
             .addCallAdapterFactory(RxJava2CallAdapterFactory.createAsync())
