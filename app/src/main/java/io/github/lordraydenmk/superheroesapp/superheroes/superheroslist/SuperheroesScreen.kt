@@ -9,22 +9,25 @@ import io.github.lordraydenmk.superheroesapp.common.setTextResource
 import io.github.lordraydenmk.superheroesapp.databinding.SuperheroesScreenBinding
 import io.reactivex.Completable
 import io.reactivex.Observable
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.rx2.asFlow
 import kotlinx.coroutines.rx2.asObservable
 import kotlinx.coroutines.rx2.rxCompletable
 import kotlinx.coroutines.withContext
 import reactivecircus.flowbinding.android.view.clicks
 
-class SuperheroesScreen(container: ViewGroup) : Screen<SuperheroesAction, SuperheroesViewState> {
+class SuperheroesScreen(
+    container: ViewGroup,
+    lifecycleScope: CoroutineScope
+) : Screen<SuperheroesAction, SuperheroesViewState> {
 
     private val binding =
         SuperheroesScreenBinding.inflate(LayoutInflater.from(container.context), container)
 
-    private val superheroesAdapter = SuperheroesAdapter()
+    private val superheroesAdapter = SuperheroesAdapter(lifecycleScope)
 
     init {
         with(binding.rvSuperheroes) {
@@ -35,7 +38,7 @@ class SuperheroesScreen(container: ViewGroup) : Screen<SuperheroesAction, Superh
 
     override val actions: Observable<SuperheroesAction> = merge(
         binding.tvError.clicks().flowOn(Dispatchers.Main).map { Refresh },
-        superheroesAdapter.actions.asFlow().map { LoadDetails(it) }
+        superheroesAdapter.actions.map { LoadDetails(it) }
     ).asObservable()
 
     override fun bind(viewState: SuperheroesViewState): Completable =

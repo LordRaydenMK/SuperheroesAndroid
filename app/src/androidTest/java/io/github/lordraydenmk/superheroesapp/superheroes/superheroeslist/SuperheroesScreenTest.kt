@@ -11,17 +11,21 @@ import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.Loading
 import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.Problem
 import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.SuperheroViewEntity
 import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.SuperheroesScreen
+import kotlinx.coroutines.CoroutineScope
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.coroutines.EmptyCoroutineContext
 
 @MediumTest
 @RunWith(AndroidJUnit4::class)
 class SuperheroesScreenTest {
 
+    private val scope = CoroutineScope(EmptyCoroutineContext)
+
     @Test
     fun loadingState_progressBarDisplayed() {
-        val scenario = launchInContainer { parent -> SuperheroesScreen(parent) }
+        val scenario = launchInContainer { parent -> SuperheroesScreen(parent, scope) }
         scenario.onView { view -> view.bind(Loading).subscribe() }
 
         superheroesScreen {
@@ -33,7 +37,7 @@ class SuperheroesScreenTest {
 
     @Test
     fun recoverableProblemState_errorViewDisplayedWithRetryText() {
-        val scenario = launchInContainer { parent -> SuperheroesScreen(parent) }
+        val scenario = launchInContainer { parent -> SuperheroesScreen(parent, scope) }
         scenario.onView { view ->
             view.bind(Problem(ErrorTextRes(R.string.error_recoverable_network))).subscribe()
         }
@@ -49,7 +53,7 @@ class SuperheroesScreenTest {
 
     @Test
     fun unrecoverableProblemState_errorViewDisplayed() {
-        val scenario = launchInContainer { parent -> SuperheroesScreen(parent) }
+        val scenario = launchInContainer { parent -> SuperheroesScreen(parent, scope) }
         scenario.onView { view ->
             view.bind(Problem(IdTextRes(R.string.error_unrecoverable))).subscribe()
         }
@@ -74,7 +78,7 @@ class SuperheroesScreenTest {
             ),
             "Copyright Marvel"
         )
-        val scenario = launchInContainer { parent -> SuperheroesScreen(parent) }
+        val scenario = launchInContainer { parent -> SuperheroesScreen(parent, scope) }
 
         scenario.onView { view -> view.bind(viewState).subscribe() }
 
