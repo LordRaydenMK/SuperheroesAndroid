@@ -1,5 +1,6 @@
 package io.github.lordraydenmk.superheroesapp.superheroes.superheroslist
 
+import app.cash.turbine.test
 import io.github.lordraydenmk.superheroesapp.AppModule
 import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.common.IdTextRes
@@ -20,6 +21,7 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.rx2.asObservable
 import okhttp3.HttpUrl.Companion.toHttpUrl
+import org.junit.jupiter.api.Assertions.assertEquals
 
 class SuperheroesListKtTest : FunSpec({
 
@@ -60,10 +62,10 @@ class SuperheroesListKtTest : FunSpec({
 
         module.program(emptyFlow()).collect()
 
-        viewModel.viewState.test()
-            .awaitCount(2)
-            .assertValues(Loading, content)
-            .assertNotComplete()
+        viewModel.viewStateF.test {
+            assertEquals(Loading, expectItem())
+            assertEquals(content, expectItem())
+        }
     }
 
     test("FirstLoad - service fails with exception - Loading then Problem") {
@@ -77,10 +79,10 @@ class SuperheroesListKtTest : FunSpec({
 
         module.program(emptyFlow()).collect()
 
-        viewModel.viewState.test()
-            .awaitCount(2)
-            .assertValues(Loading, problem)
-            .assertNotComplete()
+        viewModel.viewStateF.test {
+            assertEquals(Loading, expectItem())
+            assertEquals(problem, expectItem())
+        }
     }
 
     test("First load then refresh - service fails, then succeeds - Loading, Problem, Loading Content") {
@@ -104,19 +106,15 @@ class SuperheroesListKtTest : FunSpec({
         val actions = MutableSharedFlow<SuperheroesAction>()
         module.program(actions).asObservable().subscribe()
 
-        // Somehow this breaks Type Inference after adding rxjava2-extensions ¯\_(ツ)_/¯
-        val test = viewModel.viewState.test()
+        viewModel.viewStateF.test {
+            assertEquals(Loading, expectItem())
+            assertEquals(Problem::class.java, expectItem()::class.java)
 
-        test.awaitCount(2)
-            .assertValueAt(0, Loading)
-            .assertValueAt(1) { it is Problem }
+            actions.emit(Refresh)
 
-        actions.emit(Refresh)
-
-        test.awaitCount(4)
-            .assertValueAt(2, Loading)
-            .assertValueAt(3) { it is Content }
-            .assertNotComplete()
+            assertEquals(Loading, expectItem())
+            assertEquals(Content::class.java, expectItem()::class.java)
+        }
     }
 
     test("ShowDetailsAction - NavigateToDetails effect") {

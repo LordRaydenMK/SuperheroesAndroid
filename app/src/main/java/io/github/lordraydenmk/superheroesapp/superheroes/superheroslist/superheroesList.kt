@@ -20,7 +20,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.rx2.asFlow
-import kotlinx.coroutines.rx2.await
 
 interface SuperheroesModule : AppModule, ViewModelAlgebra<SuperheroesViewState, SuperheroesEffect>
 
@@ -44,7 +43,7 @@ fun SuperheroesModule.firstLoad(): Flow<Unit> =
 
 fun SuperheroesModule.refreshSuperheroes(): Flow<Unit> =
     loadSuperheroes()
-        .map { setState(it).await() }
+        .map { setStateS(it) }
 
 fun SuperheroesModule.loadSuperheroes(): Flow<SuperheroesViewState> = flow {
     emit(Loading)

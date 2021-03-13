@@ -46,7 +46,7 @@ class SuperheroesFragment : Fragment(R.layout.superheroes_fragment) {
             ViewModelAlgebra<SuperheroesViewState, SuperheroesEffect> by viewModel {}
 
         with(module) {
-            val renderFlow = viewState.asFlow()
+            val renderFlow = viewStateF
                 .mapLatest { screen.bind(it).await() }
 
             lifecycleScope.launchWhenStarted {

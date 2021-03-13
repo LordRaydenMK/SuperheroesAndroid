@@ -45,6 +45,7 @@ android {
         jvmTarget = "1.8"
         useIR = true
         freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+        freeCompilerArgs += "-Xopt-in=kotlin.time.ExperimentalTime"
     }
 
     testOptions {
@@ -111,6 +112,7 @@ dependencies {
     def kotest = "4.4.3"
     testImplementation "io.kotest:kotest-runner-junit5-jvm:$kotest"
     testImplementation "io.kotest:kotest-assertions-core-jvm:$kotest"
+    testImplementation 'app.cash.turbine:turbine:0.4.0'
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     def espresso = "3.3.0"

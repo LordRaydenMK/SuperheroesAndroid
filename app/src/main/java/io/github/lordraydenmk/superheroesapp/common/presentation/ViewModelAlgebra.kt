@@ -4,6 +4,9 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.rx2.asFlow
+import kotlinx.coroutines.rx2.await
 
 /**
  * Defines the algebra (set of operations) for a ViewModel
@@ -21,11 +24,16 @@ interface ViewModelAlgebra<VS : Any, E : Any> {
 
     val viewState: Observable<VS>
 
+    val viewStateF: Flow<VS>
+        get() = viewState.asFlow()
+
     val scope: CoroutineScope
 
     fun isEmpty(): Observable<Boolean>
 
     fun setState(vs: VS): Completable
+
+    suspend fun setStateS(vs: VS): Unit = setState(vs).await()
 
     val effects: Observable<E>
 
