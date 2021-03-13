@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.rx2.asFlow
@@ -27,7 +28,7 @@ fun SuperheroesModule.program(actions: Flow<SuperheroesAction>): Flow<Unit> {
     val flow = actions.flatMapMerge { action ->
         when (action) {
             Refresh -> refreshSuperheroes()
-            is LoadDetails -> runEffect(NavigateToDetails(action.id)).toObservable<Unit>().asFlow()
+            is LoadDetails -> flowOf(runEffectS(NavigateToDetails(action.id)))
         }.fork(Dispatchers.Default, scope)
             .unit()
     }

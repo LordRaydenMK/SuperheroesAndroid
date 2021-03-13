@@ -125,9 +125,8 @@ class SuperheroesListKtTest : FunSpec({
             program(flowOf(LoadDetails(42))).collect()
         }
 
-        viewModel.effects.test()
-            .awaitCount(1)
-            .assertValue(NavigateToDetails(42))
-            .assertNotComplete()
+        viewModel.effectsF.test {
+            assertEquals(NavigateToDetails(42), expectItem())
+        }
     }
 })
