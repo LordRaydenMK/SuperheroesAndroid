@@ -37,6 +37,9 @@ interface ViewModelAlgebra<VS : Any, E : Any> {
 
     val effects: Observable<E>
 
+    val effectsF: Flow<E>
+        get() = effects.asFlow()
+
     fun runEffect(effect: E): Completable
 
     fun addToDisposable(d: Disposable)
