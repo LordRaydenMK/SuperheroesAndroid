@@ -11,12 +11,10 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.rx2.asObservable
-import kotlinx.coroutines.rx2.rxCompletable
-import kotlinx.coroutines.withContext
 import reactivecircus.flowbinding.android.view.clicks
 
 class SuperheroesScreen(
@@ -36,16 +34,18 @@ class SuperheroesScreen(
         }
     }
 
-    override val actions: Observable<SuperheroesAction> = merge(
+    override val actions: Observable<SuperheroesAction> = Observable.error(NotImplementedError())
+
+    override val actionsF: Flow<SuperheroesAction> = merge(
         binding.tvError.clicks().flowOn(Dispatchers.Main).map { Refresh },
         superheroesAdapter.actions.map { LoadDetails(it) }
-    ).asObservable()
+    )
 
     override fun bind(viewState: SuperheroesViewState): Completable =
-        rxCompletable { bindX(viewState) }
+        Completable.error(NotImplementedError())
 
     @Suppress("RedundantSuspendModifier") // updating the UI is a side effect
-    private suspend fun bindX(viewState: SuperheroesViewState) = withContext(Dispatchers.Main) {
+    override suspend fun bindS(viewState: SuperheroesViewState) {
         binding.groupSuperheroesContent.isVisible = viewState is Content
         binding.progressSuperheroes.isVisible = viewState is Loading
         binding.tvError.isVisible = viewState is Problem
