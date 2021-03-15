@@ -16,8 +16,6 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.rx2.asFlow
-import kotlinx.coroutines.rx2.await
 
 class SuperheroesFragment : Fragment(R.layout.superheroes_fragment) {
 
@@ -34,10 +32,10 @@ class SuperheroesFragment : Fragment(R.layout.superheroes_fragment) {
 
         with(module) {
             val renderFlow = viewStateF
-                .mapLatest { screen.bind(it).await() }
+                .mapLatest { screen.bindS(it) }
 
             lifecycleScope.launchWhenStarted {
-                merge(program(screen.actions.asFlow()), renderFlow)
+                merge(program(screen.actionsF), renderFlow)
                     .collect()
             }
         }
