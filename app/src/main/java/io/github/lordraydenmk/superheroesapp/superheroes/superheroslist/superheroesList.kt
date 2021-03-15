@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.rx2.asFlow
@@ -45,6 +46,7 @@ fun SuperheroesModule.firstLoad(): Flow<Unit> =
 fun SuperheroesModule.refreshSuperheroes(): Flow<Unit> =
     loadSuperheroes()
         .map { setStateS(it) }
+        .flowOn(Dispatchers.Default)
 
 fun SuperheroesModule.loadSuperheroes(): Flow<SuperheroesViewState> = flow {
     emit(Loading)
@@ -65,4 +67,4 @@ fun SuperheroesModule.loadSuperheroes(): Flow<SuperheroesViewState> = flow {
         }
     }
     emit(state)
-}
+}.flowOn(Dispatchers.Default)
