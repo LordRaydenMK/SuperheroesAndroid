@@ -43,7 +43,8 @@ android {
     // For Kotlin projects
     kotlinOptions {
         jvmTarget = "1.8"
-        useIR = true
+//        https://youtrack.jetbrains.com/issue/KT-45490
+//        useIR = true
         freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
         freeCompilerArgs += "-Xopt-in=kotlin.time.ExperimentalTime"
     }
