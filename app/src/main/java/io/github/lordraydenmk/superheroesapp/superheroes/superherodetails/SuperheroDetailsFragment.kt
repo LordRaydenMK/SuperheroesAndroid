@@ -52,7 +52,7 @@ class SuperheroDetailsFragment : Fragment(R.layout.superhero_details_fragment) {
                         .evalOn(AndroidSchedulers.mainThread())
                 }
 
-            program(superheroId, screen.actions)
+            program(superheroId, screen.actionsF)
                 .mergeWith(render)
                 .autoDispose(viewLifecycleOwner)
         }

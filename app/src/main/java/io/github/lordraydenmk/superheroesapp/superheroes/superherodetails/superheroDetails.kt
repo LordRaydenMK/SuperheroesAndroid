@@ -5,10 +5,10 @@ import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.common.ErrorTextRes
 import io.github.lordraydenmk.superheroesapp.common.IdTextRes
 import io.github.lordraydenmk.superheroesapp.common.PlaceholderString
+import io.github.lordraydenmk.superheroesapp.common.fork
 import io.github.lordraydenmk.superheroesapp.common.presentation.ViewModelAlgebra
-import io.github.lordraydenmk.superheroesapp.common.rx.fork
 import io.github.lordraydenmk.superheroesapp.common.rx.logOnError
-import io.github.lordraydenmk.superheroesapp.common.rx.unit
+import io.github.lordraydenmk.superheroesapp.common.unit
 import io.github.lordraydenmk.superheroesapp.superheroes.NetworkError
 import io.github.lordraydenmk.superheroesapp.superheroes.ServerError
 import io.github.lordraydenmk.superheroesapp.superheroes.SuperheroException
@@ -17,13 +17,16 @@ import io.github.lordraydenmk.superheroesapp.superheroes.data.superheroDetails
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.Superhero
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroId
 import io.reactivex.Observable
-import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.rx2.asFlow
 import kotlinx.coroutines.rx2.asObservable
+import kotlinx.coroutines.rx2.await
 import kotlinx.coroutines.rx2.rxCompletable
 import kotlinx.coroutines.rx2.rxSingle
 
@@ -32,15 +35,17 @@ interface SuperheroDetailsModule : AppModule,
 
 fun SuperheroDetailsModule.program(
     superheroId: SuperheroId,
-    actions: Observable<SuperheroDetailsAction>
-): Observable<Unit> =
-    actions.flatMap { action ->
+    actions: Flow<SuperheroDetailsAction>
+): Observable<Unit> {
+    val flow = actions.flatMapMerge { action ->
         when (action) {
-            is Refresh -> loadSuperhero(action.superheroId)
-            Up -> runEffect(NavigateUp).toObservable()
-        }.fork(Schedulers.computation(), this::addToDisposable)
+            is Refresh -> loadSuperhero(action.superheroId).asFlow()
+            Up -> flowOf(runEffect(NavigateUp).await())
+        }.fork(Dispatchers.Default, scope)
             .unit()
-    }.mergeWith(firstLoad(superheroId).asObservable())
+    }
+    return merge(flow, firstLoad(superheroId)).asObservable()
+}
 
 fun SuperheroDetailsModule.firstLoad(superheroId: SuperheroId): Flow<Unit> =
     flow { emit(isEmpty()) }

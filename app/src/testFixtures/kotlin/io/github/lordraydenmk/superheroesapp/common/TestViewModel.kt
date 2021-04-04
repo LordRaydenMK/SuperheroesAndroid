@@ -4,8 +4,6 @@ import io.github.lordraydenmk.superheroesapp.common.presentation.ViewModelAlgebr
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
-import io.reactivex.rxkotlin.plusAssign
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -26,10 +24,6 @@ class TestViewModel<VS : Any, E : Any> : ViewModelAlgebra<VS, E> {
     override suspend fun isEmpty(): Boolean = _viewState.replayCache.isEmpty()
 
     override suspend fun setStateS(vs: VS) = _viewState.emit(vs)
-
-    override fun addToDisposable(d: Disposable) {
-        cd += d
-    }
 
     private val _effects = MutableSharedFlow<E>(256, 0)
     override val effects: Observable<E>

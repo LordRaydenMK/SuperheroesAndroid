@@ -39,6 +39,4 @@ interface ViewModelAlgebra<VS : Any, E : Any> {
     fun runEffect(effect: E): Completable
 
     suspend fun runEffectS(effect: E): Unit = runEffect(effect).await()
-
-    fun addToDisposable(d: Disposable)
 }

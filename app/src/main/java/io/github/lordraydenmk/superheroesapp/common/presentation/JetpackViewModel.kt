@@ -5,8 +5,6 @@ import androidx.lifecycle.viewModelScope
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
-import io.reactivex.rxkotlin.plusAssign
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -29,8 +27,6 @@ import kotlinx.coroutines.rx2.rxCompletable
  */
 class JetpackViewModel<VS : Any, E : Any> : ViewModel(), ViewModelAlgebra<VS, E> {
 
-    private val disposables = CompositeDisposable()
-
     private val _viewState: MutableStateFlow<VS?> = MutableStateFlow(null)
     override val viewStateF: Flow<VS>
         get() = _viewState.filterNotNull()
@@ -48,13 +44,4 @@ class JetpackViewModel<VS : Any, E : Any> : ViewModel(), ViewModelAlgebra<VS, E>
             .asObservable()
 
     override fun runEffect(effect: E): Completable = rxCompletable { _viewEffects.send(effect) }
-
-    override fun addToDisposable(d: Disposable) {
-        disposables += d
-    }
-
-    override fun onCleared() {
-        disposables.dispose()
-        super.onCleared()
-    }
 }
