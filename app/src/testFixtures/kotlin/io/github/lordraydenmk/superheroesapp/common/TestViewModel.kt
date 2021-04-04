@@ -23,8 +23,7 @@ class TestViewModel<VS : Any, E : Any> : ViewModelAlgebra<VS, E> {
 
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
-    override fun isEmpty(): Observable<Boolean> =
-        Observable.fromCallable { _viewState.replayCache.isEmpty() }
+    override suspend fun isEmpty(): Boolean = _viewState.replayCache.isEmpty()
 
     override suspend fun setStateS(vs: VS) = _viewState.emit(vs)
 

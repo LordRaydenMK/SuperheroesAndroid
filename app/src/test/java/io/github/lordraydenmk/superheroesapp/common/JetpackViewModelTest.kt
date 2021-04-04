@@ -3,6 +3,7 @@ package io.github.lordraydenmk.superheroesapp.common
 import app.cash.turbine.test
 import io.github.lordraydenmk.superheroesapp.common.presentation.JetpackViewModel
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Assertions.assertEquals
 
 class JetpackViewModelTest : FunSpec({
@@ -29,9 +30,7 @@ class JetpackViewModelTest : FunSpec({
     test("isEmpty - new view model - true") {
         val viewModel = JetpackViewModel<String, Nothing>()
 
-        viewModel.isEmpty().test()
-            .assertValue(true)
-            .assertNotComplete()
+        viewModel.isEmpty() shouldBe true
     }
 
     test("isEmpty - view model with state - false") {
@@ -39,9 +38,7 @@ class JetpackViewModelTest : FunSpec({
 
         viewModel.setStateS("Hello world")
 
-        viewModel.isEmpty().test()
-            .assertValue(false)
-            .assertNotComplete()
+        viewModel.isEmpty() shouldBe false
     }
 
     test("runEffect - no subscribers - adds effect to queue") {

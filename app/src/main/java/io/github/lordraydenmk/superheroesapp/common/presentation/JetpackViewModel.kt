@@ -12,7 +12,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.rx2.asObservable
 import kotlinx.coroutines.rx2.rxCompletable
@@ -39,8 +38,7 @@ class JetpackViewModel<VS : Any, E : Any> : ViewModel(), ViewModelAlgebra<VS, E>
     override val scope: CoroutineScope
         get() = viewModelScope
 
-    override fun isEmpty(): Observable<Boolean> = _viewState.map { it == null }
-        .asObservable()
+    override suspend fun isEmpty(): Boolean = _viewState.value == null
 
     override suspend fun setStateS(vs: VS): Unit = _viewState.emit(vs)
 

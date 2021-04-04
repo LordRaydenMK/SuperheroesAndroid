@@ -21,7 +21,6 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.rx2.asFlow
 
 interface SuperheroesModule : AppModule, ViewModelAlgebra<SuperheroesViewState, SuperheroesEffect>
 
@@ -38,7 +37,7 @@ fun SuperheroesModule.program(actions: Flow<SuperheroesAction>): Flow<Unit> {
 }
 
 fun SuperheroesModule.firstLoad(): Flow<Unit> =
-    isEmpty().asFlow()
+    flow { emit(isEmpty()) }
         .flatMapMerge { empty ->
             if (empty) refreshSuperheroes() else emptyFlow()
         }

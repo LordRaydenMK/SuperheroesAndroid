@@ -18,6 +18,8 @@ import io.github.lordraydenmk.superheroesapp.superheroes.domain.Superhero
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroId
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.rx2.asObservable
 import kotlinx.coroutines.rx2.rxCompletable
 
 interface SuperheroDetailsModule : AppModule,
@@ -36,9 +38,10 @@ fun SuperheroDetailsModule.program(
     }.mergeWith(firstLoad(superheroId))
 
 fun SuperheroDetailsModule.firstLoad(superheroId: SuperheroId): Observable<Unit> =
-    isEmpty().flatMap { empty ->
-        if (empty) loadSuperhero(superheroId) else Observable.empty()
-    }
+    flow { emit(isEmpty()) }.asObservable()
+        .flatMap { empty ->
+            if (empty) loadSuperhero(superheroId) else Observable.empty()
+        }
 
 fun SuperheroDetailsModule.loadSuperhero(superheroId: SuperheroId): Observable<Unit> =
     superheroDetails(superheroId)
