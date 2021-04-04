@@ -1,7 +1,6 @@
 package io.github.lordraydenmk.superheroesapp.common.presentation
 
-import io.reactivex.Completable
-import io.reactivex.Observable
+import kotlinx.coroutines.flow.Flow
 
 /**
  * A container for UI/view related logic
@@ -16,9 +15,10 @@ import io.reactivex.Observable
  *
  * The Fragment/Activity is not your view (view as in MVVM view, not Android View)
  */
-interface Screen<A, VS> {
+interface Screen<A : Any, VS> {
 
-    val actions: Observable<A>
+    val actionsF: Flow<A>
 
-    fun bind(viewState: VS): Completable
+    @Suppress("RedundantUnitReturnType")
+    suspend fun bindS(viewState: VS): Unit
 }

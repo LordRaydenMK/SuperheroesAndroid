@@ -11,54 +11,61 @@ import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.Loading
 import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.Problem
 import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.SuperheroViewEntity
 import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.SuperheroesScreen
+import kotlinx.coroutines.CoroutineScope
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.coroutines.EmptyCoroutineContext
 
 @MediumTest
 @RunWith(AndroidJUnit4::class)
 class SuperheroesScreenTest {
 
+    private val scope = CoroutineScope(EmptyCoroutineContext)
+
     @Test
     fun loadingState_progressBarDisplayed() {
-        val scenario = launchInContainer { parent -> SuperheroesScreen(parent) }
-        scenario.onView { view -> view.bind(Loading).subscribe() }
+        launchInContainer { parent -> SuperheroesScreen(parent, scope) }.use { scenario ->
+            scenario.onViewBlocking { view -> view.bindS(Loading) }
 
-        superheroesScreen {
-            assertLoadingDisplayed()
-            assertContentHidden()
-            assertErrorHidden()
+            superheroesScreen {
+                assertLoadingDisplayed()
+                assertContentHidden()
+                assertErrorHidden()
+            }
         }
     }
 
     @Test
     fun recoverableProblemState_errorViewDisplayedWithRetryText() {
-        val scenario = launchInContainer { parent -> SuperheroesScreen(parent) }
-        scenario.onView { view ->
-            view.bind(Problem(ErrorTextRes(R.string.error_recoverable_network))).subscribe()
-        }
+        launchInContainer { parent -> SuperheroesScreen(parent, scope) }.use { scenario ->
+            scenario.onViewBlocking { view ->
+                view.bindS(Problem(ErrorTextRes(R.string.error_recoverable_network)))
+            }
 
-        val errorText =
-            "We could not connect to our server. Please check your internet connection \n\nTap to retry!"
-        superheroesScreen {
-            assertErrorDisplayed(errorText)
-            assertContentHidden()
-            assertLoadingHidden()
+            val errorText =
+                "We could not connect to our server. Please check your internet connection \n\nTap to retry!"
+            superheroesScreen {
+                assertErrorDisplayed(errorText)
+                assertContentHidden()
+                assertLoadingHidden()
+            }
         }
     }
 
     @Test
     fun unrecoverableProblemState_errorViewDisplayed() {
-        val scenario = launchInContainer { parent -> SuperheroesScreen(parent) }
-        scenario.onView { view ->
-            view.bind(Problem(IdTextRes(R.string.error_unrecoverable))).subscribe()
-        }
+        launchInContainer { parent -> SuperheroesScreen(parent, scope) }.use { scenario ->
+            scenario.onViewBlocking { view ->
+                view.bindS(Problem(IdTextRes(R.string.error_unrecoverable)))
+            }
 
-        val errorText = "Ooops… Something went wrong!"
-        superheroesScreen {
-            assertErrorDisplayed(errorText)
-            assertContentHidden()
-            assertLoadingHidden()
+            val errorText = "Ooops… Something went wrong!"
+            superheroesScreen {
+                assertErrorDisplayed(errorText)
+                assertContentHidden()
+                assertLoadingHidden()
+            }
         }
     }
 
@@ -74,14 +81,15 @@ class SuperheroesScreenTest {
             ),
             "Copyright Marvel"
         )
-        val scenario = launchInContainer { parent -> SuperheroesScreen(parent) }
+        launchInContainer { parent -> SuperheroesScreen(parent, scope) }.use { scenario ->
 
-        scenario.onView { view -> view.bind(viewState).subscribe() }
+            scenario.onViewBlocking { view -> view.bindS(viewState) }
 
-        superheroesScreen {
-            assertContentDisplayed("Copyright Marvel")
-            assertLoadingHidden()
-            assertErrorHidden()
+            superheroesScreen {
+                assertContentDisplayed("Copyright Marvel")
+                assertLoadingHidden()
+                assertErrorHidden()
+            }
         }
     }
 }

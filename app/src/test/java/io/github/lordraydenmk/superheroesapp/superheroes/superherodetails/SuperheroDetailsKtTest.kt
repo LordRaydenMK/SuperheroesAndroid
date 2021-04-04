@@ -1,5 +1,6 @@
 package io.github.lordraydenmk.superheroesapp.superheroes.superherodetails
 
+import app.cash.turbine.test
 import io.github.lordraydenmk.superheroesapp.AppModule
 import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.common.ErrorTextRes
@@ -12,8 +13,11 @@ import io.github.lordraydenmk.superheroesapp.superheroes.data.SuperheroesService
 import io.github.lordraydenmk.superheroesapp.superheroes.data.ThumbnailDto
 import io.github.lordraydenmk.superheroesapp.superheroes.testSuperheroService
 import io.kotest.core.spec.style.FunSpec
-import io.reactivex.Observable
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flowOf
 import okhttp3.HttpUrl.Companion.toHttpUrl
+import org.junit.jupiter.api.Assertions.assertEquals
 import java.io.IOException
 
 class SuperheroDetailsKtTest : FunSpec({
@@ -53,21 +57,20 @@ class SuperheroDetailsKtTest : FunSpec({
         val module = module(service, viewModel)
 
         with(module) {
-            program(42, Observable.empty()).subscribe()
+            program(42, emptyFlow()).collect()
 
             val hulk = SuperheroDetailsViewEntity(
                 "Hulk",
                 "https://hulk.jpg".toHttpUrl(),
-                PlaceholderString(R.string.superhero_details_comics, 1),
-                PlaceholderString(R.string.superhero_details_series, 2),
-                PlaceholderString(R.string.superhero_details_events, 3),
-                PlaceholderString(R.string.superhero_details_stories, 4)
+                comics = PlaceholderString(R.string.superhero_details_comics, 1),
+                stories = PlaceholderString(R.string.superhero_details_stories, 2),
+                events = PlaceholderString(R.string.superhero_details_events, 3),
+                series = PlaceholderString(R.string.superhero_details_series, 4)
             )
-            viewModel.viewState
-                .test()
-                .awaitCount(2)
-                .assertValueAt(0, Loading)
-                .assertValueAt(1, Content(hulk, "Marvel rocks!"))
+            viewModel.viewState.test {
+                assertEquals(Loading, expectItem())
+                assertEquals(Content(hulk, "Marvel rocks!"), expectItem())
+            }
         }
     }
 
@@ -79,13 +82,13 @@ class SuperheroDetailsKtTest : FunSpec({
         val module = module(service, viewModel)
 
         with(module) {
-            program(42, Observable.empty()).subscribe()
+            program(42, emptyFlow()).collect()
 
-            viewModel.viewState
-                .test()
-                .awaitCount(2)
-                .assertValueAt(0, Loading)
-                .assertValueAt(1, Problem(ErrorTextRes(R.string.error_recoverable_network)))
+            val expectedProblem = Problem(ErrorTextRes(R.string.error_recoverable_network))
+            viewModel.viewState.test {
+                assertEquals(Loading, expectItem())
+                assertEquals(expectedProblem, expectItem())
+            }
         }
     }
 
@@ -94,12 +97,11 @@ class SuperheroDetailsKtTest : FunSpec({
         val module = module(testSuperheroService(emptyList()), viewModel)
 
         with(module) {
-            program(42, Observable.just(Up)).subscribe()
+            program(42, flowOf(Up)).collect()
 
-            viewModel.effects
-                .test()
-                .awaitCount(1)
-                .assertValue(NavigateUp)
+            viewModel.effects.test {
+                assertEquals(NavigateUp, expectItem())
+            }
         }
     }
 })

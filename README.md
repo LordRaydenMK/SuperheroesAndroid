@@ -25,11 +25,11 @@ Check out the [Marvel Developer portal][mdp] for more info.
 
 ## App Architecture
 
-The app uses a reactive architecture built atop RxJava. The app follows a layered architecture. The package structure is an attempt to package by feature, however both screens share the data and domain layers. The app uses a single activity + fragments and the Jetpack Navigation Component.
+The app uses a reactive architecture built atop Flow. The app follows a layered architecture with data, domain and presentation layer. The package structure is an attempt to package by feature, however both screens share the data and domain layers. The app uses a single activity + fragments and the Jetpack Navigation Component.
 
 ### Data Layer
 
-The API call is modeled using Retrofit, KotlinX Serialization as the converter and RxJava as the call adapter. The data layer converts the DTO objects to Domain objects. Any errors that happen up to this point are mapped to a sealed class `SuperheroError` (categorised as Recoverable on Unrecoverable). A custom exception `SuperheroException` that contains a property of the error is delivered as an RxJava error in the stream.
+The API call is modeled using Retrofit, KotlinX Serialization as the converter. The data layer converts the DTO objects to Domain objects. Any errors that happen up to this point are mapped to a sealed class `SuperheroError` (categorised as Recoverable on Unrecoverable). A custom exception `SuperheroException` that contains a property of the error is delivered as an RxJava error in the stream.
 
 ### Domain Layer
 
@@ -37,17 +37,17 @@ The main class here is `Superhero`. It has a static `create` function that conve
 
 ### Presentation Layer
 
-The `Fragment` is not the view (MVVM view) here. There is a separate class that implements a `Screen` interface that handles all logic related to the view. It uses [ViewBinding][view-binding] for `findViewById`. Data flows to this class trough the `bind` function that takes a view state (a class that describes the content of the screen). A screen exposes `Observable<Action>` for the user interactions (e.g. open details, retry...) to the Fragment.
+The `Fragment` is not the view (MVVM view) here. There is a separate class that implements a `Screen` interface that handles all logic related to the view. It uses [ViewBinding][view-binding] for `findViewById`. Data flows to this class trough the `bind` function that takes a view state (a class that describes the content of the screen). A screen exposes `Flow<Action>` for the user interactions (e.g. open details, retry...) to the Fragment.
 
 Each fragment has a Jetpack ViewModel that:
 
-- exposes a single `Observable<ViewState>` backed by a `BehaviorSubject` (caching the last item) describing the state of the view at a given time
-- exposes a single `Observable<Effect>` backed by a `UnicastWorkerSubject` for side effects like navigation. Event that happen when no-one is subscribed are cached. All events are delivered when subscribed
-- holds a `CompositeDisposable` with operations tied to it's lifecycle
+- exposes a single `Flow<ViewState>` backed by a `MutableStateFlow` (caching the last item) describing the state of the view at a given time
+- exposes a single `Flow<Effect>` backed by a `Channel` for side effects like navigation, Snackbar or similar. Event that happen when no-one is subscribed are cached. All events are delivered when subscribed
+- exposes a `CoroutineScope` with operations tied to it's lifecycle
 
-The Fragment observes the `Observable<ViewState>` from the time the view is created until destroyed and updates the `Sceen`. The Fragment observes `Observable<Effect>` between `onStart` and `onStop` making sure fragment transactions are executed only when the view is active.
+The Fragment observes the `Flow<ViewState>` between `onStart` and `onStop` and updates the `Sceen`. The Fragment observes `Flow<Effect>` between `onStart` and `onStop` making sure fragment transactions are executed only when the view is active.
 
-The Fragment observes the `Observable<Action>` from `onViewCreated` until `onViewDestroyed`. However any network calls that result from those interactions are de-coupled from this lifecycle. The operations triggered by the view actions are coupled to the `ViewModel` lifecycle and are only disposed in the `ViewMode.onDispose()` function. Check the [fork() function][fork] for more details. 
+The Fragment observes the `Flow<Action>` from `onStart` until `onStop`. However any network calls that result from those interactions are de-coupled from this lifecycle. The operations triggered by the view actions are coupled to the `ViewModel` lifecycle and are only disposed in the `ViewMode.onDispose()` function. Check the [fork() function][fork] for more details. 
 
 The logic is written as extension functions on top of a module (collection of dependencies).
 
@@ -59,9 +59,9 @@ The logic is written as extension functions on top of a module (collection of de
 
 ### Testing
 
-This sample uses [kotest][kotest] as a testing library. The presentation logic is tested by mocking the Retrofit Service and using a `TestViewModel` that uses `ReplaySubject` instead of `BehaviorSubject` and remembers all events. Tests use the real schedulers and the excellent RxJava testing support.
+This sample uses [kotest][kotest] as a testing library. The presentation logic is tested by mocking the Retrofit Service and using a `TestViewModel` that uses `MutableSharedFlow` instead of `MutableStateFlow` and remembers all events. Tests use the real schedulers and Turbine for testing `Flow`.
 
-The view is tested in isolation using Espresso, by setting a ViewState using bind() and verifying the correct elements are displayed/hidden and the text matches the expected. Espresso tests can be improved by using the Page Robot pattern.
+The view is tested in isolation using Espresso, by setting a ViewState using `bind()` and verifying the correct elements are displayed/hidden and the text matches the expected. There is also one E2E espresso test that uses `MockWebServer` and tests both fragments + activity together. The E2E test is a bit flaky.
 
 ## Acknowledgments
 

@@ -13,7 +13,6 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.logging.HttpLoggingInterceptor.Level
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 
 fun testModule(baseUrl: HttpUrl): AppModule {
 
@@ -31,7 +30,6 @@ fun testModule(baseUrl: HttpUrl): AppModule {
 
     val retrofit = Retrofit.Builder()
         .baseUrl(baseUrl)
-        .addCallAdapterFactory(RxJava2CallAdapterFactory.createAsync())
         .addConverterFactory(converter.asConverterFactory(contentType))
         .client(client)
         .build()

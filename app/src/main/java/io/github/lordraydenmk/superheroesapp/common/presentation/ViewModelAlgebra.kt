@@ -1,32 +1,33 @@
 package io.github.lordraydenmk.superheroesapp.common.presentation
 
-import io.reactivex.Completable
-import io.reactivex.Observable
-import io.reactivex.disposables.Disposable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Defines the algebra (set of operations) for a ViewModel
  *
- * It exposes exactly one [Observable] with type [VS] describing the state of the UI
- * It exposes exactly one [Observable] with type [E] for Effects (navigation, show scnackbar etc..)
+ * It exposes exactly one [Flow] with type [VS] describing the state of the UI
+ * It exposes exactly one [Flow] with type [E] for Effects (navigation, show scnackbar etc..)
  *
  * Exposes methods to update the State and Effects
  *
- * Exposes a method to add [Disposable] and keep track of it
+ * Exposes a [CoroutineScope] tied to the lifecycle of this object
  *
  * @see [JetpackViewModel]
  */
 interface ViewModelAlgebra<VS : Any, E : Any> {
 
-    val viewState: Observable<VS>
+    val viewState: Flow<VS>
 
-    fun isEmpty(): Observable<Boolean>
+    val scope: CoroutineScope
 
-    fun setState(vs: VS): Completable
+    suspend fun isEmpty(): Boolean
 
-    val effects: Observable<E>
+    @Suppress("RedundantUnitReturnType")
+    suspend fun setState(vs: VS): Unit
 
-    fun runEffect(effect: E): Completable
+    val effects: Flow<E>
 
-    fun addToDisposable(d: Disposable)
+    @Suppress("RedundantUnitReturnType")
+    suspend fun runEffect(effect: E): Unit
 }

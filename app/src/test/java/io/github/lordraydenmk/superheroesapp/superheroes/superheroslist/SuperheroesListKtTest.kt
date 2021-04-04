@@ -1,5 +1,6 @@
 package io.github.lordraydenmk.superheroesapp.superheroes.superheroslist
 
+import app.cash.turbine.test
 import io.github.lordraydenmk.superheroesapp.AppModule
 import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.common.IdTextRes
@@ -14,10 +15,14 @@ import io.github.lordraydenmk.superheroesapp.superheroes.data.ThumbnailDto
 import io.github.lordraydenmk.superheroesapp.superheroes.testSuperheroService
 import io.kotest.assertions.fail
 import io.kotest.core.spec.style.FunSpec
-import io.reactivex.Observable
-import io.reactivex.Single
-import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 import okhttp3.HttpUrl.Companion.toHttpUrl
+import org.junit.jupiter.api.Assertions.assertEquals
 
 class SuperheroesListKtTest : FunSpec({
 
@@ -56,12 +61,12 @@ class SuperheroesListKtTest : FunSpec({
             "Marvel rocks!"
         )
 
-        module.program(Observable.empty()).subscribe()
+        module.program(emptyFlow()).collect()
 
-        viewModel.viewState.test()
-            .awaitCount(2)
-            .assertValues(Loading, content)
-            .assertNotComplete()
+        viewModel.viewState.test {
+            assertEquals(Loading, expectItem())
+            assertEquals(content, expectItem())
+        }
     }
 
     test("FirstLoad - service fails with exception - Loading then Problem") {
@@ -73,12 +78,12 @@ class SuperheroesListKtTest : FunSpec({
 
         val problem = Problem(IdTextRes(R.string.error_unrecoverable))
 
-        module.program(Observable.empty()).subscribe()
+        module.program(emptyFlow()).collect()
 
-        viewModel.viewState.test()
-            .awaitCount(2)
-            .assertValues(Loading, problem)
-            .assertNotComplete()
+        viewModel.viewState.test {
+            assertEquals(Loading, expectItem())
+            assertEquals(problem, expectItem())
+        }
     }
 
     test("First load then refresh - service fails, then succeeds - Loading, Problem, Loading Content") {
@@ -86,35 +91,32 @@ class SuperheroesListKtTest : FunSpec({
         val superhero = superheroDto(42, "Ant Man", "https://antman", "jpg")
         val service = object : SuperheroesService {
             var i = 0
-            override fun getSuperheroes(): Single<PaginatedEnvelope<SuperheroDto>> = when (i) {
-                0 -> Single.error(error)
-                1 -> Single.just(PaginatedEnvelope(200, "Marvel", Paginated(listOf(superhero))))
+            override suspend fun getSuperheroes(): PaginatedEnvelope<SuperheroDto> = when (i++) {
+                0 -> throw error
+                1 -> PaginatedEnvelope(200, "Marvel", Paginated(listOf(superhero)))
                 else -> throw IllegalStateException("This should not happen")
-            }.also { i++ }
+            }
 
-            override fun getSuperheroDetails(characterId: Long): Single<PaginatedEnvelope<SuperheroDto>> =
+            override suspend fun getSuperheroDetails(characterId: Long): PaginatedEnvelope<SuperheroDto> =
                 fail("This should not be called")
         }
 
         val viewModel = TestViewModel<SuperheroesViewState, SuperheroesEffect>()
         val module = testModule(service, viewModel)
 
-        val actions = PublishSubject.create<SuperheroesAction>()
-        module.program(actions).subscribe()
+        val actions = MutableSharedFlow<SuperheroesAction>()
 
-        // Somehow this breaks Type Inference after adding rxjava2-extensions ¯\_(ツ)_/¯
-        val test = viewModel.viewState.test()
+        GlobalScope.launch { module.program(actions).collect() }
 
-        test.awaitCount(2)
-            .assertValueAt(0, Loading)
-            .assertValueAt(1) { it is Problem }
+        viewModel.viewState.test {
+            assertEquals(Loading, expectItem())
+            assertEquals(Problem::class.java, expectItem()::class.java)
 
-        actions.onNext(Refresh)
+            actions.emit(Refresh)
 
-        test.awaitCount(4)
-            .assertValueAt(2, Loading)
-            .assertValueAt(3) { it is Content }
-            .assertNotComplete()
+            assertEquals(Loading, expectItem())
+            assertEquals(Content::class.java, expectItem()::class.java)
+        }
     }
 
     test("ShowDetailsAction - NavigateToDetails effect") {
@@ -122,12 +124,11 @@ class SuperheroesListKtTest : FunSpec({
         val module = testModule(testSuperheroService(emptyList()), viewModel)
 
         with(module) {
-            program(Observable.just(LoadDetails(42))).subscribe()
+            program(flowOf(LoadDetails(42))).collect()
         }
 
-        viewModel.effects.test()
-            .awaitCount(1)
-            .assertValue(NavigateToDetails(42))
-            .assertNotComplete()
+        viewModel.effects.test {
+            assertEquals(NavigateToDetails(42), expectItem())
+        }
     }
 })

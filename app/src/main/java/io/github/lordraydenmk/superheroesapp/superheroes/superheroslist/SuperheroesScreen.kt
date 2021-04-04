@@ -4,19 +4,26 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
-import com.jakewharton.rxbinding3.view.clicks
 import io.github.lordraydenmk.superheroesapp.common.presentation.Screen
 import io.github.lordraydenmk.superheroesapp.common.setTextResource
 import io.github.lordraydenmk.superheroesapp.databinding.SuperheroesScreenBinding
-import io.reactivex.Completable
-import io.reactivex.Observable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.merge
+import reactivecircus.flowbinding.android.view.clicks
 
-class SuperheroesScreen(container: ViewGroup) : Screen<SuperheroesAction, SuperheroesViewState> {
+class SuperheroesScreen(
+    container: ViewGroup,
+    lifecycleScope: CoroutineScope
+) : Screen<SuperheroesAction, SuperheroesViewState> {
 
     private val binding =
         SuperheroesScreenBinding.inflate(LayoutInflater.from(container.context), container)
 
-    private val superheroesAdapter = SuperheroesAdapter()
+    private val superheroesAdapter = SuperheroesAdapter(lifecycleScope)
 
     init {
         with(binding.rvSuperheroes) {
@@ -25,12 +32,13 @@ class SuperheroesScreen(container: ViewGroup) : Screen<SuperheroesAction, Superh
         }
     }
 
-    override val actions: Observable<SuperheroesAction> = Observable.merge(
-        binding.tvError.clicks().map { Refresh },
+    override val actionsF: Flow<SuperheroesAction> = merge(
+        binding.tvError.clicks().flowOn(Dispatchers.Main).map { Refresh },
         superheroesAdapter.actions.map { LoadDetails(it) }
     )
 
-    override fun bind(viewState: SuperheroesViewState): Completable = Completable.fromCallable {
+    @Suppress("RedundantSuspendModifier") // updating the UI is a side effect
+    override suspend fun bindS(viewState: SuperheroesViewState) {
         binding.groupSuperheroesContent.isVisible = viewState is Content
         binding.progressSuperheroes.isVisible = viewState is Loading
         binding.tvError.isVisible = viewState is Problem

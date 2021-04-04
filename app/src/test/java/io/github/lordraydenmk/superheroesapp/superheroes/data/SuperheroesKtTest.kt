@@ -1,12 +1,18 @@
 package io.github.lordraydenmk.superheroesapp.superheroes.data
 
 import io.github.lordraydenmk.superheroesapp.common.PaginatedEnvelope
-import io.github.lordraydenmk.superheroesapp.superheroes.*
+import io.github.lordraydenmk.superheroesapp.superheroes.NetworkError
+import io.github.lordraydenmk.superheroesapp.superheroes.ServerError
+import io.github.lordraydenmk.superheroesapp.superheroes.SuperheroException
+import io.github.lordraydenmk.superheroesapp.superheroes.Unrecoverable
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.Resource
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.Superhero
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroDetails
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.Superheroes
+import io.github.lordraydenmk.superheroesapp.superheroes.testSuperheroService
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.HttpException
@@ -37,10 +43,7 @@ class SuperheroesKtTest : FunSpec({
             Resource(3),
             Resource(4)
         )
-        service.superheroes()
-            .test()
-            .awaitCount(1)
-            .assertValue(Superheroes(listOf(hulk), "Marvel rocks!"))
+        service.superheroes() shouldBe Superheroes(listOf(hulk), "Marvel rocks!")
     }
 
     test("superheroes - service with 5XX exception - ServerError") {
@@ -48,39 +51,24 @@ class SuperheroesKtTest : FunSpec({
         val exception = HttpException(Response.error<PaginatedEnvelope<SuperheroDto>>(500, body))
         val service = testSuperheroService(exception)
 
-        service.superheroes()
-            .test()
-            .awaitCount(1)
-            .assertError {
-                it is SuperheroException &&
-                        it.error == ServerError(500, "Response.error()")
-            }
+        val e = shouldThrow<SuperheroException> { service.superheroes() }
+        e.error shouldBe ServerError(500, "Response.error()")
     }
 
     test("superheroes - service fails with IOException - NetworkError") {
         val exception = IOException("No Internet!")
         val service = testSuperheroService(exception)
 
-        service.superheroes()
-            .test()
-            .awaitCount(1)
-            .assertError {
-                it is SuperheroException &&
-                        it.error == NetworkError(exception)
-            }
+        val e = shouldThrow<SuperheroException> { service.superheroes() }
+        e.error shouldBe NetworkError(exception)
     }
 
     test("superheroes - service fails with other error - Unrecoverable") {
         val exception = RuntimeException("Bang!")
         val service = testSuperheroService(exception)
 
-        service.superheroes()
-            .test()
-            .awaitCount(1)
-            .assertError {
-                it is SuperheroException &&
-                        it.error == Unrecoverable(exception)
-            }
+        val e = shouldThrow<SuperheroException> { service.superheroes() }
+        e.error shouldBe Unrecoverable(exception)
     }
 
     test("superheroDetails - service with success - converts to domain") {
@@ -105,9 +93,6 @@ class SuperheroesKtTest : FunSpec({
             Resource(3),
             Resource(4)
         )
-        service.superheroDetails(42)
-            .test()
-            .awaitCount(1)
-            .assertValue(SuperheroDetails(hulk, "Marvel rocks!"))
+        service.superheroDetails(42) shouldBe SuperheroDetails(hulk, "Marvel rocks!")
     }
 })
