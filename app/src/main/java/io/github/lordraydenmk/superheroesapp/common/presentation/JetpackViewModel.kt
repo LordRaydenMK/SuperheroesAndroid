@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 class JetpackViewModel<VS : Any, E : Any> : ViewModel(), ViewModelAlgebra<VS, E> {
 
     private val _viewState: MutableStateFlow<VS?> = MutableStateFlow(null)
-    override val viewStateF: Flow<VS>
+    override val viewState: Flow<VS>
         get() = _viewState.filterNotNull()
 
     override val scope: CoroutineScope
@@ -29,14 +29,14 @@ class JetpackViewModel<VS : Any, E : Any> : ViewModel(), ViewModelAlgebra<VS, E>
 
     override suspend fun isEmpty(): Boolean = _viewState.value == null
 
-    override suspend fun setStateS(vs: VS): Unit = _viewState.emit(vs)
+    override suspend fun setState(vs: VS): Unit = _viewState.emit(vs)
 
     private val _viewEffects = Channel<E>(Channel.UNLIMITED)
 
-    override val effectsF: Flow<E>
+    override val effects: Flow<E>
         get() = _viewEffects.receiveAsFlow()
 
-    override suspend fun runEffectS(effect: E) = _viewEffects.send(effect)
+    override suspend fun runEffect(effect: E) = _viewEffects.send(effect)
 
     override fun onCleared() {
         _viewEffects.close()

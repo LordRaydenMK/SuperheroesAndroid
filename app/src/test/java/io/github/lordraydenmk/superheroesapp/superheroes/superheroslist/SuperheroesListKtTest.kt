@@ -62,7 +62,7 @@ class SuperheroesListKtTest : FunSpec({
 
         module.program(emptyFlow()).collect()
 
-        viewModel.viewStateF.test {
+        viewModel.viewState.test {
             assertEquals(Loading, expectItem())
             assertEquals(content, expectItem())
         }
@@ -79,7 +79,7 @@ class SuperheroesListKtTest : FunSpec({
 
         module.program(emptyFlow()).collect()
 
-        viewModel.viewStateF.test {
+        viewModel.viewState.test {
             assertEquals(Loading, expectItem())
             assertEquals(problem, expectItem())
         }
@@ -106,7 +106,7 @@ class SuperheroesListKtTest : FunSpec({
         val actions = MutableSharedFlow<SuperheroesAction>()
         module.program(actions).asObservable().subscribe()
 
-        viewModel.viewStateF.test {
+        viewModel.viewState.test {
             assertEquals(Loading, expectItem())
             assertEquals(Problem::class.java, expectItem()::class.java)
 
@@ -125,7 +125,7 @@ class SuperheroesListKtTest : FunSpec({
             program(flowOf(LoadDetails(42))).collect()
         }
 
-        viewModel.effectsF.test {
+        viewModel.effects.test {
             assertEquals(NavigateToDetails(42), expectItem())
         }
     }

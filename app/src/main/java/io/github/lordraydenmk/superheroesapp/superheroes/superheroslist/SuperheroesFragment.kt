@@ -31,7 +31,7 @@ class SuperheroesFragment : Fragment(R.layout.superheroes_fragment) {
             ViewModelAlgebra<SuperheroesViewState, SuperheroesEffect> by viewModel {}
 
         with(module) {
-            val renderFlow = viewStateF
+            val renderFlow = viewState
                 .mapLatest { screen.bindS(it) }
 
             lifecycleScope.launchWhenStarted {
@@ -45,7 +45,7 @@ class SuperheroesFragment : Fragment(R.layout.superheroes_fragment) {
 
     private fun handleEffects() {
         lifecycleScope.launchWhenStarted {
-            viewModel.effectsF.map { effect ->
+            viewModel.effects.map { effect ->
                 when (effect) {
                     is NavigateToDetails -> findNavController().navigate(
                         R.id.action_details,

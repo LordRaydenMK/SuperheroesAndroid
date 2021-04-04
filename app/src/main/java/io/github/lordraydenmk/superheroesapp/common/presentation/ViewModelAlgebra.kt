@@ -19,17 +19,17 @@ import kotlinx.coroutines.flow.Flow
  */
 interface ViewModelAlgebra<VS : Any, E : Any> {
 
-    val viewStateF: Flow<VS>
+    val viewState: Flow<VS>
 
     val scope: CoroutineScope
 
     suspend fun isEmpty(): Boolean
 
     @Suppress("RedundantUnitReturnType")
-    suspend fun setStateS(vs: VS): Unit
+    suspend fun setState(vs: VS): Unit
 
-    val effectsF: Flow<E>
+    val effects: Flow<E>
 
     @Suppress("RedundantUnitReturnType")
-    suspend fun runEffectS(effect: E): Unit
+    suspend fun runEffect(effect: E): Unit
 }

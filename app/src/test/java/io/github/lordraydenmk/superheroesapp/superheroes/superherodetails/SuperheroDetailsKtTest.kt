@@ -66,7 +66,7 @@ class SuperheroDetailsKtTest : FunSpec({
                 events = PlaceholderString(R.string.superhero_details_events, 3),
                 series = PlaceholderString(R.string.superhero_details_series, 4)
             )
-            viewModel.viewStateF.test {
+            viewModel.viewState.test {
                 assertEquals(Loading, expectItem())
                 assertEquals(Content(hulk, "Marvel rocks!"), expectItem())
             }
@@ -84,7 +84,7 @@ class SuperheroDetailsKtTest : FunSpec({
             program(42, emptyFlow()).subscribe()
 
             val expectedProblem = Problem(ErrorTextRes(R.string.error_recoverable_network))
-            viewModel.viewStateF.test {
+            viewModel.viewState.test {
                 assertEquals(Loading, expectItem())
                 assertEquals(expectedProblem, expectItem())
             }
@@ -98,7 +98,7 @@ class SuperheroDetailsKtTest : FunSpec({
         with(module) {
             program(42, flowOf(Up)).subscribe()
 
-            viewModel.effectsF.test {
+            viewModel.effects.test {
                 assertEquals(NavigateUp, expectItem())
             }
         }

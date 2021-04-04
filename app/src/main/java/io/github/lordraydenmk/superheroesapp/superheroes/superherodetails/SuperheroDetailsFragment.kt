@@ -29,7 +29,7 @@ class SuperheroDetailsFragment : Fragment(R.layout.superhero_details_fragment) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        lifecycle.addObserver(EffectsObserver(viewModel.effectsF.asObservable()) { effect ->
+        lifecycle.addObserver(EffectsObserver(viewModel.effects.asObservable()) { effect ->
             when (effect) {
                 NavigateUp -> findNavController().navigateUp()
             }
@@ -45,7 +45,7 @@ class SuperheroDetailsFragment : Fragment(R.layout.superhero_details_fragment) {
             ViewModelAlgebra<SuperheroDetailsViewState, SuperheroDetailsEffect> by viewModel {}
 
         with(module) {
-            val render = viewStateF.asObservable()
+            val render = viewState.asObservable()
                 .switchMap {
                     screen.bind(it)
                         .toObservable<Unit>()

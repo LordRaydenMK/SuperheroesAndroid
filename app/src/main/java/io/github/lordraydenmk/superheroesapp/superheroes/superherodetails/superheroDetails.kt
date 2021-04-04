@@ -39,7 +39,7 @@ fun SuperheroDetailsModule.program(
     val flow = actions.flatMapMerge { action ->
         when (action) {
             is Refresh -> loadSuperhero(action.superheroId).asFlow()
-            Up -> flowOf(runEffectS(NavigateUp))
+            Up -> flowOf(runEffect(NavigateUp))
         }.fork(Dispatchers.Default, scope)
             .unit()
     }
@@ -60,7 +60,7 @@ fun SuperheroDetailsModule.loadSuperhero(superheroId: SuperheroId): Observable<U
         .startWith(Loading)
         .logOnError("Error in loadSuperheroes $superheroId")
         .onErrorReturn { t -> t.toProblem() }
-        .flatMapCompletable { rxCompletable { setStateS(it) } }
+        .flatMapCompletable { rxCompletable { setState(it) } }
         .toObservable()
 
 private fun Throwable.toProblem(): Problem = when (this) {

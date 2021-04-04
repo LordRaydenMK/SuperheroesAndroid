@@ -28,7 +28,7 @@ fun SuperheroesModule.program(actions: Flow<SuperheroesAction>): Flow<Unit> {
     val flow = actions.flatMapMerge { action ->
         when (action) {
             Refresh -> refreshSuperheroes()
-            is LoadDetails -> flowOf(runEffectS(NavigateToDetails(action.id)))
+            is LoadDetails -> flowOf(runEffect(NavigateToDetails(action.id)))
         }.fork(Dispatchers.Default, scope)
             .unit()
     }
@@ -44,7 +44,7 @@ fun SuperheroesModule.firstLoad(): Flow<Unit> =
 
 fun SuperheroesModule.refreshSuperheroes(): Flow<Unit> =
     loadSuperheroes()
-        .map { setStateS(it) }
+        .map { setState(it) }
         .flowOn(Dispatchers.Default)
 
 fun SuperheroesModule.loadSuperheroes(): Flow<SuperheroesViewState> = flow {

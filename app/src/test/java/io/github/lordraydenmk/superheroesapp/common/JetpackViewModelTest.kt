@@ -10,19 +10,19 @@ class JetpackViewModelTest : FunSpec({
 
     test("setState - updates viewState") {
         val viewModel = JetpackViewModel<String, Nothing>()
-        viewModel.setStateS("Test")
+        viewModel.setState("Test")
 
-        viewModel.viewStateF.test {
+        viewModel.viewState.test {
             assertEquals("Test", expectItem())
         }
     }
 
     test("setState twice - keeps last state") {
         val viewModel = JetpackViewModel<String, Nothing>()
-        viewModel.setStateS("First")
-        viewModel.setStateS("Second")
+        viewModel.setState("First")
+        viewModel.setState("Second")
 
-        viewModel.viewStateF.test {
+        viewModel.viewState.test {
             assertEquals("Second", expectItem())
         }
     }
@@ -36,7 +36,7 @@ class JetpackViewModelTest : FunSpec({
     test("isEmpty - view model with state - false") {
         val viewModel = JetpackViewModel<String, Nothing>()
 
-        viewModel.setStateS("Hello world")
+        viewModel.setState("Hello world")
 
         viewModel.isEmpty() shouldBe false
     }
@@ -44,11 +44,11 @@ class JetpackViewModelTest : FunSpec({
     test("runEffect - no subscribers - adds effect to queue") {
         val viewModel = JetpackViewModel<Nothing, String>()
 
-        viewModel.runEffectS("First")
-        viewModel.runEffectS("Second")
+        viewModel.runEffect("First")
+        viewModel.runEffect("Second")
 
 
-        viewModel.effectsF.test {
+        viewModel.effects.test {
             assertEquals("First", expectItem())
             assertEquals("Second", expectItem())
         }
@@ -57,12 +57,12 @@ class JetpackViewModelTest : FunSpec({
     test("runEffect - subscriber - consumes effect") {
         val viewModel = JetpackViewModel<Nothing, String>()
 
-        viewModel.effectsF.test {
-            viewModel.runEffectS("First")
+        viewModel.effects.test {
+            viewModel.runEffect("First")
             assertEquals("First", expectItem())
         }
 
-        viewModel.effectsF.test {
+        viewModel.effects.test {
             expectNoEvents()
         }
     }
