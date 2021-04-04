@@ -31,7 +31,7 @@ class SuperheroDetailsScreenTest {
     @Test
     fun loadingState_progressBarDisplayed() {
         launchInDecoratedContainer().use { scenario ->
-            scenario.onView { view -> view.bind(Loading).subscribe() }
+            scenario.onViewBlocking { view -> view.bindS(Loading) }
 
             superheroDetails {
                 assertLoadingDisplayed()
@@ -45,7 +45,7 @@ class SuperheroDetailsScreenTest {
     fun recoverableProblemState_errorViewDisplayedWithRetryText() {
         val viewState = Problem(ErrorTextRes(R.string.error_recoverable_network))
         launchInDecoratedContainer().use { scenario ->
-            scenario.onView { view -> view.bind(viewState).subscribe() }
+            scenario.onViewBlocking { view -> view.bindS(viewState) }
 
             val errorText =
                 "We could not connect to our server. Please check your internet connection \n\nTap to retry!"
@@ -60,8 +60,8 @@ class SuperheroDetailsScreenTest {
     @Test
     fun unrecoverableProblemState_errorViewDisplayed() {
         launchInDecoratedContainer().use { scenario ->
-            scenario.onView { view ->
-                view.bind(Problem(IdTextRes(R.string.error_unrecoverable))).subscribe()
+            scenario.onViewBlocking { view ->
+                view.bindS(Problem(IdTextRes(R.string.error_unrecoverable)))
             }
 
             superheroDetails {
@@ -87,7 +87,7 @@ class SuperheroDetailsScreenTest {
             "Copyright Marvel"
         )
         launchInDecoratedContainer().use { scenario ->
-            scenario.onView { view -> view.bind(viewState).subscribe() }
+            scenario.onViewBlocking { view -> view.bindS(viewState) }
 
             superheroDetails {
                 assertContentDisplayed(

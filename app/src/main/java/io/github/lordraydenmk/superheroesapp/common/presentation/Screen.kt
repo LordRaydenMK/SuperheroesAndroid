@@ -1,10 +1,6 @@
 package io.github.lordraydenmk.superheroesapp.common.presentation
 
-import io.reactivex.Completable
-import io.reactivex.Observable
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.rx2.asFlow
-import kotlinx.coroutines.rx2.await
 
 /**
  * A container for UI/view related logic
@@ -21,12 +17,8 @@ import kotlinx.coroutines.rx2.await
  */
 interface Screen<A : Any, VS> {
 
-    val actions: Observable<A>
-
     val actionsF: Flow<A>
-        get() = actions.asFlow()
 
-    fun bind(viewState: VS): Completable
-
-    suspend fun bindS(viewState: VS): Unit = bind(viewState).await()
+    @Suppress("RedundantUnitReturnType")
+    suspend fun bindS(viewState: VS): Unit
 }

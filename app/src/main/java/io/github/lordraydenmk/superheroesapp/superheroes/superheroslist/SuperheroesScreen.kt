@@ -7,8 +7,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import io.github.lordraydenmk.superheroesapp.common.presentation.Screen
 import io.github.lordraydenmk.superheroesapp.common.setTextResource
 import io.github.lordraydenmk.superheroesapp.databinding.SuperheroesScreenBinding
-import io.reactivex.Completable
-import io.reactivex.Observable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -34,15 +32,10 @@ class SuperheroesScreen(
         }
     }
 
-    override val actions: Observable<SuperheroesAction> = Observable.error(NotImplementedError())
-
     override val actionsF: Flow<SuperheroesAction> = merge(
         binding.tvError.clicks().flowOn(Dispatchers.Main).map { Refresh },
         superheroesAdapter.actions.map { LoadDetails(it) }
     )
-
-    override fun bind(viewState: SuperheroesViewState): Completable =
-        Completable.error(NotImplementedError())
 
     @Suppress("RedundantSuspendModifier") // updating the UI is a side effect
     override suspend fun bindS(viewState: SuperheroesViewState) {

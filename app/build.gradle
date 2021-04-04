@@ -89,14 +89,9 @@ dependencies {
     implementation 'com.akaita.java:rxjava2-debug:1.4.0'
     implementation "io.reactivex.rxjava2:rxkotlin:2.4.0"
 
-    def rxbinding = "3.1.0"
-    implementation "com.jakewharton.rxbinding3:rxbinding:$rxbinding"
-    implementation "com.jakewharton.rxbinding3:rxbinding-core:$rxbinding"
-    implementation "com.jakewharton.rxbinding3:rxbinding-appcompat:$rxbinding"
-    implementation "com.jakewharton.rxbinding3:rxbinding-recyclerview:$rxbinding"
-
     def flowbinding_version = "1.0.0"
     implementation "io.github.reactivecircus.flowbinding:flowbinding-android:${flowbinding_version}"
+    implementation "io.github.reactivecircus.flowbinding:flowbinding-appcompat:${flowbinding_version}"
 
     def retrofit = "2.9.0"
     def okhttp = "4.9.1"
