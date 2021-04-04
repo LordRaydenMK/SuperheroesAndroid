@@ -42,8 +42,7 @@ class JetpackViewModel<VS : Any, E : Any> : ViewModel(), ViewModelAlgebra<VS, E>
     override fun isEmpty(): Observable<Boolean> = _viewState.map { it == null }
         .asObservable()
 
-    override fun setState(vs: VS): Completable =
-        Completable.fromAction { _viewState.value = vs }
+    override suspend fun setStateS(vs: VS): Unit = _viewState.emit(vs)
 
     private val _viewEffects = Channel<E>(Channel.UNLIMITED)
     override val effects: Observable<E>

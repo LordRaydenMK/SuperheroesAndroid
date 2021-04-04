@@ -28,9 +28,8 @@ interface ViewModelAlgebra<VS : Any, E : Any> {
 
     fun isEmpty(): Observable<Boolean>
 
-    fun setState(vs: VS): Completable
-
-    suspend fun setStateS(vs: VS): Unit = setState(vs).await()
+    @Suppress("RedundantUnitReturnType")
+    suspend fun setStateS(vs: VS): Unit
 
     val effects: Observable<E>
 

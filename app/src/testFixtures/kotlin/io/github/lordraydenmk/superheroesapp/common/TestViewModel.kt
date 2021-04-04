@@ -26,8 +26,7 @@ class TestViewModel<VS : Any, E : Any> : ViewModelAlgebra<VS, E> {
     override fun isEmpty(): Observable<Boolean> =
         Observable.fromCallable { _viewState.replayCache.isEmpty() }
 
-    override fun setState(vs: VS): Completable =
-        rxCompletable { _viewState.emit(vs) }
+    override suspend fun setStateS(vs: VS) = _viewState.emit(vs)
 
     override fun addToDisposable(d: Disposable) {
         cd += d

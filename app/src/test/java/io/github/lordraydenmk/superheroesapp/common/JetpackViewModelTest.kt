@@ -9,8 +9,7 @@ class JetpackViewModelTest : FunSpec({
 
     test("setState - updates viewState") {
         val viewModel = JetpackViewModel<String, Nothing>()
-        viewModel.setState("Test")
-            .subscribe()
+        viewModel.setStateS("Test")
 
         viewModel.viewStateF.test {
             assertEquals("Test", expectItem())
@@ -19,9 +18,8 @@ class JetpackViewModelTest : FunSpec({
 
     test("setState twice - keeps last state") {
         val viewModel = JetpackViewModel<String, Nothing>()
-        viewModel.setState("First")
-            .andThen(viewModel.setState("Second"))
-            .subscribe()
+        viewModel.setStateS("First")
+        viewModel.setStateS("Second")
 
         viewModel.viewStateF.test {
             assertEquals("Second", expectItem())
@@ -39,7 +37,7 @@ class JetpackViewModelTest : FunSpec({
     test("isEmpty - view model with state - false") {
         val viewModel = JetpackViewModel<String, Nothing>()
 
-        viewModel.setState("Hello world").subscribe()
+        viewModel.setStateS("Hello world")
 
         viewModel.isEmpty().test()
             .assertValue(false)

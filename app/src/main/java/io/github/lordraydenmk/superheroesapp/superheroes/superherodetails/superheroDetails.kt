@@ -18,6 +18,7 @@ import io.github.lordraydenmk.superheroesapp.superheroes.domain.Superhero
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroId
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.rx2.rxCompletable
 
 interface SuperheroDetailsModule : AppModule,
     ViewModelAlgebra<SuperheroDetailsViewState, SuperheroDetailsEffect>
@@ -47,7 +48,7 @@ fun SuperheroDetailsModule.loadSuperhero(superheroId: SuperheroId): Observable<U
         .startWith(Loading)
         .logOnError("Error in loadSuperheroes $superheroId")
         .onErrorReturn { t -> t.toProblem() }
-        .flatMapCompletable { setState(it) }
+        .flatMapCompletable { rxCompletable { setStateS(it) } }
         .toObservable()
 
 private fun Throwable.toProblem(): Problem = when (this) {
