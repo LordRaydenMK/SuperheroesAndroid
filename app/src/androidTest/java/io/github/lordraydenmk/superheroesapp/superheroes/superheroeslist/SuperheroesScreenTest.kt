@@ -12,7 +12,6 @@ import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.Problem
 import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.SuperheroViewEntity
 import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.SuperheroesScreen
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.runBlocking
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -27,7 +26,7 @@ class SuperheroesScreenTest {
     @Test
     fun loadingState_progressBarDisplayed() {
         val scenario = launchInContainer { parent -> SuperheroesScreen(parent, scope) }
-        scenario.onView { view -> runBlocking { view.bindS(Loading) } }
+        scenario.onViewBlocking { view -> view.bindS(Loading) }
 
         superheroesScreen {
             assertLoadingDisplayed()
@@ -39,8 +38,8 @@ class SuperheroesScreenTest {
     @Test
     fun recoverableProblemState_errorViewDisplayedWithRetryText() {
         val scenario = launchInContainer { parent -> SuperheroesScreen(parent, scope) }
-        scenario.onView { view ->
-            runBlocking { view.bindS(Problem(ErrorTextRes(R.string.error_recoverable_network))) }
+        scenario.onViewBlocking { view ->
+            view.bindS(Problem(ErrorTextRes(R.string.error_recoverable_network)))
         }
 
         val errorText =
@@ -55,8 +54,8 @@ class SuperheroesScreenTest {
     @Test
     fun unrecoverableProblemState_errorViewDisplayed() {
         val scenario = launchInContainer { parent -> SuperheroesScreen(parent, scope) }
-        scenario.onView { view ->
-            runBlocking { view.bindS(Problem(IdTextRes(R.string.error_unrecoverable))) }
+        scenario.onViewBlocking { view ->
+            view.bindS(Problem(IdTextRes(R.string.error_unrecoverable)))
         }
 
         val errorText = "Ooops… Something went wrong!"
@@ -81,7 +80,7 @@ class SuperheroesScreenTest {
         )
         val scenario = launchInContainer { parent -> SuperheroesScreen(parent, scope) }
 
-        scenario.onView { view -> runBlocking { view.bindS(viewState) } }
+        scenario.onViewBlocking { view -> view.bindS(viewState) }
 
         superheroesScreen {
             assertContentDisplayed("Copyright Marvel")
