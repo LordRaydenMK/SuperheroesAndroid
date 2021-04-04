@@ -15,11 +15,12 @@ import io.github.lordraydenmk.superheroesapp.superheroes.data.ThumbnailDto
 import io.github.lordraydenmk.superheroesapp.superheroes.testSuperheroService
 import io.kotest.assertions.fail
 import io.kotest.core.spec.style.FunSpec
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.rx2.asObservable
+import kotlinx.coroutines.launch
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.junit.jupiter.api.Assertions.assertEquals
 
@@ -104,7 +105,8 @@ class SuperheroesListKtTest : FunSpec({
         val module = testModule(service, viewModel)
 
         val actions = MutableSharedFlow<SuperheroesAction>()
-        module.program(actions).asObservable().subscribe()
+
+        GlobalScope.launch { module.program(actions).collect() }
 
         viewModel.viewState.test {
             assertEquals(Loading, expectItem())
