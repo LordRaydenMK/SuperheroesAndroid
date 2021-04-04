@@ -6,7 +6,6 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.subjects.ReplaySubject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -33,10 +32,10 @@ class TestViewModel<VS : Any, E : Any> : ViewModelAlgebra<VS, E> {
         cd += d
     }
 
-    private val _effects = ReplaySubject.create<E>()
+    private val _effects = MutableSharedFlow<E>(256, 0)
     override val effects: Observable<E>
-        get() = _effects
+        get() = _effects.asObservable()
 
     override fun runEffect(effect: E): Completable =
-        Completable.fromCallable { _effects.onNext(effect) }
+        rxCompletable { _effects.emit(effect) }
 }
