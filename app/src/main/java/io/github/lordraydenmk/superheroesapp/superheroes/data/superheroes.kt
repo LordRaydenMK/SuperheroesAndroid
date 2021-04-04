@@ -1,6 +1,6 @@
 package io.github.lordraydenmk.superheroesapp.superheroes.data
 
-import arrow.core.identity
+import io.github.lordraydenmk.superheroesapp.common.identity
 import io.github.lordraydenmk.superheroesapp.superheroes.NetworkError
 import io.github.lordraydenmk.superheroesapp.superheroes.ServerError
 import io.github.lordraydenmk.superheroesapp.superheroes.SuperheroException

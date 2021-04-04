@@ -58,10 +58,10 @@ class SuperheroDetailsKtTest : FunSpec({
             val hulk = SuperheroDetailsViewEntity(
                 "Hulk",
                 "https://hulk.jpg".toHttpUrl(),
-                PlaceholderString(R.string.superhero_details_comics, 1),
-                PlaceholderString(R.string.superhero_details_series, 2),
-                PlaceholderString(R.string.superhero_details_events, 3),
-                PlaceholderString(R.string.superhero_details_stories, 4)
+                comics = PlaceholderString(R.string.superhero_details_comics, 1),
+                stories = PlaceholderString(R.string.superhero_details_stories, 2),
+                events = PlaceholderString(R.string.superhero_details_events, 3),
+                series = PlaceholderString(R.string.superhero_details_series, 4)
             )
             viewModel.viewState
                 .test()
