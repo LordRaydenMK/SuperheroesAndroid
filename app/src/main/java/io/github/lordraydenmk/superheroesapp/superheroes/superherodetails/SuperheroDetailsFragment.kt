@@ -5,16 +5,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import io.github.lordraydenmk.superheroesapp.AppModule
 import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.appModule
 import io.github.lordraydenmk.superheroesapp.common.presentation.ViewModelAlgebra
 import io.github.lordraydenmk.superheroesapp.common.rx.EffectsObserver
-import io.github.lordraydenmk.superheroesapp.common.rx.autoDispose
 import io.github.lordraydenmk.superheroesapp.common.rx.evalOn
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroId
 import io.reactivex.android.schedulers.AndroidSchedulers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.rx2.asFlow
 import kotlinx.coroutines.rx2.asObservable
 
 class SuperheroDetailsFragment : Fragment(R.layout.superhero_details_fragment) {
@@ -50,11 +53,12 @@ class SuperheroDetailsFragment : Fragment(R.layout.superhero_details_fragment) {
                     screen.bind(it)
                         .toObservable<Unit>()
                         .evalOn(AndroidSchedulers.mainThread())
-                }
+                }.asFlow()
 
-            program(superheroId, screen.actionsF)
-                .mergeWith(render)
-                .autoDispose(viewLifecycleOwner)
+            lifecycleScope.launchWhenStarted {
+                merge(program(superheroId, screen.actionsF), render)
+                    .collect()
+            }
         }
     }
 

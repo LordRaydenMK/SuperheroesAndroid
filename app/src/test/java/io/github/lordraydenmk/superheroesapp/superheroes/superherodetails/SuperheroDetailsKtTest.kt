@@ -13,6 +13,7 @@ import io.github.lordraydenmk.superheroesapp.superheroes.data.SuperheroesService
 import io.github.lordraydenmk.superheroesapp.superheroes.data.ThumbnailDto
 import io.github.lordraydenmk.superheroesapp.superheroes.testSuperheroService
 import io.kotest.core.spec.style.FunSpec
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 import okhttp3.HttpUrl.Companion.toHttpUrl
@@ -56,7 +57,7 @@ class SuperheroDetailsKtTest : FunSpec({
         val module = module(service, viewModel)
 
         with(module) {
-            program(42, emptyFlow()).subscribe()
+            program(42, emptyFlow()).collect()
 
             val hulk = SuperheroDetailsViewEntity(
                 "Hulk",
@@ -81,7 +82,7 @@ class SuperheroDetailsKtTest : FunSpec({
         val module = module(service, viewModel)
 
         with(module) {
-            program(42, emptyFlow()).subscribe()
+            program(42, emptyFlow()).collect()
 
             val expectedProblem = Problem(ErrorTextRes(R.string.error_recoverable_network))
             viewModel.viewState.test {
@@ -96,7 +97,7 @@ class SuperheroDetailsKtTest : FunSpec({
         val module = module(testSuperheroService(emptyList()), viewModel)
 
         with(module) {
-            program(42, flowOf(Up)).subscribe()
+            program(42, flowOf(Up)).collect()
 
             viewModel.effects.test {
                 assertEquals(NavigateUp, expectItem())

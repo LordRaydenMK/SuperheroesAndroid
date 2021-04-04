@@ -25,7 +25,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.rx2.asFlow
-import kotlinx.coroutines.rx2.asObservable
 import kotlinx.coroutines.rx2.rxCompletable
 import kotlinx.coroutines.rx2.rxSingle
 
@@ -35,7 +34,7 @@ interface SuperheroDetailsModule : AppModule,
 fun SuperheroDetailsModule.program(
     superheroId: SuperheroId,
     actions: Flow<SuperheroDetailsAction>
-): Observable<Unit> {
+): Flow<Unit> {
     val flow = actions.flatMapMerge { action ->
         when (action) {
             is Refresh -> loadSuperhero(action.superheroId).asFlow()
@@ -43,7 +42,7 @@ fun SuperheroDetailsModule.program(
         }.fork(Dispatchers.Default, scope)
             .unit()
     }
-    return merge(flow, firstLoad(superheroId)).asObservable()
+    return merge(flow, firstLoad(superheroId))
 }
 
 fun SuperheroDetailsModule.firstLoad(superheroId: SuperheroId): Flow<Unit> =
