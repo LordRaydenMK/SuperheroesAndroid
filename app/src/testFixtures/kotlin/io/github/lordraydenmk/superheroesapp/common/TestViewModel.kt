@@ -9,22 +9,25 @@ import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.subjects.ReplaySubject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.rx2.asObservable
+import kotlinx.coroutines.rx2.rxCompletable
 
 class TestViewModel<VS : Any, E : Any> : ViewModelAlgebra<VS, E> {
 
     private val cd = CompositeDisposable()
 
-    private val _viewState = ReplaySubject.create<VS>()
+    private val _viewState = MutableSharedFlow<VS>(256, 0)
     override val viewState: Observable<VS>
-        get() = _viewState
+        get() = _viewState.asObservable()
 
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
     override fun isEmpty(): Observable<Boolean> =
-        Observable.fromCallable { _viewState.values.isEmpty() }
+        Observable.fromCallable { _viewState.replayCache.isEmpty() }
 
     override fun setState(vs: VS): Completable =
-        Completable.fromCallable { _viewState.onNext(vs) }
+        rxCompletable { _viewState.emit(vs) }
 
     override fun addToDisposable(d: Disposable) {
         cd += d
