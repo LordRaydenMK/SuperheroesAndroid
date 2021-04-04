@@ -11,7 +11,6 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.logging.HttpLoggingInterceptor.Level
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 
 /**
  * Contains dependencies with Singleton/App scope
@@ -65,7 +64,6 @@ interface AppModule : SuperheroesService {
         @OptIn(ExperimentalSerializationApi::class)
         private val retrofit = Retrofit.Builder()
             .baseUrl("https://gateway.marvel.com/v1/public/")
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.createAsync())
             .addConverterFactory(converter.asConverterFactory(contentType))
             .client(client)
             .build()
