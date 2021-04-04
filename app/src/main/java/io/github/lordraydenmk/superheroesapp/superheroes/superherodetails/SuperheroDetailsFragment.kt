@@ -29,7 +29,7 @@ class SuperheroDetailsFragment : Fragment(R.layout.superhero_details_fragment) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        lifecycle.addObserver(EffectsObserver(viewModel.effects) { effect ->
+        lifecycle.addObserver(EffectsObserver(viewModel.effectsF.asObservable()) { effect ->
             when (effect) {
                 NavigateUp -> findNavController().navigateUp()
             }

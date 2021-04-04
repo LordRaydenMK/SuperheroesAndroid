@@ -44,28 +44,26 @@ class JetpackViewModelTest : FunSpec({
     test("runEffect - no subscribers - adds effect to queue") {
         val viewModel = JetpackViewModel<Nothing, String>()
 
-        viewModel.runEffect("First")
-            .andThen(viewModel.runEffect("Second"))
-            .subscribe()
+        viewModel.runEffectS("First")
+        viewModel.runEffectS("Second")
 
-        viewModel.effects.test()
-            .assertValues("First", "Second")
-            .assertNotComplete()
+
+        viewModel.effectsF.test {
+            assertEquals("First", expectItem())
+            assertEquals("Second", expectItem())
+        }
     }
 
     test("runEffect - subscriber - consumes effect") {
         val viewModel = JetpackViewModel<Nothing, String>()
-        val testObserver = viewModel.effects.test()
 
-        viewModel.runEffect("First").subscribe()
+        viewModel.effectsF.test {
+            viewModel.runEffectS("First")
+            assertEquals("First", expectItem())
+        }
 
-        testObserver
-            .awaitCount(1)
-            .assertValue("First")
-            .dispose() // only one subscriber at a time
-
-        viewModel.effects.test()
-            .assertEmpty()
-            .assertNotComplete()
+        viewModel.effectsF.test {
+            expectNoEvents()
+        }
     }
 })

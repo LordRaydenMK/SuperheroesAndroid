@@ -1,19 +1,13 @@
 package io.github.lordraydenmk.superheroesapp.common
 
 import io.github.lordraydenmk.superheroesapp.common.presentation.ViewModelAlgebra
-import io.reactivex.Completable
-import io.reactivex.Observable
-import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.rx2.asObservable
-import kotlinx.coroutines.rx2.rxCompletable
+import kotlinx.coroutines.flow.asSharedFlow
 
 class TestViewModel<VS : Any, E : Any> : ViewModelAlgebra<VS, E> {
-
-    private val cd = CompositeDisposable()
 
     private val _viewState = MutableSharedFlow<VS>(256, 0)
     override val viewStateF: Flow<VS>
@@ -26,9 +20,9 @@ class TestViewModel<VS : Any, E : Any> : ViewModelAlgebra<VS, E> {
     override suspend fun setStateS(vs: VS) = _viewState.emit(vs)
 
     private val _effects = MutableSharedFlow<E>(256, 0)
-    override val effects: Observable<E>
-        get() = _effects.asObservable()
 
-    override fun runEffect(effect: E): Completable =
-        rxCompletable { _effects.emit(effect) }
+    override val effectsF: Flow<E>
+        get() = _effects.asSharedFlow()
+
+    override suspend fun runEffectS(effect: E) = _effects.emit(effect)
 }

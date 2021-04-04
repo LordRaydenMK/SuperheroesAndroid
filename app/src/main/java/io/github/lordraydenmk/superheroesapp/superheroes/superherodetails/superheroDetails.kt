@@ -26,7 +26,6 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.rx2.asFlow
 import kotlinx.coroutines.rx2.asObservable
-import kotlinx.coroutines.rx2.await
 import kotlinx.coroutines.rx2.rxCompletable
 import kotlinx.coroutines.rx2.rxSingle
 
@@ -40,7 +39,7 @@ fun SuperheroDetailsModule.program(
     val flow = actions.flatMapMerge { action ->
         when (action) {
             is Refresh -> loadSuperhero(action.superheroId).asFlow()
-            Up -> flowOf(runEffect(NavigateUp).await())
+            Up -> flowOf(runEffectS(NavigateUp))
         }.fork(Dispatchers.Default, scope)
             .unit()
     }

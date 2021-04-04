@@ -1,12 +1,9 @@
 package io.github.lordraydenmk.superheroesapp.common.presentation
 
-import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.rx2.asFlow
-import kotlinx.coroutines.rx2.await
 
 /**
  * Defines the algebra (set of operations) for a ViewModel
@@ -31,12 +28,8 @@ interface ViewModelAlgebra<VS : Any, E : Any> {
     @Suppress("RedundantUnitReturnType")
     suspend fun setStateS(vs: VS): Unit
 
-    val effects: Observable<E>
-
     val effectsF: Flow<E>
-        get() = effects.asFlow()
 
-    fun runEffect(effect: E): Completable
-
-    suspend fun runEffectS(effect: E): Unit = runEffect(effect).await()
+    @Suppress("RedundantUnitReturnType")
+    suspend fun runEffectS(effect: E): Unit
 }
