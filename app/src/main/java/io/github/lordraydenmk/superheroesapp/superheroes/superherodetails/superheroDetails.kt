@@ -21,6 +21,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.rx2.asObservable
 import kotlinx.coroutines.rx2.rxCompletable
+import kotlinx.coroutines.rx2.rxSingle
 
 interface SuperheroDetailsModule : AppModule,
     ViewModelAlgebra<SuperheroDetailsViewState, SuperheroDetailsEffect>
@@ -44,7 +45,7 @@ fun SuperheroDetailsModule.firstLoad(superheroId: SuperheroId): Observable<Unit>
         }
 
 fun SuperheroDetailsModule.loadSuperhero(superheroId: SuperheroId): Observable<Unit> =
-    superheroDetails(superheroId)
+    rxSingle { superheroDetails(superheroId) }
         .map { (superhero, attribution) -> superhero.toViewEntity() to attribution }
         .map<SuperheroDetailsViewState> { Content(it.first, it.second) }
         .toObservable()

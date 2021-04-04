@@ -1,11 +1,15 @@
 package io.github.lordraydenmk.superheroesapp.superheroes.data
 
 import io.github.lordraydenmk.superheroesapp.common.PaginatedEnvelope
-import io.github.lordraydenmk.superheroesapp.superheroes.*
+import io.github.lordraydenmk.superheroesapp.superheroes.NetworkError
+import io.github.lordraydenmk.superheroesapp.superheroes.ServerError
+import io.github.lordraydenmk.superheroesapp.superheroes.SuperheroException
+import io.github.lordraydenmk.superheroesapp.superheroes.Unrecoverable
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.Resource
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.Superhero
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroDetails
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.Superheroes
+import io.github.lordraydenmk.superheroesapp.superheroes.testSuperheroService
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -89,9 +93,6 @@ class SuperheroesKtTest : FunSpec({
             Resource(3),
             Resource(4)
         )
-        service.superheroDetails(42)
-            .test()
-            .awaitCount(1)
-            .assertValue(SuperheroDetails(hulk, "Marvel rocks!"))
+        service.superheroDetails(42) shouldBe SuperheroDetails(hulk, "Marvel rocks!")
     }
 })

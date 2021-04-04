@@ -10,8 +10,6 @@ import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroDetails
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroId
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.Superheroes
 import io.reactivex.Single
-import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.rx2.rxSingle
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -21,12 +19,11 @@ suspend fun SuperheroesService.superheroes(): Superheroes {
     return Superheroes(superheroes, superheroesDto.attributionText)
 }
 
-fun SuperheroesService.superheroDetails(id: SuperheroId): Single<SuperheroDetails> =
-    rxSingle { getSuperheroDetails(id) }
-        .observeOn(Schedulers.computation())
-        .onErrorResumeNext(::refineError)
-        .map { Pair(it.data.results.first().toDomain(), it.attributionText) }
-        .map { (superhero, attributionText) -> SuperheroDetails(superhero, attributionText) }
+suspend fun SuperheroesService.superheroDetails(id: SuperheroId): SuperheroDetails {
+    val superheroDto = runRefineError { getSuperheroDetails(id) }
+    val superhero = superheroDto.data.results.first().toDomain()
+    return SuperheroDetails(superhero, superheroDto.attributionText)
+}
 
 private fun SuperheroDto.toDomain(): Superhero = Superhero.create(
     id = id,
