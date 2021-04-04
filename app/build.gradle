@@ -88,7 +88,6 @@ dependencies {
     implementation "io.reactivex.rxjava2:rxjava:2.2.21"
     implementation 'com.akaita.java:rxjava2-debug:1.4.0'
     implementation "io.reactivex.rxjava2:rxkotlin:2.4.0"
-    implementation "com.github.akarnokd:rxjava2-extensions:0.20.10"
 
     def rxbinding = "3.1.0"
     implementation "com.jakewharton.rxbinding3:rxbinding:$rxbinding"

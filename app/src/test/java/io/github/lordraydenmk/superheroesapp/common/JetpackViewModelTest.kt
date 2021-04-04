@@ -63,6 +63,7 @@ class JetpackViewModelTest : FunSpec({
         viewModel.runEffect("First").subscribe()
 
         testObserver
+            .awaitCount(1)
             .assertValue("First")
             .dispose() // only one subscriber at a time
 
