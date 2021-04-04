@@ -9,9 +9,10 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.plusAssign
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.rx2.asObservable
 import kotlinx.coroutines.rx2.rxCompletable
@@ -32,9 +33,8 @@ class JetpackViewModel<VS : Any, E : Any> : ViewModel(), ViewModelAlgebra<VS, E>
     private val disposables = CompositeDisposable()
 
     private val _viewState: MutableStateFlow<VS?> = MutableStateFlow(null)
-    override val viewState: Observable<VS>
-        get() = _viewState.mapNotNull { it }
-            .asObservable()
+    override val viewStateF: Flow<VS>
+        get() = _viewState.filterNotNull()
 
     override val scope: CoroutineScope
         get() = viewModelScope

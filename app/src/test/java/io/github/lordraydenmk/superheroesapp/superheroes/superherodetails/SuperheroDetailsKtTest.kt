@@ -1,5 +1,6 @@
 package io.github.lordraydenmk.superheroesapp.superheroes.superherodetails
 
+import app.cash.turbine.test
 import io.github.lordraydenmk.superheroesapp.AppModule
 import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.common.ErrorTextRes
@@ -14,6 +15,7 @@ import io.github.lordraydenmk.superheroesapp.superheroes.testSuperheroService
 import io.kotest.core.spec.style.FunSpec
 import io.reactivex.Observable
 import okhttp3.HttpUrl.Companion.toHttpUrl
+import org.junit.jupiter.api.Assertions.assertEquals
 import java.io.IOException
 
 class SuperheroDetailsKtTest : FunSpec({
@@ -63,11 +65,10 @@ class SuperheroDetailsKtTest : FunSpec({
                 events = PlaceholderString(R.string.superhero_details_events, 3),
                 series = PlaceholderString(R.string.superhero_details_series, 4)
             )
-            viewModel.viewState
-                .test()
-                .awaitCount(2)
-                .assertValueAt(0, Loading)
-                .assertValueAt(1, Content(hulk, "Marvel rocks!"))
+            viewModel.viewStateF.test {
+                assertEquals(Loading, expectItem())
+                assertEquals(Content(hulk, "Marvel rocks!"), expectItem())
+            }
         }
     }
 
@@ -81,11 +82,11 @@ class SuperheroDetailsKtTest : FunSpec({
         with(module) {
             program(42, Observable.empty()).subscribe()
 
-            viewModel.viewState
-                .test()
-                .awaitCount(2)
-                .assertValueAt(0, Loading)
-                .assertValueAt(1, Problem(ErrorTextRes(R.string.error_recoverable_network)))
+            val expectedProblem = Problem(ErrorTextRes(R.string.error_recoverable_network))
+            viewModel.viewStateF.test {
+                assertEquals(Loading, expectItem())
+                assertEquals(expectedProblem, expectItem())
+            }
         }
     }
 

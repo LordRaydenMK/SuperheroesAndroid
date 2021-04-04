@@ -22,10 +22,7 @@ import kotlinx.coroutines.rx2.await
  */
 interface ViewModelAlgebra<VS : Any, E : Any> {
 
-    val viewState: Observable<VS>
-
     val viewStateF: Flow<VS>
-        get() = viewState.asFlow()
 
     val scope: CoroutineScope
 

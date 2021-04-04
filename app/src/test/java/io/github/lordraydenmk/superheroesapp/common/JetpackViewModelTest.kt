@@ -1,7 +1,9 @@
 package io.github.lordraydenmk.superheroesapp.common
 
+import app.cash.turbine.test
 import io.github.lordraydenmk.superheroesapp.common.presentation.JetpackViewModel
 import io.kotest.core.spec.style.FunSpec
+import org.junit.jupiter.api.Assertions.assertEquals
 
 class JetpackViewModelTest : FunSpec({
 
@@ -10,9 +12,9 @@ class JetpackViewModelTest : FunSpec({
         viewModel.setState("Test")
             .subscribe()
 
-        viewModel.viewState.test()
-            .assertValue("Test")
-            .assertNotComplete()
+        viewModel.viewStateF.test {
+            assertEquals("Test", expectItem())
+        }
     }
 
     test("setState twice - keeps last state") {
@@ -21,9 +23,9 @@ class JetpackViewModelTest : FunSpec({
             .andThen(viewModel.setState("Second"))
             .subscribe()
 
-        viewModel.viewState.test()
-            .assertValue("Second")
-            .assertNotComplete()
+        viewModel.viewStateF.test {
+            assertEquals("Second", expectItem())
+        }
     }
 
     test("isEmpty - new view model - true") {

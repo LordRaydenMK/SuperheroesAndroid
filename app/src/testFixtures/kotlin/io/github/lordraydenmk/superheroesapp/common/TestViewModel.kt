@@ -8,6 +8,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.plusAssign
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.rx2.asObservable
 import kotlinx.coroutines.rx2.rxCompletable
@@ -17,8 +18,8 @@ class TestViewModel<VS : Any, E : Any> : ViewModelAlgebra<VS, E> {
     private val cd = CompositeDisposable()
 
     private val _viewState = MutableSharedFlow<VS>(256, 0)
-    override val viewState: Observable<VS>
-        get() = _viewState.asObservable()
+    override val viewStateF: Flow<VS>
+        get() = _viewState
 
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
