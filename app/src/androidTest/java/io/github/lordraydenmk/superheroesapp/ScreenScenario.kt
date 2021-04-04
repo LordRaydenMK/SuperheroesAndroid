@@ -8,7 +8,7 @@ import kotlinx.coroutines.runBlocking
 class ScreenScenario<A : Any>(
     private val screen: A,
     private val activityScenario: ActivityScenario<ScreenTestActivity>
-) {
+) : AutoCloseable by activityScenario {
 
     fun onView(action: (A) -> Unit): ScreenScenario<A> = also {
         activityScenario.onActivity { action(screen) }

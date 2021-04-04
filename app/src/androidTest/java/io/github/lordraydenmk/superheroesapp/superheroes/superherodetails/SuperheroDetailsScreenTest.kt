@@ -30,43 +30,45 @@ class SuperheroDetailsScreenTest {
 
     @Test
     fun loadingState_progressBarDisplayed() {
-        val scenario = launchInDecoratedContainer()
-        scenario.onView { view -> view.bind(Loading).subscribe() }
+        launchInDecoratedContainer().use { scenario ->
+            scenario.onView { view -> view.bind(Loading).subscribe() }
 
-        superheroDetails {
-            assertLoadingDisplayed()
-            assertContentHidden()
-            assertErrorHidden()
+            superheroDetails {
+                assertLoadingDisplayed()
+                assertContentHidden()
+                assertErrorHidden()
+            }
         }
     }
 
     @Test
     fun recoverableProblemState_errorViewDisplayedWithRetryText() {
-        val scenario = launchInDecoratedContainer()
-        scenario.onView { view ->
-            view.bind(Problem(ErrorTextRes(R.string.error_recoverable_network))).subscribe()
-        }
+        val viewState = Problem(ErrorTextRes(R.string.error_recoverable_network))
+        launchInDecoratedContainer().use { scenario ->
+            scenario.onView { view -> view.bind(viewState).subscribe() }
 
-        val errorText =
-            "We could not connect to our server. Please check your internet connection \n\nTap to retry!"
-        superheroDetails {
-            assertErrorDisplayed(errorText)
-            assertLoadingHidden()
-            assertContentHidden()
+            val errorText =
+                "We could not connect to our server. Please check your internet connection \n\nTap to retry!"
+            superheroDetails {
+                assertErrorDisplayed(errorText)
+                assertLoadingHidden()
+                assertContentHidden()
+            }
         }
     }
 
     @Test
     fun unrecoverableProblemState_errorViewDisplayed() {
-        val scenario = launchInDecoratedContainer()
-        scenario.onView { view ->
-            view.bind(Problem(IdTextRes(R.string.error_unrecoverable))).subscribe()
-        }
+        launchInDecoratedContainer().use { scenario ->
+            scenario.onView { view ->
+                view.bind(Problem(IdTextRes(R.string.error_unrecoverable))).subscribe()
+            }
 
-        superheroDetails {
-            assertErrorDisplayed("Ooops… Something went wrong!")
-            assertLoadingHidden()
-            assertContentHidden()
+            superheroDetails {
+                assertErrorDisplayed("Ooops… Something went wrong!")
+                assertLoadingHidden()
+                assertContentHidden()
+            }
         }
     }
 
@@ -84,20 +86,20 @@ class SuperheroDetailsScreenTest {
             ),
             "Copyright Marvel"
         )
-        val scenario = launchInDecoratedContainer()
+        launchInDecoratedContainer().use { scenario ->
+            scenario.onView { view -> view.bind(viewState).subscribe() }
 
-        scenario.onView { view -> view.bind(viewState).subscribe() }
-
-        superheroDetails {
-            assertContentDisplayed(
-                comicsText = "Comics available: 1",
-                storiesText = "Stories available: 2",
-                eventsText = "Events available: 3",
-                seriesText = "Series available: 4",
-                copyrightText = "Copyright Marvel"
-            )
-            assertLoadingHidden()
-            assertErrorHidden()
+            superheroDetails {
+                assertContentDisplayed(
+                    comicsText = "Comics available: 1",
+                    storiesText = "Stories available: 2",
+                    eventsText = "Events available: 3",
+                    seriesText = "Series available: 4",
+                    copyrightText = "Copyright Marvel"
+                )
+                assertLoadingHidden()
+                assertErrorHidden()
+            }
         }
     }
 }

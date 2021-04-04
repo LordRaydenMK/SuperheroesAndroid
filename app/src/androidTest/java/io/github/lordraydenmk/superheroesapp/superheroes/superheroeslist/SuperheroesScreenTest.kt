@@ -25,44 +25,47 @@ class SuperheroesScreenTest {
 
     @Test
     fun loadingState_progressBarDisplayed() {
-        val scenario = launchInContainer { parent -> SuperheroesScreen(parent, scope) }
-        scenario.onViewBlocking { view -> view.bindS(Loading) }
+        launchInContainer { parent -> SuperheroesScreen(parent, scope) }.use { scenario ->
+            scenario.onViewBlocking { view -> view.bindS(Loading) }
 
-        superheroesScreen {
-            assertLoadingDisplayed()
-            assertContentHidden()
-            assertErrorHidden()
+            superheroesScreen {
+                assertLoadingDisplayed()
+                assertContentHidden()
+                assertErrorHidden()
+            }
         }
     }
 
     @Test
     fun recoverableProblemState_errorViewDisplayedWithRetryText() {
-        val scenario = launchInContainer { parent -> SuperheroesScreen(parent, scope) }
-        scenario.onViewBlocking { view ->
-            view.bindS(Problem(ErrorTextRes(R.string.error_recoverable_network)))
-        }
+        launchInContainer { parent -> SuperheroesScreen(parent, scope) }.use { scenario ->
+            scenario.onViewBlocking { view ->
+                view.bindS(Problem(ErrorTextRes(R.string.error_recoverable_network)))
+            }
 
-        val errorText =
-            "We could not connect to our server. Please check your internet connection \n\nTap to retry!"
-        superheroesScreen {
-            assertErrorDisplayed(errorText)
-            assertContentHidden()
-            assertLoadingHidden()
+            val errorText =
+                "We could not connect to our server. Please check your internet connection \n\nTap to retry!"
+            superheroesScreen {
+                assertErrorDisplayed(errorText)
+                assertContentHidden()
+                assertLoadingHidden()
+            }
         }
     }
 
     @Test
     fun unrecoverableProblemState_errorViewDisplayed() {
-        val scenario = launchInContainer { parent -> SuperheroesScreen(parent, scope) }
-        scenario.onViewBlocking { view ->
-            view.bindS(Problem(IdTextRes(R.string.error_unrecoverable)))
-        }
+        launchInContainer { parent -> SuperheroesScreen(parent, scope) }.use { scenario ->
+            scenario.onViewBlocking { view ->
+                view.bindS(Problem(IdTextRes(R.string.error_unrecoverable)))
+            }
 
-        val errorText = "Ooops… Something went wrong!"
-        superheroesScreen {
-            assertErrorDisplayed(errorText)
-            assertContentHidden()
-            assertLoadingHidden()
+            val errorText = "Ooops… Something went wrong!"
+            superheroesScreen {
+                assertErrorDisplayed(errorText)
+                assertContentHidden()
+                assertLoadingHidden()
+            }
         }
     }
 
@@ -78,14 +81,15 @@ class SuperheroesScreenTest {
             ),
             "Copyright Marvel"
         )
-        val scenario = launchInContainer { parent -> SuperheroesScreen(parent, scope) }
+        launchInContainer { parent -> SuperheroesScreen(parent, scope) }.use { scenario ->
 
-        scenario.onViewBlocking { view -> view.bindS(viewState) }
+            scenario.onViewBlocking { view -> view.bindS(viewState) }
 
-        superheroesScreen {
-            assertContentDisplayed("Copyright Marvel")
-            assertLoadingHidden()
-            assertErrorHidden()
+            superheroesScreen {
+                assertContentDisplayed("Copyright Marvel")
+                assertLoadingHidden()
+                assertErrorHidden()
+            }
         }
     }
 }
