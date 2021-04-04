@@ -18,7 +18,11 @@ import io.github.lordraydenmk.superheroesapp.superheroes.domain.Superhero
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroId
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.rx2.asFlow
 import kotlinx.coroutines.rx2.asObservable
 import kotlinx.coroutines.rx2.rxCompletable
 import kotlinx.coroutines.rx2.rxSingle
@@ -36,12 +40,12 @@ fun SuperheroDetailsModule.program(
             Up -> runEffect(NavigateUp).toObservable()
         }.fork(Schedulers.computation(), this::addToDisposable)
             .unit()
-    }.mergeWith(firstLoad(superheroId))
+    }.mergeWith(firstLoad(superheroId).asObservable())
 
-fun SuperheroDetailsModule.firstLoad(superheroId: SuperheroId): Observable<Unit> =
-    flow { emit(isEmpty()) }.asObservable()
-        .flatMap { empty ->
-            if (empty) loadSuperhero(superheroId) else Observable.empty()
+fun SuperheroDetailsModule.firstLoad(superheroId: SuperheroId): Flow<Unit> =
+    flow { emit(isEmpty()) }
+        .flatMapMerge { empty ->
+            if (empty) loadSuperhero(superheroId).asFlow() else emptyFlow()
         }
 
 fun SuperheroDetailsModule.loadSuperhero(superheroId: SuperheroId): Observable<Unit> =
