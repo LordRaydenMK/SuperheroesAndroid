@@ -32,13 +32,13 @@ class SuperheroesScreen(
         }
     }
 
-    override val actionsF: Flow<SuperheroesAction> = merge(
+    override val actions: Flow<SuperheroesAction> = merge(
         binding.tvError.clicks().flowOn(Dispatchers.Main).map { Refresh },
         superheroesAdapter.actions.map { LoadDetails(it) }
     )
 
     @Suppress("RedundantSuspendModifier") // updating the UI is a side effect
-    override suspend fun bindS(viewState: SuperheroesViewState) {
+    override suspend fun bind(viewState: SuperheroesViewState) {
         binding.groupSuperheroesContent.isVisible = viewState is Content
         binding.progressSuperheroes.isVisible = viewState is Loading
         binding.tvError.isVisible = viewState is Problem

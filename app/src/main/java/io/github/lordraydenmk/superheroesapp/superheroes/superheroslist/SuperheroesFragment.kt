@@ -32,10 +32,10 @@ class SuperheroesFragment : Fragment(R.layout.superheroes_fragment) {
 
         with(module) {
             val renderFlow = viewState
-                .mapLatest { screen.bindS(it) }
+                .mapLatest { screen.bind(it) }
 
             lifecycleScope.launchWhenStarted {
-                merge(program(screen.actionsF), renderFlow)
+                merge(program(screen.actions), renderFlow)
                     .collect()
             }
         }

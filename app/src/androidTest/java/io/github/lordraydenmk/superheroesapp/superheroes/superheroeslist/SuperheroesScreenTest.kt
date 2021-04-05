@@ -26,7 +26,7 @@ class SuperheroesScreenTest {
     @Test
     fun loadingState_progressBarDisplayed() {
         launchInContainer { parent -> SuperheroesScreen(parent, scope) }.use { scenario ->
-            scenario.onViewBlocking { view -> view.bindS(Loading) }
+            scenario.onViewBlocking { view -> view.bind(Loading) }
 
             superheroesScreen {
                 assertLoadingDisplayed()
@@ -40,7 +40,7 @@ class SuperheroesScreenTest {
     fun recoverableProblemState_errorViewDisplayedWithRetryText() {
         launchInContainer { parent -> SuperheroesScreen(parent, scope) }.use { scenario ->
             scenario.onViewBlocking { view ->
-                view.bindS(Problem(ErrorTextRes(R.string.error_recoverable_network)))
+                view.bind(Problem(ErrorTextRes(R.string.error_recoverable_network)))
             }
 
             val errorText =
@@ -57,7 +57,7 @@ class SuperheroesScreenTest {
     fun unrecoverableProblemState_errorViewDisplayed() {
         launchInContainer { parent -> SuperheroesScreen(parent, scope) }.use { scenario ->
             scenario.onViewBlocking { view ->
-                view.bindS(Problem(IdTextRes(R.string.error_unrecoverable)))
+                view.bind(Problem(IdTextRes(R.string.error_unrecoverable)))
             }
 
             val errorText = "Ooops… Something went wrong!"
@@ -83,7 +83,7 @@ class SuperheroesScreenTest {
         )
         launchInContainer { parent -> SuperheroesScreen(parent, scope) }.use { scenario ->
 
-            scenario.onViewBlocking { view -> view.bindS(viewState) }
+            scenario.onViewBlocking { view -> view.bind(viewState) }
 
             superheroesScreen {
                 assertContentDisplayed("Copyright Marvel")
