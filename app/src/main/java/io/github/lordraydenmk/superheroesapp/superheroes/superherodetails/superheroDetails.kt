@@ -59,7 +59,7 @@ fun SuperheroDetailsModule.loadSuperhero(superheroId: SuperheroId): Flow<Superhe
         emit(Loading)
         val state = runCatching { superheroDetails(superheroId) }
             .map { (superhero, attribution) -> superhero.toViewEntity() to attribution }
-            .map { Content(it.first, it.second) }
+            .map { (superhero, attribution) -> Content(superhero, attribution) }
             .fold(::identity, Throwable::toProblem)
         emit(state)
     }

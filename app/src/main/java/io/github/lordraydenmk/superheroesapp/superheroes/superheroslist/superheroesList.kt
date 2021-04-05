@@ -51,19 +51,19 @@ fun SuperheroesModule.loadSuperheroes(): Flow<SuperheroesViewState> = flow {
     emit(Loading)
     val state = try {
         val (superheroes, attribution) = superheroes()
-        Content(
-            superheroes.map { SuperheroViewEntity(it.id, it.name, it.thumbnail) },
-            attribution
-        )
+        val superheroesVE = superheroes.map { SuperheroViewEntity(it.id, it.name, it.thumbnail) }
+        Content(superheroesVE, attribution)
     } catch (t: Throwable) {
-        when (t) {
-            is SuperheroException -> when (t.error) {
-                is NetworkError -> Problem(ErrorTextRes(R.string.error_recoverable_network))
-                is ServerError -> Problem(ErrorTextRes(R.string.error_recoverable_server))
-                is Unrecoverable -> Problem(IdTextRes(R.string.error_unrecoverable))
-            }
-            else -> Problem(IdTextRes(R.string.error_unrecoverable))
-        }
+        mapError(t)
     }
     emit(state)
 }.flowOn(Dispatchers.Default)
+
+private fun mapError(t: Throwable) = when (t) {
+    is SuperheroException -> when (t.error) {
+        is NetworkError -> Problem(ErrorTextRes(R.string.error_recoverable_network))
+        is ServerError -> Problem(ErrorTextRes(R.string.error_recoverable_server))
+        is Unrecoverable -> Problem(IdTextRes(R.string.error_unrecoverable))
+    }
+    else -> Problem(IdTextRes(R.string.error_unrecoverable))
+}
