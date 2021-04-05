@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 
@@ -51,7 +52,7 @@ fun SuperheroDetailsModule.firstLoad(superheroId: SuperheroId): Flow<Unit> =
 fun SuperheroDetailsModule.refreshSuperhero(superheroId: SuperheroId): Flow<Unit> =
     loadSuperhero(superheroId)
         .map { setState(it) }
-        .unit()
+        .flowOn(Dispatchers.Default)
 
 fun SuperheroDetailsModule.loadSuperhero(superheroId: SuperheroId): Flow<SuperheroDetailsViewState> =
     flow {
