@@ -4,7 +4,6 @@ import app.cash.turbine.test
 import io.github.lordraydenmk.superheroesapp.common.presentation.JetpackViewModel
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import org.junit.jupiter.api.Assertions.assertEquals
 
 class JetpackViewModelTest : FunSpec({
 
@@ -13,7 +12,7 @@ class JetpackViewModelTest : FunSpec({
         viewModel.setState("Test")
 
         viewModel.viewState.test {
-            assertEquals("Test", expectItem())
+            expectItem() shouldBe "Test"
         }
     }
 
@@ -23,7 +22,7 @@ class JetpackViewModelTest : FunSpec({
         viewModel.setState("Second")
 
         viewModel.viewState.test {
-            assertEquals("Second", expectItem())
+            expectItem() shouldBe "Second"
         }
     }
 
@@ -49,8 +48,8 @@ class JetpackViewModelTest : FunSpec({
 
 
         viewModel.effects.test {
-            assertEquals("First", expectItem())
-            assertEquals("Second", expectItem())
+            expectItem() shouldBe "First"
+            expectItem() shouldBe "Second"
         }
     }
 
@@ -59,7 +58,7 @@ class JetpackViewModelTest : FunSpec({
 
         viewModel.effects.test {
             viewModel.runEffect("First")
-            assertEquals("First", expectItem())
+            expectItem() shouldBe "First"
         }
 
         viewModel.effects.test {

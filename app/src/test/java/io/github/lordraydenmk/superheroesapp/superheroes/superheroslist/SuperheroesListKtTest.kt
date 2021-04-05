@@ -15,6 +15,7 @@ import io.github.lordraydenmk.superheroesapp.superheroes.data.ThumbnailDto
 import io.github.lordraydenmk.superheroesapp.superheroes.testSuperheroService
 import io.kotest.assertions.fail
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collect
@@ -22,7 +23,6 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import okhttp3.HttpUrl.Companion.toHttpUrl
-import org.junit.jupiter.api.Assertions.assertEquals
 
 class SuperheroesListKtTest : FunSpec({
 
@@ -64,8 +64,8 @@ class SuperheroesListKtTest : FunSpec({
         module.program(emptyFlow()).collect()
 
         viewModel.viewState.test {
-            assertEquals(Loading, expectItem())
-            assertEquals(content, expectItem())
+            expectItem() shouldBe Loading
+            expectItem() shouldBe content
         }
     }
 
@@ -81,8 +81,8 @@ class SuperheroesListKtTest : FunSpec({
         module.program(emptyFlow()).collect()
 
         viewModel.viewState.test {
-            assertEquals(Loading, expectItem())
-            assertEquals(problem, expectItem())
+            expectItem() shouldBe Loading
+            expectItem() shouldBe problem
         }
     }
 
@@ -109,13 +109,13 @@ class SuperheroesListKtTest : FunSpec({
         GlobalScope.launch { module.program(actions).collect() }
 
         viewModel.viewState.test {
-            assertEquals(Loading, expectItem())
-            assertEquals(Problem::class.java, expectItem()::class.java)
+            expectItem() shouldBe Loading
+            expectItem()::class.java shouldBe Problem::class.java
 
             actions.emit(Refresh)
 
-            assertEquals(Loading, expectItem())
-            assertEquals(Content::class.java, expectItem()::class.java)
+            expectItem() shouldBe Loading
+            expectItem()::class.java shouldBe Content::class.java
         }
     }
 
@@ -128,7 +128,7 @@ class SuperheroesListKtTest : FunSpec({
         }
 
         viewModel.effects.test {
-            assertEquals(NavigateToDetails(42), expectItem())
+            expectItem() shouldBe NavigateToDetails(42)
         }
     }
 })
