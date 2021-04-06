@@ -37,10 +37,10 @@ class SuperheroDetailsFragment : Fragment(R.layout.superhero_details_fragment) {
 
         with(module) {
             val render = viewState
-                .mapLatest { screen.bindS(it) }
+                .mapLatest { screen.bind(it) }
 
             lifecycleScope.launchWhenStarted {
-                merge(program(superheroId, screen.actionsF), render)
+                merge(program(superheroId, screen.actions), render)
                     .collect()
             }
         }

@@ -23,13 +23,13 @@ class SuperheroDetailsScreen(
     private val binding =
         SuperheroDetailsScreenBinding.inflate(LayoutInflater.from(container.context), container)
 
-    override val actionsF: Flow<SuperheroDetailsAction> = merge(
+    override val actions: Flow<SuperheroDetailsAction> = merge(
         binding.toolbar.navigationClicks().map { Up },
         binding.superheroContent.tvError.clicks()
             .map { Refresh(superheroId) }
     )
 
-    override suspend fun bindS(viewState: SuperheroDetailsViewState) {
+    override suspend fun bind(viewState: SuperheroDetailsViewState) {
         with(binding.superheroContent) {
             progress.isVisible = viewState is Loading
             tvError.isVisible = viewState is Problem

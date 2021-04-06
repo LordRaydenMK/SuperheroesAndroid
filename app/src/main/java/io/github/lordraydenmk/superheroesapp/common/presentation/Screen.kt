@@ -17,8 +17,8 @@ import kotlinx.coroutines.flow.Flow
  */
 interface Screen<A : Any, VS> {
 
-    val actionsF: Flow<A>
+    val actions: Flow<A>
 
     @Suppress("RedundantUnitReturnType")
-    suspend fun bindS(viewState: VS): Unit
+    suspend fun bind(viewState: VS): Unit
 }
