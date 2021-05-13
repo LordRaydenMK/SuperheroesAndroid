@@ -93,7 +93,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp"
 
-    def kotest = "4.4.3"
+    def kotest = "4.5.0"
     testImplementation "io.kotest:kotest-runner-junit5-jvm:$kotest"
     testImplementation "io.kotest:kotest-assertions-core-jvm:$kotest"
     testImplementation 'app.cash.turbine:turbine:0.4.1'
