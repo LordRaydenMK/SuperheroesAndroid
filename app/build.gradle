@@ -99,7 +99,7 @@ dependencies {
     testImplementation 'app.cash.turbine:turbine:0.5.2'
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    def espresso = "3.3.0"
+    def espresso = "3.4.0"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso"
     androidTestImplementation "androidx.test.espresso:espresso-contrib:$espresso"
     androidTestImplementation "com.squareup.okhttp3:mockwebserver:$okhttp"
