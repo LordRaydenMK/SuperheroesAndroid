@@ -82,7 +82,7 @@ dependencies {
     implementation 'com.jakewharton.timber:timber:4.7.1'
     implementation "io.coil-kt:coil:1.2.2"
 
-    def flowbinding_version = "1.1.0"
+    def flowbinding_version = "1.2.0"
     implementation "io.github.reactivecircus.flowbinding:flowbinding-android:${flowbinding_version}"
     implementation "io.github.reactivecircus.flowbinding:flowbinding-appcompat:${flowbinding_version}"
 
