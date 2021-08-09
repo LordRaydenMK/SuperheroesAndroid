@@ -80,7 +80,7 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
     implementation 'com.jakewharton.timber:timber:4.7.1'
-    implementation "io.coil-kt:coil:1.3.1"
+    implementation "io.coil-kt:coil:1.3.2"
 
     def flowbinding_version = "1.2.0"
     implementation "io.github.reactivecircus.flowbinding:flowbinding-android:${flowbinding_version}"
