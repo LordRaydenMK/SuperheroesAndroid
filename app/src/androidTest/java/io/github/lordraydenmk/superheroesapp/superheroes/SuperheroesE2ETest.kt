@@ -1,5 +1,6 @@
 package io.github.lordraydenmk.superheroesapp.superheroes
 
+import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.espresso.Espresso
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -17,12 +18,16 @@ import kotlinx.coroutines.runBlocking
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
 class SuperheroesE2ETest {
+
+    @get:Rule
+    val composeTestRule = createComposeRule()
 
     private val server = MockWebServer()
 
@@ -49,7 +54,7 @@ class SuperheroesE2ETest {
                 assertContentDisplayed("Data provided by Marvel. © 2021 MARVEL")
                 openSuperheroDetails()
             }
-            superheroDetails {
+            superheroDetails(composeTestRule) {
                 assertContentDisplayed(
                     comicsText = "Comics available: 12",
                     storiesText = "Stories available: 21",
@@ -59,7 +64,7 @@ class SuperheroesE2ETest {
                 )
             }
             scenario.recreate()
-            superheroDetails {
+            superheroDetails(composeTestRule) {
                 assertContentDisplayed(
                     comicsText = "Comics available: 12",
                     storiesText = "Stories available: 21",

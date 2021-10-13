@@ -50,7 +50,7 @@ class SuperheroDetailsFragment : Fragment(R.layout.superhero_details_fragment) {
                 when (effect) {
                     NavigateUp -> findNavController().navigateUp()
                 }
-            }
+            }.collect()
         }
     }
 

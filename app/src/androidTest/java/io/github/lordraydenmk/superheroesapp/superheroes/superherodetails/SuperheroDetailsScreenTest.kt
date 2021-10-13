@@ -1,5 +1,6 @@
 package io.github.lordraydenmk.superheroesapp.superheroes.superherodetails
 
+import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
@@ -9,7 +10,9 @@ import io.github.lordraydenmk.superheroesapp.ScreenScenario.Companion.launchInCo
 import io.github.lordraydenmk.superheroesapp.common.ErrorTextRes
 import io.github.lordraydenmk.superheroesapp.common.IdTextRes
 import io.github.lordraydenmk.superheroesapp.common.PlaceholderString
+import kotlinx.coroutines.channels.Channel
 import okhttp3.HttpUrl.Companion.toHttpUrl
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -28,32 +31,41 @@ class SuperheroDetailsScreenTest {
         }
     }
 
+    @get:Rule
+    val composeTestRule = createComposeRule()
+
+
     @Test
     fun loadingState_progressBarDisplayed() {
-        launchInDecoratedContainer().use { scenario ->
-            scenario.onViewBlocking { view -> view.bind(Loading) }
+        composeTestRule.setContent {
+            SuperheroDetailsScreen(
+                viewState = Loading,
+                superheroId = 0,
+                actions = Channel()
+            )
+        }
 
-            superheroDetails {
-                assertLoadingDisplayed()
-                assertContentHidden()
-                assertErrorHidden()
-            }
+        superheroDetails(composeTestRule) {
+            assertLoadingDisplayed()
+            assertContentHidden()
+            assertErrorHidden()
         }
     }
 
     @Test
     fun recoverableProblemState_errorViewDisplayedWithRetryText() {
         val viewState = Problem(ErrorTextRes(R.string.error_recoverable_network))
-        launchInDecoratedContainer().use { scenario ->
-            scenario.onViewBlocking { view -> view.bind(viewState) }
 
-            val errorText =
-                "We could not connect to our server. Please check your internet connection \n\nTap to retry!"
-            superheroDetails {
-                assertErrorDisplayed(errorText)
-                assertLoadingHidden()
-                assertContentHidden()
-            }
+        composeTestRule.setContent {
+            SuperheroDetailsScreen(viewState = viewState, superheroId = 0, actions = Channel())
+        }
+
+        val errorText =
+            "We could not connect to our server. Please check your internet connection \n\nTap to retry!"
+        superheroDetails(composeTestRule) {
+            assertErrorDisplayed(errorText)
+            assertLoadingHidden()
+            assertContentHidden()
         }
     }
 
@@ -64,7 +76,7 @@ class SuperheroDetailsScreenTest {
                 view.bind(Problem(IdTextRes(R.string.error_unrecoverable)))
             }
 
-            superheroDetails {
+            superheroDetails(composeTestRule) {
                 assertErrorDisplayed("Ooops… Something went wrong!")
                 assertLoadingHidden()
                 assertContentHidden()
@@ -89,7 +101,7 @@ class SuperheroDetailsScreenTest {
         launchInDecoratedContainer().use { scenario ->
             scenario.onViewBlocking { view -> view.bind(viewState) }
 
-            superheroDetails {
+            superheroDetails(composeTestRule) {
                 assertContentDisplayed(
                     comicsText = "Comics available: 1",
                     storiesText = "Stories available: 2",

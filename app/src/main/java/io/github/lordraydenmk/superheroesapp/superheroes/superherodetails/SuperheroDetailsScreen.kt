@@ -1,70 +1,159 @@
 package io.github.lordraydenmk.superheroesapp.superheroes.superherodetails
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.view.isVisible
-import coil.load
-import io.github.lordraydenmk.superheroesapp.R
+import android.view.ViewGroup.LayoutParams
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.Center
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import coil.compose.rememberImagePainter
+import io.github.lordraydenmk.superheroesapp.common.ErrorTextRes
+import io.github.lordraydenmk.superheroesapp.common.IdTextRes
 import io.github.lordraydenmk.superheroesapp.common.presentation.Screen
-import io.github.lordraydenmk.superheroesapp.common.setTextResource
-import io.github.lordraydenmk.superheroesapp.databinding.SuperheroDetailsScreenBinding
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroId
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.merge
-import reactivecircus.flowbinding.android.view.clicks
-import reactivecircus.flowbinding.appcompat.navigationClicks
+import kotlinx.coroutines.flow.receiveAsFlow
 
 class SuperheroDetailsScreen(
     container: ViewGroup,
-    superheroId: SuperheroId
+    private val superheroId: SuperheroId
 ) : Screen<SuperheroDetailsAction, SuperheroDetailsViewState> {
 
-    private val binding =
-        SuperheroDetailsScreenBinding.inflate(LayoutInflater.from(container.context), container)
+    private val composeView = ComposeView(container.context)
 
-    override val actions: Flow<SuperheroDetailsAction> = merge(
-        binding.toolbar.navigationClicks().map { Up },
-        binding.superheroContent.tvError.clicks()
-            .map { Refresh(superheroId) }
-    )
+    init {
+        container.addView(composeView, LayoutParams(MATCH_PARENT, MATCH_PARENT))
+    }
+
+    private val _actions = Channel<SuperheroDetailsAction>(Channel.UNLIMITED)
+
+    override val actions: Flow<SuperheroDetailsAction> = _actions.receiveAsFlow()
 
     override suspend fun bind(viewState: SuperheroDetailsViewState) {
-        with(binding.superheroContent) {
-            progress.isVisible = viewState is Loading
-            tvError.isVisible = viewState is Problem
-            layoutContent.isVisible = viewState is Content
-            binding.copyrightLayout.tvCopyright.isVisible = viewState is Content
+        composeView.setContent { SuperheroDetailsScreen(viewState, superheroId, _actions) }
+    }
+}
 
-            when (viewState) {
-                Loading -> Unit
-                is Content -> bindContent(viewState)
-                is Problem -> bindError(viewState)
+@Composable
+fun SuperheroDetailsScreen(
+    viewState: SuperheroDetailsViewState,
+    superheroId: SuperheroId,
+    actions: Channel<SuperheroDetailsAction>
+) {
+    Column {
+        TopAppBar(
+            title = { Text(text = if (viewState is Content) viewState.superhero.name else "") },
+            navigationIcon = {
+                IconButton(onClick = { actions.trySend(Up).getOrThrow() }) {
+                    Icon(Icons.Filled.ArrowBack, contentDescription = "")
+                }
+            }
+        )
+
+        when (viewState) {
+            is Content -> SuperheroContent(content = viewState)
+            Loading -> Box(modifier = Modifier.fillMaxSize(), contentAlignment = Center) {
+                CircularProgressIndicator()
+            }
+            is Problem -> SuperheroProblem(problem = viewState) {
+                actions.trySend(Refresh(superheroId))
             }
         }
     }
+}
 
-    private fun bindContent(viewState: Content) = with(binding) {
-        val superhero = viewState.superhero
-        toolbar.title = superhero.name
-        imgSuperhero.load(superhero.thumbnail) {
-            placeholder(R.drawable.ic_hourglass_bottom_black)
-            error(R.drawable.ic_baseline_broken_image)
-            crossfade(true)
-        }
-        imgSuperhero.contentDescription = superhero.name
-        with(superheroContent) {
-            val resources = tvComicsCount.resources
-            tvComicsCount.text = superhero.comics.string(resources)
-            tvStoriesCount.text = superhero.stories.string(resources)
-            tvEventsCount.text = superhero.events.string(resources)
-            tvSeriesCount.text = superhero.series.string(resources)
-        }
-        copyrightLayout.tvCopyright.text = viewState.attribution
+@Composable
+fun SuperheroContent(content: Content) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxSize()
+            .testTag("SuperheroDetailsContent")
+    ) {
+        Image(
+            painter = rememberImagePainter(content.superhero.thumbnail),
+            contentDescription = content.superhero.name
+        )
+        Text(
+            text = stringResource(
+                id = content.superhero.comics.stringId,
+                content.superhero.comics.replacement
+            )
+        )
+        Text(
+            text = stringResource(
+                id = content.superhero.series.stringId,
+                content.superhero.series.replacement
+            )
+        )
+        Text(
+            text = stringResource(
+                id = content.superhero.events.stringId,
+                content.superhero.events.replacement
+            )
+        )
+        Text(
+            text = stringResource(
+                id = content.superhero.stories.stringId,
+                content.superhero.stories.replacement
+            )
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        Text(
+            text = content.attribution,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.LightGray)
+        )
     }
+}
 
-    private fun bindError(problem: Problem) = with(binding.superheroContent) {
-        tvError.setTextResource(problem.stringId)
-        tvError.isClickable = problem.isRecoverable
+@Composable
+fun SuperheroProblem(problem: Problem, onClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .testTag("SuperheroDetailsProblem"), contentAlignment = Center
+    ) {
+        val clickable = if (problem.isRecoverable) Modifier.clickable { onClick() }
+        else Modifier
+        when (val stringId = problem.stringId) {
+            is ErrorTextRes -> Text(
+                text = stringResource(
+                    id = stringId.id,
+                    stringResource(id = stringId.retryTextId),
+                ),
+                modifier = clickable,
+                textAlign = TextAlign.Center
+            )
+            is IdTextRes -> Text(
+                text = stringResource(id = stringId.id),
+                modifier = clickable,
+                textAlign = TextAlign.Center
+            )
+        }
     }
 }
