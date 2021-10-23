@@ -9,6 +9,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.CircularProgressIndicator
@@ -27,6 +28,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import coil.compose.LocalImageLoader
 import coil.compose.rememberImagePainter
 import io.github.lordraydenmk.superheroesapp.common.ErrorTextRes
 import io.github.lordraydenmk.superheroesapp.common.IdTextRes
@@ -86,6 +88,9 @@ fun SuperheroDetailsScreen(
 
 @Composable
 fun SuperheroContent(content: Content) {
+
+    val imageLoader = LocalImageLoader.current
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -93,8 +98,11 @@ fun SuperheroContent(content: Content) {
             .testTag("SuperheroDetailsContent")
     ) {
         Image(
-            painter = rememberImagePainter(content.superhero.thumbnail),
-            contentDescription = content.superhero.name
+            painter = rememberImagePainter(content.superhero.thumbnail, imageLoader),
+            contentDescription = content.superhero.name,
+            modifier = Modifier
+                .aspectRatio(1f)
+                .fillMaxWidth()
         )
         Text(
             text = stringResource(
