@@ -17,7 +17,7 @@ import coil.request.SuccessResult
  *
  * https://coil-kt.github.io/coil/image_loaders/#testing
  */
-class FakeImageLoader : ImageLoader {
+object FakeImageLoader : ImageLoader {
 
     private val disposable = object : Disposable {
         override val isDisposed get() = true

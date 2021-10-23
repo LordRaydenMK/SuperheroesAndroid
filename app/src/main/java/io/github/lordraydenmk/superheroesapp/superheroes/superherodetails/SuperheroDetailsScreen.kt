@@ -20,6 +20,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
@@ -28,8 +29,10 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import coil.ImageLoader
 import coil.compose.LocalImageLoader
 import coil.compose.rememberImagePainter
+import io.github.lordraydenmk.superheroesapp.appModule
 import io.github.lordraydenmk.superheroesapp.common.ErrorTextRes
 import io.github.lordraydenmk.superheroesapp.common.IdTextRes
 import io.github.lordraydenmk.superheroesapp.common.presentation.Screen
@@ -44,6 +47,7 @@ class SuperheroDetailsScreen(
 ) : Screen<SuperheroDetailsAction, SuperheroDetailsViewState> {
 
     private val composeView = ComposeView(container.context)
+    private val imageLoader: ImageLoader = container.context.appModule()
 
     init {
         container.addView(composeView, LayoutParams(MATCH_PARENT, MATCH_PARENT))
@@ -54,7 +58,11 @@ class SuperheroDetailsScreen(
     override val actions: Flow<SuperheroDetailsAction> = _actions.receiveAsFlow()
 
     override suspend fun bind(viewState: SuperheroDetailsViewState) {
-        composeView.setContent { SuperheroDetailsScreen(viewState, superheroId, _actions) }
+        composeView.setContent {
+            CompositionLocalProvider(LocalImageLoader provides imageLoader) {
+                SuperheroDetailsScreen(viewState, superheroId, _actions)
+            }
+        }
     }
 }
 

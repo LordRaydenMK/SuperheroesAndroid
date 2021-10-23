@@ -88,7 +88,7 @@ class SuperheroDetailsScreenTest {
         )
 
         composeTestRule.setContent {
-            CompositionLocalProvider(LocalImageLoader provides FakeImageLoader()) {
+            CompositionLocalProvider(LocalImageLoader provides FakeImageLoader) {
                 SuperheroDetailsScreen(viewState = viewState, superheroId = 0, actions = Channel())
             }
         }
