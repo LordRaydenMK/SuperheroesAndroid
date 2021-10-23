@@ -1,6 +1,6 @@
 package io.github.lordraydenmk.superheroesapp.superheroes
 
-import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.espresso.Espresso
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -27,7 +27,7 @@ import org.junit.runner.RunWith
 class SuperheroesE2ETest {
 
     @get:Rule
-    val composeTestRule = createComposeRule()
+    val composeTestRule = createEmptyComposeRule()
 
     private val server = MockWebServer()
 
