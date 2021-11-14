@@ -3,13 +3,13 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlinx-serialization'
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.3"
+    compileSdkVersion 31
+    buildToolsVersion "31.0.0"
 
     defaultConfig {
         applicationId "io.github.lordraydenmk.superheroesapp"
         minSdkVersion 26
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode 1
         versionName "1.0"
 
@@ -37,13 +37,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
     // For Kotlin projects
     kotlinOptions {
-        jvmTarget = "1.8"
-        useIR = true
+        jvmTarget = "11"
         freeCompilerArgs += ["-Xopt-in=kotlin.RequiresOptIn", "-Xopt-in=kotlin.time.ExperimentalTime"]
     }
 
@@ -51,6 +50,7 @@ android {
         unitTests.all {
             useJUnitPlatform()
         }
+        animationsDisabled = true
     }
 
     buildTypes {

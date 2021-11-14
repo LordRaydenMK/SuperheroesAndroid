@@ -68,8 +68,8 @@ class SuperheroDetailsKtTest : FunSpec({
                 series = PlaceholderString(R.string.superhero_details_series, 4)
             )
             viewModel.viewState.test {
-                expectItem() shouldBe Loading
-                expectItem() shouldBe Content(hulk, "Marvel rocks!")
+                awaitItem() shouldBe Loading
+                awaitItem() shouldBe Content(hulk, "Marvel rocks!")
             }
         }
     }
@@ -86,8 +86,8 @@ class SuperheroDetailsKtTest : FunSpec({
 
             val expectedProblem = Problem(ErrorTextRes(R.string.error_recoverable_network))
             viewModel.viewState.test {
-                expectItem() shouldBe Loading
-                expectItem() shouldBe expectedProblem
+                awaitItem() shouldBe Loading
+                awaitItem() shouldBe expectedProblem
             }
         }
     }
@@ -100,7 +100,7 @@ class SuperheroDetailsKtTest : FunSpec({
             program(42, flowOf(Up)).collect()
 
             viewModel.effects.test {
-                expectItem() shouldBe NavigateUp
+                awaitItem() shouldBe NavigateUp
             }
         }
     }

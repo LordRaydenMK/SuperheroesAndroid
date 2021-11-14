@@ -12,7 +12,7 @@ class JetpackViewModelTest : FunSpec({
         viewModel.setState("Test")
 
         viewModel.viewState.test {
-            expectItem() shouldBe "Test"
+            awaitItem() shouldBe "Test"
         }
     }
 
@@ -22,7 +22,7 @@ class JetpackViewModelTest : FunSpec({
         viewModel.setState("Second")
 
         viewModel.viewState.test {
-            expectItem() shouldBe "Second"
+            awaitItem() shouldBe "Second"
         }
     }
 
@@ -48,8 +48,8 @@ class JetpackViewModelTest : FunSpec({
 
 
         viewModel.effects.test {
-            expectItem() shouldBe "First"
-            expectItem() shouldBe "Second"
+            awaitItem() shouldBe "First"
+            awaitItem() shouldBe "Second"
         }
     }
 
@@ -58,7 +58,7 @@ class JetpackViewModelTest : FunSpec({
 
         viewModel.effects.test {
             viewModel.runEffect("First")
-            expectItem() shouldBe "First"
+            awaitItem() shouldBe "First"
         }
 
         viewModel.effects.test {
