@@ -64,8 +64,8 @@ class SuperheroesListKtTest : FunSpec({
         module.program(emptyFlow()).collect()
 
         viewModel.viewState.test {
-            expectItem() shouldBe Loading
-            expectItem() shouldBe content
+            awaitItem() shouldBe Loading
+            awaitItem() shouldBe content
         }
     }
 
@@ -81,8 +81,8 @@ class SuperheroesListKtTest : FunSpec({
         module.program(emptyFlow()).collect()
 
         viewModel.viewState.test {
-            expectItem() shouldBe Loading
-            expectItem() shouldBe problem
+            awaitItem() shouldBe Loading
+            awaitItem() shouldBe problem
         }
     }
 
@@ -109,13 +109,13 @@ class SuperheroesListKtTest : FunSpec({
         GlobalScope.launch { module.program(actions).collect() }
 
         viewModel.viewState.test {
-            expectItem() shouldBe Loading
-            expectItem()::class.java shouldBe Problem::class.java
+            awaitItem() shouldBe Loading
+            awaitItem()::class.java shouldBe Problem::class.java
 
             actions.emit(Refresh)
 
-            expectItem() shouldBe Loading
-            expectItem()::class.java shouldBe Content::class.java
+            awaitItem() shouldBe Loading
+            awaitItem()::class.java shouldBe Content::class.java
         }
     }
 
@@ -128,7 +128,7 @@ class SuperheroesListKtTest : FunSpec({
         }
 
         viewModel.effects.test {
-            expectItem() shouldBe NavigateToDetails(42)
+            awaitItem() shouldBe NavigateToDetails(42)
         }
     }
 })
