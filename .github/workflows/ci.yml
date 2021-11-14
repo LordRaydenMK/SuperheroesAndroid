@@ -10,7 +10,7 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
     
     steps:
       - name: Checkout
@@ -38,11 +38,11 @@ jobs:
     - name: Run Espresso UI Tests
       uses: reactivecircus/android-emulator-runner@v2
       with:
-        api-level: 29
+        api-level: 31
         script: ./gradlew connectedCheck -Pandroid.testInstrumentationRunnerArguments.size=small,medium -Pmarvel_public_api_key=fake_key -Pmarvel_private_api_key=fake_key --stacktrace
 
     - name: Run Espresso E2E Tests
       uses: reactivecircus/android-emulator-runner@v2
       with:
-        api-level: 29
+        api-level: 31
         script: ./gradlew connectedCheck -Pandroid.testInstrumentationRunnerArguments.size=large -Pmarvel_public_api_key=fake_key -Pmarvel_private_api_key=fake_key --stacktrace
