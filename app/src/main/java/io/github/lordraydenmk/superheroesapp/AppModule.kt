@@ -15,7 +15,13 @@ import retrofit2.Retrofit
 /**
  * Contains dependencies with Singleton/App scope
  */
+
+private val empty: (Any) -> Unit = { }
+
 interface AppModule : SuperheroesService {
+
+    val afterBind: (Any) -> Unit
+        get() = empty
 
     companion object {
 
