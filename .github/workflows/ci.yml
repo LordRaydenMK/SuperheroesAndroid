@@ -45,7 +45,10 @@ jobs:
       uses: reactivecircus/android-emulator-runner@v2
       with:
         api-level: 29
-        script: ./gradlew connectedCheck -Pandroid.testInstrumentationRunnerArguments.size=large -Pmarvel_public_api_key=fake_key -Pmarvel_private_api_key=fake_key --stacktrace
+        script: |
+          adb logcat -c
+          adb logcat io.github.lordraydenmk.superheroesapp &
+          ./gradlew connectedCheck -Pandroid.testInstrumentationRunnerArguments.size=large -Pmarvel_public_api_key=fake_key -Pmarvel_private_api_key=fake_key --stacktrace
 
     - name: Archive test results
       if: always()
