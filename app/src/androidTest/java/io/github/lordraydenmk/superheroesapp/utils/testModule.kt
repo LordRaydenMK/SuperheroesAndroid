@@ -2,9 +2,14 @@ package io.github.lordraydenmk.superheroesapp.utils
 
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import io.github.lordraydenmk.superheroesapp.AppModule
 import io.github.lordraydenmk.superheroesapp.TestApp
 import io.github.lordraydenmk.superheroesapp.superheroes.data.SuperheroesService
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withTimeout
 import kotlinx.serialization.json.Json
 import okhttp3.HttpUrl
 import okhttp3.MediaType.Companion.toMediaType
@@ -36,18 +41,28 @@ fun testModule(baseUrl: HttpUrl): TestingModule {
 
     return object : TestingModule, SuperheroesService by service {
 
-        override var state: Any = Unit
+        private val _state = MutableStateFlow<Any>(Unit)
+        override val state: StateFlow<Any> = _state.asStateFlow()
 
         var count = 0
 
-        override var afterBind: (Any) -> Unit = {
-            state = it
+        override val afterBind: (Any) -> Unit = {
+            _state.value = it
             Timber.d("afterBind ${count++} state=$it")
         }
     }
 }
 
-fun replaceAppModule(testModule: AppModule) {
+suspend inline fun <reified T> TestingModule.awaitState() {
+    withTimeout(1_000) {
+        state.filterIsInstance<T>().first()
+    }
+}
+
+fun testModule(): TestingModule =
+    (getInstrumentation().targetContext.applicationContext as TestApp).appModule
+
+fun replaceAppModule(testModule: TestingModule) {
     val testApp = getInstrumentation().targetContext.applicationContext as TestApp
     testApp.appModule = testModule
 }
