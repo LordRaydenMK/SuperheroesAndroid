@@ -4,6 +4,7 @@ import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import io.github.lordraydenmk.superheroesapp.TestApp
 import io.github.lordraydenmk.superheroesapp.superheroes.data.SuperheroesService
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -54,8 +55,13 @@ fun testModule(baseUrl: HttpUrl): TestingModule {
 }
 
 suspend inline fun <reified T> TestingModule.awaitState() {
-    withTimeout(1_000) {
-        state.filterIsInstance<T>().first()
+    try {
+        withTimeout(1_000) {
+            state.filterIsInstance<T>().first()
+        }
+    } catch (e: TimeoutCancellationException) {
+        Timber.d("Expected state to be type: ${T::class.java} found value: ${state.value}")
+        throw e
     }
 }
 
