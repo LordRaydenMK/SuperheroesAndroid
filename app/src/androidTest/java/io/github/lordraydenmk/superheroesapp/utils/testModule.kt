@@ -56,7 +56,7 @@ fun testModule(baseUrl: HttpUrl): TestingModule {
 
 suspend inline fun <reified T> TestingModule.awaitState() {
     try {
-        withTimeout(1_000) {
+        withTimeout(3_000) {
             state.filterIsInstance<T>().first()
         }
     } catch (e: TimeoutCancellationException) {
