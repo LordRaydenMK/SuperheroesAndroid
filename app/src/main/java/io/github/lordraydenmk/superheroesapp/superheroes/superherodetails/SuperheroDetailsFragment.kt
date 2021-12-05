@@ -11,10 +11,10 @@ import io.github.lordraydenmk.superheroesapp.AppModule
 import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.appModule
 import io.github.lordraydenmk.superheroesapp.common.presentation.ViewModelAlgebra
+import io.github.lordraydenmk.superheroesapp.common.presentation.renderFlow
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroId
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.merge
 
 class SuperheroDetailsFragment : Fragment(R.layout.superhero_details_fragment) {
@@ -36,12 +36,8 @@ class SuperheroDetailsFragment : Fragment(R.layout.superhero_details_fragment) {
             ViewModelAlgebra<SuperheroDetailsViewState, SuperheroDetailsEffect> by viewModel {}
 
         with(module) {
-            val render = viewState
-                .mapLatest { screen.bind(it) }
-
             lifecycleScope.launchWhenStarted {
-                merge(program(superheroId, screen.actions), render)
-                    .collect()
+                merge(program(superheroId, screen.actions), renderFlow(screen)).collect()
             }
         }
 
