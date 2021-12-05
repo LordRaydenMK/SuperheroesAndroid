@@ -7,9 +7,13 @@ import androidx.test.filters.LargeTest
 import io.github.lordraydenmk.superheroesapp.MainActivity
 import io.github.lordraydenmk.superheroesapp.superheroes.superherodetails.superheroDetails
 import io.github.lordraydenmk.superheroesapp.superheroes.superheroeslist.superheroesScreen
+import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.Content
+import io.github.lordraydenmk.superheroesapp.utils.TestingModule
+import io.github.lordraydenmk.superheroesapp.utils.awaitState
 import io.github.lordraydenmk.superheroesapp.utils.enqueueJsonFromAssets
 import io.github.lordraydenmk.superheroesapp.utils.replaceAppModule
 import io.github.lordraydenmk.superheroesapp.utils.testModule
+import kotlinx.coroutines.runBlocking
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Before
@@ -34,8 +38,13 @@ class SuperheroesE2ETest {
     }
 
     @Test
-    fun openList_openDetails_recreate_checkDetails_backToList() =
+    fun openList_openDetails_recreate_checkDetails_backToList() = runBlocking {
         launch(MainActivity::class.java).use { scenario ->
+
+            val testModule: TestingModule = testModule()
+
+            testModule.awaitState<Content>()
+
             superheroesScreen {
                 assertContentDisplayed("Data provided by Marvel. © 2021 MARVEL")
                 openSuperheroDetails()
@@ -65,6 +74,7 @@ class SuperheroesE2ETest {
             }
             Unit
         }
+    }
 
     @After
     fun tearDown() {
