@@ -45,16 +45,14 @@ fun testModule(baseUrl: HttpUrl): TestingModule {
 
         private val state = MutableStateFlow<Any>(Unit)
 
-        var count = 0
-
         override val afterBind: (Any) -> Unit = {
             state.value = it
-            Timber.d("afterBind ${count++} state=$it")
+            Timber.d("afterBind state=$it")
         }
 
-        override suspend fun <A : Any> awaitState(clazz: Class<A>) {
+        override suspend fun <A : Any> awaitState(clazz: Class<A>, timeoutMs: Long) {
             try {
-                withTimeout(3_000) {
+                withTimeout(timeoutMs) {
                     state.mapNotNull { if (clazz.isAssignableFrom(it.javaClass)) clazz.cast(it) else null }
                         .first()
                 }
@@ -66,7 +64,8 @@ fun testModule(baseUrl: HttpUrl): TestingModule {
     }
 }
 
-suspend inline fun <reified T : Any> TestingModule.awaitState() = awaitState(T::class.java)
+suspend inline fun <reified T : Any> TestingModule.awaitState(timeoutMs: Long = 3_000): Unit =
+    awaitState(T::class.java, timeoutMs)
 
 fun testModule(): TestingModule =
     (getInstrumentation().targetContext.applicationContext as TestApp).appModule
