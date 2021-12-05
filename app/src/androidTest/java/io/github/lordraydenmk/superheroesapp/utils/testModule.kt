@@ -2,7 +2,9 @@ package io.github.lordraydenmk.superheroesapp.utils
 
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
+import coil.ImageLoader
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import io.github.lordraydenmk.superheroesapp.FakeImageLoader
 import io.github.lordraydenmk.superheroesapp.TestApp
 import io.github.lordraydenmk.superheroesapp.superheroes.data.SuperheroesService
 import kotlinx.coroutines.TimeoutCancellationException
@@ -41,7 +43,7 @@ fun testModule(baseUrl: HttpUrl): TestingModule {
 
     val service = retrofit.create(SuperheroesService::class.java)
 
-    return object : TestingModule, SuperheroesService by service {
+    return object : TestingModule, ImageLoader by FakeImageLoader, SuperheroesService by service {
 
         private val state = MutableStateFlow<Any>(Unit)
 

@@ -13,14 +13,12 @@ import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.logging.HttpLoggingInterceptor.Level
 import retrofit2.Retrofit
 
+private val empty: (Any) -> Unit = { }
+
 /**
  * Contains dependencies with Singleton/App scope
  */
 interface AppModule : SuperheroesService, ImageLoader {
-
-private val empty: (Any) -> Unit = { }
-
-interface AppModule : SuperheroesService {
 
     val afterBind: (Any) -> Unit
         get() = empty
