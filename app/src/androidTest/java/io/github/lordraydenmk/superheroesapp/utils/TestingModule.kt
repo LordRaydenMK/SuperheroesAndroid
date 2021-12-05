@@ -6,5 +6,5 @@ interface TestingModule : AppModule {
 
     override val afterBind: (Any) -> Unit
 
-    suspend fun <A : Any> awaitState(clazz: Class<A>)
+    suspend fun <A : Any> awaitState(clazz: Class<A>, timeoutMs: Long = 3_000)
 }
