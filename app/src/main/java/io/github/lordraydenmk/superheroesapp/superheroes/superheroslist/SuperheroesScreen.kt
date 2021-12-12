@@ -1,6 +1,5 @@
 package io.github.lordraydenmk.superheroesapp.superheroes.superheroslist
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
@@ -35,16 +34,13 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import androidx.recyclerview.widget.GridLayoutManager
 import coil.compose.rememberImagePainter
 import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.common.presentation.Screen
-import io.github.lordraydenmk.superheroesapp.databinding.SuperheroesScreenBinding
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroId
 import io.github.lordraydenmk.superheroesapp.superheroes.ui.common.CopyrightView
 import io.github.lordraydenmk.superheroesapp.superheroes.ui.common.SuperheroProblem
 import io.github.lordraydenmk.superheroesapp.superheroes.ui.common.SuperherosLoading
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -52,14 +48,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 
 class SuperheroesScreen(
-    container: ViewGroup,
-    lifecycleScope: CoroutineScope
+    container: ViewGroup
 ) : Screen<SuperheroesAction, SuperheroesViewState> {
-
-    private val binding =
-        SuperheroesScreenBinding.inflate(LayoutInflater.from(container.context), container)
-
-    private val superheroesAdapter = SuperheroesAdapter(lifecycleScope)
 
     private val composeView = ComposeView(container.context).apply {
         setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -78,13 +68,6 @@ class SuperheroesScreen(
     @Suppress("RedundantSuspendModifier") // updating the UI is a side effect
     override suspend fun bind(viewState: SuperheroesViewState) {
         _state.value = viewState
-    }
-
-    init {
-        with(binding.rvSuperheroes) {
-            layoutManager = GridLayoutManager(context, 2)
-            adapter = superheroesAdapter
-        }
     }
 }
 

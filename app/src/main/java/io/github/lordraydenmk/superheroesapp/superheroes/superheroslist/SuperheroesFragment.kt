@@ -24,7 +24,7 @@ class SuperheroesFragment : Fragment(R.layout.superheroes_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val screen = SuperheroesScreen(view as ViewGroup, lifecycleScope)
+        val screen = SuperheroesScreen(view as ViewGroup)
 
         val module: SuperheroesModule = object : SuperheroesModule,
             AppModule by requireActivity().appModule(),
