@@ -44,6 +44,6 @@ class SuperheroDetailsRobot(private val rule: ComposeTestRule) {
     }
 
     fun assertErrorHidden() {
-        rule.onNodeWithTag("SuperheroDetailsProblem").assertDoesNotExist()
+        rule.onNodeWithTag("SuperheroProblem").assertDoesNotExist()
     }
 }

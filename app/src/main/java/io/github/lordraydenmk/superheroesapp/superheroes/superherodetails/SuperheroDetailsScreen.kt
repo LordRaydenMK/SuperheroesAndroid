@@ -4,15 +4,11 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
@@ -24,22 +20,20 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import coil.ImageLoader
 import coil.compose.LocalImageLoader
 import coil.compose.rememberImagePainter
 import io.github.lordraydenmk.superheroesapp.appModule
-import io.github.lordraydenmk.superheroesapp.common.ErrorTextRes
-import io.github.lordraydenmk.superheroesapp.common.IdTextRes
 import io.github.lordraydenmk.superheroesapp.common.presentation.Screen
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroId
+import io.github.lordraydenmk.superheroesapp.superheroes.ui.common.CopyrightView
+import io.github.lordraydenmk.superheroesapp.superheroes.ui.common.SuperheroProblem
+import io.github.lordraydenmk.superheroesapp.superheroes.ui.common.SuperherosLoading
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -84,32 +78,38 @@ fun SuperheroDetailsScreen(
     val state by stateFlow.collectAsState()
 
     Column {
-        TopAppBar(
-            title = {
-                Text(
-                    text = when (val viewState = state) {
-                        is Content -> viewState.superhero.name
-                        else -> ""
-                    }
-                )
-            },
-            navigationIcon = {
-                IconButton(onClick = { actions.trySend(Up).getOrThrow() }) {
-                    Icon(Icons.Filled.ArrowBack, contentDescription = "")
-                }
-            }
-        )
+        SuperheroAppBar(state, actions)
 
         when (val viewState = state) {
             is Content -> SuperheroContent(content = viewState)
-            Loading -> Box(modifier = Modifier.fillMaxSize(), contentAlignment = Center) {
-                CircularProgressIndicator()
-            }
-            is Problem -> SuperheroProblem(problem = viewState) {
+            Loading -> SuperherosLoading()
+            is Problem -> SuperheroProblem(textRes = viewState.stringId) {
                 actions.trySend(Refresh(superheroId))
             }
         }
     }
+}
+
+@Composable
+private fun SuperheroAppBar(
+    state: SuperheroDetailsViewState,
+    actions: Channel<SuperheroDetailsAction>
+) {
+    TopAppBar(
+        title = {
+            Text(
+                text = when (val viewState = state) {
+                    is Content -> viewState.superhero.name
+                    else -> ""
+                }
+            )
+        },
+        navigationIcon = {
+            IconButton(onClick = { actions.trySend(Up).getOrThrow() }) {
+                Icon(Icons.Filled.ArrowBack, contentDescription = "")
+            }
+        }
+    )
 }
 
 @Composable
@@ -154,39 +154,6 @@ fun SuperheroContent(content: Content) {
             )
         )
         Spacer(modifier = Modifier.weight(1f))
-        Text(
-            text = content.attribution,
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color.LightGray)
-        )
-    }
-}
-
-@Composable
-fun SuperheroProblem(problem: Problem, onClick: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .testTag("SuperheroDetailsProblem"), contentAlignment = Center
-    ) {
-        val clickable = if (problem.isRecoverable) Modifier.clickable { onClick() }
-        else Modifier
-        when (val stringId = problem.stringId) {
-            is ErrorTextRes -> Text(
-                text = stringResource(
-                    id = stringId.id,
-                    stringResource(id = stringId.retryTextId),
-                ),
-                modifier = clickable,
-                textAlign = TextAlign.Center
-            )
-            is IdTextRes -> Text(
-                text = stringResource(id = stringId.id),
-                modifier = clickable,
-                textAlign = TextAlign.Center
-            )
-        }
+        CopyrightView(text = content.attribution)
     }
 }

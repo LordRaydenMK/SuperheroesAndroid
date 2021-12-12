@@ -50,9 +50,9 @@ class SuperheroesE2ETest {
 
             testModule.awaitState<Content>()
 
-            superheroesScreen {
+            superheroesScreen(composeTestRule) {
                 assertContentDisplayed("Data provided by Marvel. © 2021 MARVEL")
-                openSuperheroDetails()
+                openSuperheroDetails("3-D Man")
             }
             superheroDetails(composeTestRule) {
                 assertContentDisplayed(
@@ -74,7 +74,7 @@ class SuperheroesE2ETest {
                 )
             }
             Espresso.pressBack()
-            superheroesScreen {
+            superheroesScreen(composeTestRule) {
                 assertContentDisplayed("Data provided by Marvel. © 2021 MARVEL")
             }
             Unit

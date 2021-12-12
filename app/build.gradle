@@ -48,7 +48,10 @@ android {
     // For Kotlin projects
     kotlinOptions {
         jvmTarget = "11"
-        freeCompilerArgs += ["-Xopt-in=kotlin.RequiresOptIn", "-Xopt-in=kotlin.time.ExperimentalTime"]
+        freeCompilerArgs += [
+                "-Xopt-in=kotlin.RequiresOptIn",
+                "-Xuse-experimental=androidx.compose.foundation.ExperimentalFoundationApi"
+        ]
     }
 
     testOptions {

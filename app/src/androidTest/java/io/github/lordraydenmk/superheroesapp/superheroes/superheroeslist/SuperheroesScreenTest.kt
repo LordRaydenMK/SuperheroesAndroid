@@ -1,18 +1,20 @@
 package io.github.lordraydenmk.superheroesapp.superheroes.superheroeslist
 
+import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import io.github.lordraydenmk.superheroesapp.R
-import io.github.lordraydenmk.superheroesapp.ScreenScenario.Companion.launchInContainer
 import io.github.lordraydenmk.superheroesapp.common.ErrorTextRes
-import io.github.lordraydenmk.superheroesapp.common.IdTextRes
 import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.Content
 import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.Loading
 import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.Problem
 import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.SuperheroViewEntity
 import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.SuperheroesScreen
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
 import okhttp3.HttpUrl.Companion.toHttpUrl
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import kotlin.coroutines.EmptyCoroutineContext
@@ -21,51 +23,56 @@ import kotlin.coroutines.EmptyCoroutineContext
 @RunWith(AndroidJUnit4::class)
 class SuperheroesScreenTest {
 
+    @get:Rule
+    val composeTestRule = createComposeRule()
+
     private val scope = CoroutineScope(EmptyCoroutineContext)
 
     @Test
     fun loadingState_progressBarDisplayed() {
-        launchInContainer { parent -> SuperheroesScreen(parent, scope) }.use { scenario ->
-            scenario.onViewBlocking { view -> view.bind(Loading) }
+        composeTestRule.setContent {
+            SuperheroesScreen(MutableStateFlow(Loading), actions = Channel())
+        }
 
-            superheroesScreen {
-                assertLoadingDisplayed()
-                assertContentHidden()
-                assertErrorHidden()
-            }
+        superheroesScreen(composeTestRule) {
+            assertLoadingDisplayed()
+            assertContentHidden()
+            assertErrorHidden()
         }
     }
 
     @Test
     fun recoverableProblemState_errorViewDisplayedWithRetryText() {
-        launchInContainer { parent -> SuperheroesScreen(parent, scope) }.use { scenario ->
-            scenario.onViewBlocking { view ->
-                view.bind(Problem(ErrorTextRes(R.string.error_recoverable_network)))
-            }
+        composeTestRule.setContent {
+            SuperheroesScreen(
+                MutableStateFlow(Problem(ErrorTextRes(R.string.error_recoverable_network))),
+                actions = Channel()
+            )
+        }
 
-            val errorText =
-                "We could not connect to our server. Please check your internet connection \n\nTap to retry!"
-            superheroesScreen {
-                assertErrorDisplayed(errorText)
-                assertContentHidden()
-                assertLoadingHidden()
-            }
+        val errorText =
+            "We could not connect to our server. Please check your internet connection \n\nTap to retry!"
+        superheroesScreen(composeTestRule) {
+            assertErrorDisplayed(errorText)
+            assertContentHidden()
+            assertLoadingHidden()
         }
     }
 
     @Test
     fun unrecoverableProblemState_errorViewDisplayed() {
-        launchInContainer { parent -> SuperheroesScreen(parent, scope) }.use { scenario ->
-            scenario.onViewBlocking { view ->
-                view.bind(Problem(IdTextRes(R.string.error_unrecoverable)))
-            }
+        composeTestRule.setContent {
+            SuperheroesScreen(
+                MutableStateFlow(Problem(ErrorTextRes(R.string.error_unrecoverable))),
+                actions = Channel()
+            )
+        }
 
-            val errorText = "Ooops… Something went wrong!"
-            superheroesScreen {
-                assertErrorDisplayed(errorText)
-                assertContentHidden()
-                assertLoadingHidden()
-            }
+        val errorText = "Ooops… Something went wrong!"
+        superheroesScreen(composeTestRule) {
+            assertErrorDisplayed(errorText)
+            assertContentHidden()
+            assertLoadingHidden()
         }
     }
 
@@ -81,15 +88,15 @@ class SuperheroesScreenTest {
             ),
             "Copyright Marvel"
         )
-        launchInContainer { parent -> SuperheroesScreen(parent, scope) }.use { scenario ->
-
-            scenario.onViewBlocking { view -> view.bind(viewState) }
-
-            superheroesScreen {
-                assertContentDisplayed("Copyright Marvel")
-                assertLoadingHidden()
-                assertErrorHidden()
-            }
+        composeTestRule.setContent {
+            SuperheroesScreen(MutableStateFlow(viewState), actions = Channel())
         }
+
+        superheroesScreen(composeTestRule) {
+            assertContentDisplayed("Copyright Marvel")
+            assertLoadingHidden()
+            assertErrorHidden()
+        }
+
     }
 }
