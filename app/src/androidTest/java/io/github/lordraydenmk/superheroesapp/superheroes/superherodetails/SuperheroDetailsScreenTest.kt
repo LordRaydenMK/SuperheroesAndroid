@@ -11,6 +11,7 @@ import io.github.lordraydenmk.superheroesapp.common.ErrorTextRes
 import io.github.lordraydenmk.superheroesapp.common.IdTextRes
 import io.github.lordraydenmk.superheroesapp.common.PlaceholderString
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.junit.Rule
 import org.junit.Test
@@ -27,7 +28,7 @@ class SuperheroDetailsScreenTest {
     fun loadingState_progressBarDisplayed() {
         composeTestRule.setContent {
             SuperheroDetailsScreen(
-                viewState = Loading,
+                stateFlow = MutableStateFlow(Loading),
                 superheroId = 0,
                 actions = Channel()
             )
@@ -45,7 +46,7 @@ class SuperheroDetailsScreenTest {
         val viewState = Problem(ErrorTextRes(R.string.error_recoverable_network))
 
         composeTestRule.setContent {
-            SuperheroDetailsScreen(viewState = viewState, superheroId = 0, actions = Channel())
+            SuperheroDetailsScreen(MutableStateFlow(viewState), superheroId = 0, actions = Channel())
         }
 
         val errorText =
@@ -62,7 +63,7 @@ class SuperheroDetailsScreenTest {
         val viewState = Problem(IdTextRes(R.string.error_unrecoverable))
 
         composeTestRule.setContent {
-            SuperheroDetailsScreen(viewState = viewState, superheroId = 0, actions = Channel())
+            SuperheroDetailsScreen(MutableStateFlow(viewState), superheroId = 0, actions = Channel())
         }
 
         superheroDetails(composeTestRule) {
@@ -89,7 +90,7 @@ class SuperheroDetailsScreenTest {
 
         composeTestRule.setContent {
             CompositionLocalProvider(LocalImageLoader provides FakeImageLoader) {
-                SuperheroDetailsScreen(viewState = viewState, superheroId = 0, actions = Channel())
+                SuperheroDetailsScreen(MutableStateFlow(viewState), superheroId = 0, actions = Channel())
             }
         }
 

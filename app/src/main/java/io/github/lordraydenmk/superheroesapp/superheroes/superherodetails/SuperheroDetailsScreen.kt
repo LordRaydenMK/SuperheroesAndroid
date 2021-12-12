@@ -21,11 +21,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -39,6 +42,8 @@ import io.github.lordraydenmk.superheroesapp.common.presentation.Screen
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroId
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 
 class SuperheroDetailsScreen(
@@ -46,35 +51,48 @@ class SuperheroDetailsScreen(
     private val superheroId: SuperheroId
 ) : Screen<SuperheroDetailsAction, SuperheroDetailsViewState> {
 
-    private val composeView = ComposeView(container.context)
+    private val composeView = ComposeView(container.context).apply {
+        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+    }
     private val imageLoader: ImageLoader = container.context.appModule()
+
+    private val _state: MutableStateFlow<SuperheroDetailsViewState> = MutableStateFlow(Loading)
+
+    private val _actions = Channel<SuperheroDetailsAction>(Channel.UNLIMITED)
+    override val actions: Flow<SuperheroDetailsAction> = _actions.receiveAsFlow()
 
     init {
         container.addView(composeView, LayoutParams(MATCH_PARENT, MATCH_PARENT))
-    }
-
-    private val _actions = Channel<SuperheroDetailsAction>(Channel.UNLIMITED)
-
-    override val actions: Flow<SuperheroDetailsAction> = _actions.receiveAsFlow()
-
-    override suspend fun bind(viewState: SuperheroDetailsViewState) {
         composeView.setContent {
             CompositionLocalProvider(LocalImageLoader provides imageLoader) {
-                SuperheroDetailsScreen(viewState, superheroId, _actions)
+                SuperheroDetailsScreen(_state, superheroId, _actions)
             }
         }
+    }
+
+    override suspend fun bind(viewState: SuperheroDetailsViewState) {
+        _state.value = viewState
     }
 }
 
 @Composable
 fun SuperheroDetailsScreen(
-    viewState: SuperheroDetailsViewState,
+    stateFlow: StateFlow<SuperheroDetailsViewState>,
     superheroId: SuperheroId,
     actions: Channel<SuperheroDetailsAction>
 ) {
+    val state by stateFlow.collectAsState()
+
     Column {
         TopAppBar(
-            title = { Text(text = if (viewState is Content) viewState.superhero.name else "") },
+            title = {
+                Text(
+                    text = when (val viewState = state) {
+                        is Content -> viewState.superhero.name
+                        else -> ""
+                    }
+                )
+            },
             navigationIcon = {
                 IconButton(onClick = { actions.trySend(Up).getOrThrow() }) {
                     Icon(Icons.Filled.ArrowBack, contentDescription = "")
@@ -82,7 +100,7 @@ fun SuperheroDetailsScreen(
             }
         )
 
-        when (viewState) {
+        when (val viewState = state) {
             is Content -> SuperheroContent(content = viewState)
             Loading -> Box(modifier = Modifier.fillMaxSize(), contentAlignment = Center) {
                 CircularProgressIndicator()
@@ -96,7 +114,6 @@ fun SuperheroDetailsScreen(
 
 @Composable
 fun SuperheroContent(content: Content) {
-
     val imageLoader = LocalImageLoader.current
 
     Column(
