@@ -96,14 +96,7 @@ private fun SuperheroAppBar(
     actions: Channel<SuperheroDetailsAction>
 ) {
     TopAppBar(
-        title = {
-            Text(
-                text = when (val viewState = state) {
-                    is Content -> viewState.superhero.name
-                    else -> ""
-                }
-            )
-        },
+        title = { Text(text = state.title) },
         navigationIcon = {
             IconButton(onClick = { actions.trySend(Up).getOrThrow() }) {
                 Icon(Icons.Filled.ArrowBack, contentDescription = "")
