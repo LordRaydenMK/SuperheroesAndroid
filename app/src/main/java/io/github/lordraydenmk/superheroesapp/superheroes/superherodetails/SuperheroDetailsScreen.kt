@@ -1,70 +1,159 @@
 package io.github.lordraydenmk.superheroesapp.superheroes.superherodetails
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.view.isVisible
-import coil.load
-import io.github.lordraydenmk.superheroesapp.R
+import android.view.ViewGroup.LayoutParams
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
+import coil.ImageLoader
+import coil.compose.LocalImageLoader
+import coil.compose.rememberImagePainter
+import io.github.lordraydenmk.superheroesapp.appModule
 import io.github.lordraydenmk.superheroesapp.common.presentation.Screen
-import io.github.lordraydenmk.superheroesapp.common.setTextResource
-import io.github.lordraydenmk.superheroesapp.databinding.SuperheroDetailsScreenBinding
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroId
+import io.github.lordraydenmk.superheroesapp.superheroes.ui.common.CopyrightView
+import io.github.lordraydenmk.superheroesapp.superheroes.ui.common.SuperheroProblem
+import io.github.lordraydenmk.superheroesapp.superheroes.ui.common.SuperherosLoading
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.merge
-import reactivecircus.flowbinding.android.view.clicks
-import reactivecircus.flowbinding.appcompat.navigationClicks
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 
 class SuperheroDetailsScreen(
     container: ViewGroup,
-    superheroId: SuperheroId
+    private val superheroId: SuperheroId
 ) : Screen<SuperheroDetailsAction, SuperheroDetailsViewState> {
 
-    private val binding =
-        SuperheroDetailsScreenBinding.inflate(LayoutInflater.from(container.context), container)
+    private val composeView = ComposeView(container.context).apply {
+        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+    }
+    private val imageLoader: ImageLoader = container.context.appModule()
 
-    override val actions: Flow<SuperheroDetailsAction> = merge(
-        binding.toolbar.navigationClicks().map { Up },
-        binding.superheroContent.tvError.clicks()
-            .map { Refresh(superheroId) }
-    )
+    private val _state: MutableStateFlow<SuperheroDetailsViewState> = MutableStateFlow(Loading)
 
-    override suspend fun bind(viewState: SuperheroDetailsViewState) {
-        with(binding.superheroContent) {
-            progress.isVisible = viewState is Loading
-            tvError.isVisible = viewState is Problem
-            layoutContent.isVisible = viewState is Content
-            binding.copyrightLayout.tvCopyright.isVisible = viewState is Content
+    private val _actions = Channel<SuperheroDetailsAction>(Channel.UNLIMITED)
+    override val actions: Flow<SuperheroDetailsAction> = _actions.receiveAsFlow()
 
-            when (viewState) {
-                Loading -> Unit
-                is Content -> bindContent(viewState)
-                is Problem -> bindError(viewState)
+    init {
+        container.addView(composeView, LayoutParams(MATCH_PARENT, MATCH_PARENT))
+        composeView.setContent {
+            CompositionLocalProvider(LocalImageLoader provides imageLoader) {
+                SuperheroDetailsScreen(_state, superheroId, _actions)
             }
         }
     }
 
-    private fun bindContent(viewState: Content) = with(binding) {
-        val superhero = viewState.superhero
-        toolbar.title = superhero.name
-        imgSuperhero.load(superhero.thumbnail) {
-            placeholder(R.drawable.ic_hourglass_bottom_black)
-            error(R.drawable.ic_baseline_broken_image)
-            crossfade(true)
-        }
-        imgSuperhero.contentDescription = superhero.name
-        with(superheroContent) {
-            val resources = tvComicsCount.resources
-            tvComicsCount.text = superhero.comics.string(resources)
-            tvStoriesCount.text = superhero.stories.string(resources)
-            tvEventsCount.text = superhero.events.string(resources)
-            tvSeriesCount.text = superhero.series.string(resources)
-        }
-        copyrightLayout.tvCopyright.text = viewState.attribution
+    override suspend fun bind(viewState: SuperheroDetailsViewState) {
+        _state.value = viewState
     }
+}
 
-    private fun bindError(problem: Problem) = with(binding.superheroContent) {
-        tvError.setTextResource(problem.stringId)
-        tvError.isClickable = problem.isRecoverable
+@Composable
+fun SuperheroDetailsScreen(
+    stateFlow: StateFlow<SuperheroDetailsViewState>,
+    superheroId: SuperheroId,
+    actions: Channel<SuperheroDetailsAction>
+) {
+    val state by stateFlow.collectAsState()
+
+    Column {
+        SuperheroAppBar(state, actions)
+
+        when (val viewState = state) {
+            is Content -> SuperheroContent(content = viewState)
+            Loading -> SuperherosLoading()
+            is Problem -> SuperheroProblem(textRes = viewState.stringId) {
+                actions.trySend(Refresh(superheroId))
+            }
+        }
+    }
+}
+
+@Composable
+private fun SuperheroAppBar(
+    state: SuperheroDetailsViewState,
+    actions: Channel<SuperheroDetailsAction>
+) {
+    TopAppBar(
+        title = {
+            Text(
+                text = when (val viewState = state) {
+                    is Content -> viewState.superhero.name
+                    else -> ""
+                }
+            )
+        },
+        navigationIcon = {
+            IconButton(onClick = { actions.trySend(Up).getOrThrow() }) {
+                Icon(Icons.Filled.ArrowBack, contentDescription = "")
+            }
+        }
+    )
+}
+
+@Composable
+fun SuperheroContent(content: Content) {
+    val imageLoader = LocalImageLoader.current
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxSize()
+            .testTag("SuperheroDetailsContent")
+    ) {
+        Image(
+            painter = rememberImagePainter(content.superhero.thumbnail, imageLoader),
+            contentDescription = content.superhero.name,
+            modifier = Modifier
+                .aspectRatio(1f)
+                .fillMaxWidth()
+        )
+        Text(
+            text = stringResource(
+                id = content.superhero.comics.stringId,
+                content.superhero.comics.replacement
+            )
+        )
+        Text(
+            text = stringResource(
+                id = content.superhero.series.stringId,
+                content.superhero.series.replacement
+            )
+        )
+        Text(
+            text = stringResource(
+                id = content.superhero.events.stringId,
+                content.superhero.events.replacement
+            )
+        )
+        Text(
+            text = stringResource(
+                id = content.superhero.stories.stringId,
+                content.superhero.stories.replacement
+            )
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        CopyrightView(text = content.attribution)
     }
 }

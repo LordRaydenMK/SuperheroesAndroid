@@ -1,5 +1,6 @@
 package io.github.lordraydenmk.superheroesapp
 
+import coil.ImageLoader
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import io.github.lordraydenmk.superheroesapp.common.md5
 import io.github.lordraydenmk.superheroesapp.superheroes.data.SuperheroesService
@@ -12,13 +13,12 @@ import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.logging.HttpLoggingInterceptor.Level
 import retrofit2.Retrofit
 
+private val empty: (Any) -> Unit = { }
+
 /**
  * Contains dependencies with Singleton/App scope
  */
-
-private val empty: (Any) -> Unit = { }
-
-interface AppModule : SuperheroesService {
+interface AppModule : SuperheroesService, ImageLoader {
 
     val afterBind: (Any) -> Unit
         get() = empty
@@ -76,7 +76,11 @@ interface AppModule : SuperheroesService {
 
         private val superheroesService = retrofit.create(SuperheroesService::class.java)
 
-        fun create(superheroesService: SuperheroesService = this.superheroesService): AppModule =
-            object : AppModule, SuperheroesService by superheroesService {}
+        fun create(
+            imageLoader: ImageLoader,
+            superheroesService: SuperheroesService = this.superheroesService
+        ): AppModule =
+            object : AppModule, ImageLoader by imageLoader,
+                SuperheroesService by superheroesService {}
     }
 }

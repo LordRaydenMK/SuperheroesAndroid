@@ -1,5 +1,6 @@
 package io.github.lordraydenmk.superheroesapp.superheroes
 
+import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.espresso.Espresso
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -17,12 +18,16 @@ import kotlinx.coroutines.runBlocking
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
 class SuperheroesE2ETest {
+
+    @get:Rule
+    val composeTestRule = createEmptyComposeRule()
 
     private val server = MockWebServer()
 
@@ -45,11 +50,11 @@ class SuperheroesE2ETest {
 
             testModule.awaitState<Content>()
 
-            superheroesScreen {
+            superheroesScreen(composeTestRule) {
                 assertContentDisplayed("Data provided by Marvel. © 2021 MARVEL")
-                openSuperheroDetails()
+                openSuperheroDetails("3-D Man")
             }
-            superheroDetails {
+            superheroDetails(composeTestRule) {
                 assertContentDisplayed(
                     comicsText = "Comics available: 12",
                     storiesText = "Stories available: 21",
@@ -59,7 +64,7 @@ class SuperheroesE2ETest {
                 )
             }
             scenario.recreate()
-            superheroDetails {
+            superheroDetails(composeTestRule) {
                 assertContentDisplayed(
                     comicsText = "Comics available: 12",
                     storiesText = "Stories available: 21",
@@ -69,7 +74,7 @@ class SuperheroesE2ETest {
                 )
             }
             Espresso.pressBack()
-            superheroesScreen {
+            superheroesScreen(composeTestRule) {
                 assertContentDisplayed("Data provided by Marvel. © 2021 MARVEL")
             }
             Unit

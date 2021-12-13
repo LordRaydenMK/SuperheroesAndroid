@@ -1,35 +1,23 @@
 package io.github.lordraydenmk.superheroesapp.superheroes.superherodetails
 
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
-import io.github.lordraydenmk.superheroesapp.R
-import org.hamcrest.CoreMatchers.not
+import androidx.compose.ui.semantics.ProgressBarRangeInfo
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasProgressBarRangeInfo
+import androidx.compose.ui.test.junit4.ComposeTestRule
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 
-fun superheroDetails(f: SuperheroDetailsRobot.() -> Unit) =
-    SuperheroDetailsRobot().also(f)
+fun superheroDetails(rule: ComposeTestRule, f: SuperheroDetailsRobot.() -> Unit) =
+    SuperheroDetailsRobot(rule).also(f)
 
-class SuperheroDetailsRobot {
-
-    private val progressViewId = R.id.progress
-
-    private val comicsViewId = R.id.tvComicsCount
-    private val seriesViewId = R.id.tvSeriesCount
-    private val storiesViewId = R.id.tvStoriesCount
-    private val eventsViewId = R.id.tvEventsCount
-    private val copyrightViewId = R.id.copyrightLayout
-
-    private val errorViewId = R.id.tvError
+class SuperheroDetailsRobot(private val rule: ComposeTestRule) {
 
     fun assertLoadingDisplayed() {
-        onView(withId(progressViewId)).check(matches(isDisplayed()))
+        rule.onNode(hasProgressBarRangeInfo(ProgressBarRangeInfo.Indeterminate)).assertIsDisplayed()
     }
 
     fun assertErrorDisplayed(errorText: String) {
-        onView(withId(errorViewId)).check(matches(isDisplayed()))
-        onView(withId(errorViewId)).check(matches(withText(errorText)))
+        rule.onNodeWithText(errorText).assertIsDisplayed()
     }
 
     fun assertContentDisplayed(
@@ -39,26 +27,23 @@ class SuperheroDetailsRobot {
         seriesText: String,
         copyrightText: String
     ) {
-        onView(withId(comicsViewId)).check(matches(withText(comicsText)))
-        onView(withId(storiesViewId)).check(matches(withText(storiesText)))
-        onView(withId(eventsViewId)).check(matches(withText(eventsText)))
-        onView(withId(seriesViewId)).check(matches(withText(seriesText)))
-        onView(withId(copyrightViewId)).check(matches(withText(copyrightText)))
+        rule.onNodeWithText(comicsText).assertIsDisplayed()
+        rule.onNodeWithText(storiesText).assertIsDisplayed()
+        rule.onNodeWithText(eventsText).assertIsDisplayed()
+        rule.onNodeWithText(seriesText).assertIsDisplayed()
+        rule.onNodeWithText(copyrightText).assertIsDisplayed()
     }
 
     fun assertLoadingHidden() {
-        onView(withId(progressViewId)).check(matches(not(isDisplayed())))
+        rule.onNode(hasProgressBarRangeInfo(ProgressBarRangeInfo.Indeterminate))
+            .assertDoesNotExist()
     }
 
     fun assertContentHidden() {
-        onView(withId(comicsViewId)).check(matches(not(isDisplayed())))
-        onView(withId(seriesViewId)).check(matches(not(isDisplayed())))
-        onView(withId(storiesViewId)).check(matches(not(isDisplayed())))
-        onView(withId(eventsViewId)).check(matches(not(isDisplayed())))
-        onView(withId(copyrightViewId)).check(matches(not(isDisplayed())))
+        rule.onNodeWithTag("SuperheroDetailsContent").assertDoesNotExist()
     }
 
     fun assertErrorHidden() {
-        onView(withId(errorViewId)).check(matches(not(isDisplayed())))
+        rule.onNodeWithTag("SuperheroProblem").assertDoesNotExist()
     }
 }

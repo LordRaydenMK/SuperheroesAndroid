@@ -1,55 +1,45 @@
 package io.github.lordraydenmk.superheroesapp.superheroes.superheroeslist
 
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
-import io.github.lordraydenmk.superheroesapp.R
-import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.SuperheroesAdapter.SuperheroViewHolder
-import org.hamcrest.CoreMatchers.not
+import androidx.compose.ui.semantics.ProgressBarRangeInfo
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasProgressBarRangeInfo
+import androidx.compose.ui.test.junit4.ComposeTestRule
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 
-fun superheroesScreen(f: SuperheroesScreenRobot.() -> Unit) =
-    SuperheroesScreenRobot().also(f)
+fun superheroesScreen(rule: ComposeTestRule, f: SuperheroesScreenRobot.() -> Unit) =
+    SuperheroesScreenRobot(rule).also(f)
 
-class SuperheroesScreenRobot {
-
-    private val loadingViewId = R.id.progressSuperheroes
-    private val recyclerViewId = R.id.rvSuperheroes
-    private val copyrightViewId = R.id.copyrightLayout
-    private val errorViewId = R.id.tvError
+class SuperheroesScreenRobot(private val rule: ComposeTestRule) {
 
     fun assertLoadingDisplayed() {
-        onView(withId(loadingViewId)).check(matches(isDisplayed()))
+        rule.onNode(hasProgressBarRangeInfo(ProgressBarRangeInfo.Indeterminate)).assertIsDisplayed()
     }
 
     fun assertErrorDisplayed(errorText: String) {
-        onView(withId(errorViewId)).check(matches(isDisplayed()))
-        onView(withId(errorViewId)).check(matches(withText(errorText)))
+        rule.onNodeWithText(errorText).assertIsDisplayed()
     }
 
     fun assertContentDisplayed(copyrightText: String) {
-        onView(withId(R.id.rvSuperheroes)).check(matches(isDisplayed()))
-        onView(withId(R.id.copyrightLayout)).check(matches(withText(copyrightText)))
+        rule.onNodeWithTag("SuperheroesContent").assertIsDisplayed()
+        rule.onNodeWithText(copyrightText).assertIsDisplayed()
     }
 
     fun assertLoadingHidden() {
-        onView(withId(loadingViewId)).check(matches(not(isDisplayed())))
+        rule.onNode(hasProgressBarRangeInfo(ProgressBarRangeInfo.Indeterminate))
+            .assertDoesNotExist()
     }
 
     fun assertContentHidden() {
-        onView(withId(recyclerViewId)).check(matches(not(isDisplayed())))
-        onView(withId(copyrightViewId)).check(matches(not(isDisplayed())))
+        rule.onNodeWithTag("SuperheroesContent").assertDoesNotExist()
     }
 
     fun assertErrorHidden() {
-        onView(withId(errorViewId)).check(matches(not(isDisplayed())))
+        rule.onNodeWithTag("SuperheroProblem").assertDoesNotExist()
     }
 
-    fun openSuperheroDetails() {
-        onView(withId(recyclerViewId))
-            .perform(actionOnItemAtPosition<SuperheroViewHolder>(0, click()))
+    fun openSuperheroDetails(superheroName: String) {
+        rule.onNodeWithText(superheroName).performClick()
     }
 }

@@ -4,6 +4,7 @@ import app.cash.turbine.test
 import io.github.lordraydenmk.superheroesapp.AppModule
 import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.common.ErrorTextRes
+import io.github.lordraydenmk.superheroesapp.common.FakeImageLoader
 import io.github.lordraydenmk.superheroesapp.common.PlaceholderString
 import io.github.lordraydenmk.superheroesapp.common.TestViewModel
 import io.github.lordraydenmk.superheroesapp.common.presentation.ViewModelAlgebra
@@ -45,7 +46,7 @@ class SuperheroDetailsKtTest : FunSpec({
     fun module(
         service: SuperheroesService,
         viewModelAlgebra: ViewModelAlgebra<SuperheroDetailsViewState, SuperheroDetailsEffect>
-    ) = object : SuperheroDetailsModule, AppModule by AppModule.create(service),
+    ) = object : SuperheroDetailsModule, AppModule by AppModule.create(FakeImageLoader, service),
         ViewModelAlgebra<SuperheroDetailsViewState, SuperheroDetailsEffect> by viewModelAlgebra {}
 
 
