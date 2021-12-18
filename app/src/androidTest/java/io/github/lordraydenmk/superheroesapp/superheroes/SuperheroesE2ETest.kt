@@ -9,7 +9,6 @@ import io.github.lordraydenmk.superheroesapp.MainActivity
 import io.github.lordraydenmk.superheroesapp.superheroes.superherodetails.superheroDetails
 import io.github.lordraydenmk.superheroesapp.superheroes.superheroeslist.superheroesScreen
 import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.Content
-import io.github.lordraydenmk.superheroesapp.utils.TestingModule
 import io.github.lordraydenmk.superheroesapp.utils.awaitState
 import io.github.lordraydenmk.superheroesapp.utils.enqueueJsonFromAssets
 import io.github.lordraydenmk.superheroesapp.utils.replaceAppModule
@@ -46,9 +45,7 @@ class SuperheroesE2ETest {
     fun openList_openDetails_recreate_checkDetails_backToList() = runBlocking {
         launch(MainActivity::class.java).use { scenario ->
 
-            val testModule: TestingModule = testModule()
-
-            testModule.awaitState<Content>()
+            testModule().awaitState<Content>()
 
             superheroesScreen(composeTestRule) {
                 assertContentDisplayed("Data provided by Marvel. © 2021 MARVEL")
