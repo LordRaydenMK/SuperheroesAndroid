@@ -4,11 +4,16 @@ import app.cash.turbine.test
 import io.github.lordraydenmk.superheroesapp.common.presentation.JetpackViewModel
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 
 class JetpackViewModelTest : FunSpec({
 
     test("setState - updates viewState") {
-        val viewModel = JetpackViewModel<String, Nothing>()
+        val viewModel = JetpackViewModel<String, Nothing>("")
         viewModel.setState("Test")
 
         viewModel.viewState.test {
@@ -17,7 +22,7 @@ class JetpackViewModelTest : FunSpec({
     }
 
     test("setState twice - keeps last state") {
-        val viewModel = JetpackViewModel<String, Nothing>()
+        val viewModel = JetpackViewModel<String, Nothing>("")
         viewModel.setState("First")
         viewModel.setState("Second")
 
@@ -26,22 +31,43 @@ class JetpackViewModelTest : FunSpec({
         }
     }
 
-    test("isEmpty - new view model - true") {
-        val viewModel = JetpackViewModel<String, Nothing>()
+    test("runInitialize - new view model - runs") {
+        val viewModel = JetpackViewModel<String, Nothing>("")
 
-        viewModel.isEmpty() shouldBe true
+        var hasRun = false
+        viewModel.runInitialize { hasRun = true }
+
+        hasRun shouldBe true
     }
 
-    test("isEmpty - view model with state - false") {
-        val viewModel = JetpackViewModel<String, Nothing>()
+    test("runInitialize twice - executes lambda once") {
+        val viewModel = JetpackViewModel<String, Nothing>("")
 
-        viewModel.setState("Hello world")
+        var count = 0
+        viewModel.runInitialize { count++ }
 
-        viewModel.isEmpty() shouldBe false
+        count shouldBe 1
+    }
+
+    test("runInitialize concurrently - executes lambda once") {
+        val viewModel = JetpackViewModel<String, Nothing>("")
+
+        var count = 0
+        coroutineScope {
+            (0..100).map {
+                async {
+                    withContext(Dispatchers.Default) {
+                        viewModel.runInitialize { count++ }
+                    }
+                }
+            }.awaitAll()
+        }
+
+        count shouldBe 1
     }
 
     test("runEffect - no subscribers - adds effect to queue") {
-        val viewModel = JetpackViewModel<Nothing, String>()
+        val viewModel = JetpackViewModel<Unit, String>(Unit)
 
         viewModel.runEffect("First")
         viewModel.runEffect("Second")
@@ -54,7 +80,7 @@ class JetpackViewModelTest : FunSpec({
     }
 
     test("runEffect - subscriber - consumes effect") {
-        val viewModel = JetpackViewModel<Nothing, String>()
+        val viewModel = JetpackViewModel<Unit, String>(Unit)
 
         viewModel.effects.test {
             viewModel.runEffect("First")

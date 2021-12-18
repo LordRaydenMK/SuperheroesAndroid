@@ -18,7 +18,7 @@ import io.github.lordraydenmk.superheroesapp.superheroes.domain.Superhero
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroId
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
@@ -44,10 +44,9 @@ fun SuperheroDetailsModule.program(
 }
 
 fun SuperheroDetailsModule.firstLoad(superheroId: SuperheroId): Flow<Unit> =
-    flow { emit(isEmpty()) }
-        .flatMapMerge { empty ->
-            if (empty) refreshSuperhero(superheroId) else emptyFlow()
-        }
+    flow {
+        runInitialize { refreshSuperhero(superheroId).collect() }
+    }
 
 fun SuperheroDetailsModule.refreshSuperhero(superheroId: SuperheroId): Flow<Unit> =
     loadSuperhero(superheroId)

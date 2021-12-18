@@ -2,6 +2,7 @@ package io.github.lordraydenmk.superheroesapp.common.presentation
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 /**
  * Defines the algebra (set of operations) for a ViewModel
@@ -17,11 +18,11 @@ import kotlinx.coroutines.flow.Flow
  */
 interface ViewModelAlgebra<VS : Any, E : Any> {
 
-    val viewState: Flow<VS>
+    val viewState: StateFlow<VS>
 
     val scope: CoroutineScope
 
-    suspend fun isEmpty(): Boolean
+    suspend fun runInitialize(f: suspend () -> Unit)
 
     @Suppress("RedundantUnitReturnType")
     suspend fun setState(vs: VS): Unit

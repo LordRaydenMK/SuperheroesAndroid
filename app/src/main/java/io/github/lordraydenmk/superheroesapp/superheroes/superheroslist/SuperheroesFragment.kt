@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import io.github.lordraydenmk.superheroesapp.AppModule
 import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.appModule
+import io.github.lordraydenmk.superheroesapp.common.presentation.JetpackVMFactory
 import io.github.lordraydenmk.superheroesapp.common.presentation.ViewModelAlgebra
 import io.github.lordraydenmk.superheroesapp.common.presentation.renderFlow
 import io.github.lordraydenmk.superheroesapp.superheroes.superherodetails.SuperheroDetailsFragment
@@ -19,7 +20,9 @@ import kotlinx.coroutines.flow.merge
 
 class SuperheroesFragment : Fragment(R.layout.superheroes_fragment) {
 
-    private val viewModel by viewModels<SuperheroesViewModel>()
+    private val viewModel: SuperheroesViewModel by viewModels {
+        JetpackVMFactory<SuperheroesViewState, SuperheroesAction>(Loading)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

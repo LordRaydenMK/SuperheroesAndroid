@@ -5,17 +5,26 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.stateIn
+import java.util.concurrent.atomic.AtomicBoolean
 
-class TestViewModel<VS : Any, E : Any> : ViewModelAlgebra<VS, E> {
+class TestViewModel<VS : Any, E : Any>(initialState: VS) : ViewModelAlgebra<VS, E> {
+
+    private val initialized = AtomicBoolean(false)
+
+    override val scope: CoroutineScope = CoroutineScope(Dispatchers.Default)
 
     private val _viewState = MutableSharedFlow<VS>(256, 0)
-    override val viewState: Flow<VS>
-        get() = _viewState
 
-    override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+    override val viewState: StateFlow<VS> =
+        _viewState.stateIn(scope, SharingStarted.Lazily, initialState)
 
-    override suspend fun isEmpty(): Boolean = _viewState.replayCache.isEmpty()
+    override suspend fun runInitialize(f: suspend () -> Unit) {
+        if (initialized.compareAndSet(false, true)) f()
+    }
 
     override suspend fun setState(vs: VS) = _viewState.emit(vs)
 

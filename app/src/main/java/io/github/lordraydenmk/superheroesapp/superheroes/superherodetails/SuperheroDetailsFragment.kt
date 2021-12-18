@@ -25,7 +25,9 @@ class SuperheroDetailsFragment : Fragment(R.layout.superhero_details_fragment) {
         id
     }
 
-    private val viewModel by viewModels<SuperheroDetailsViewModel>()
+    private val viewModel: SuperheroDetailsViewModel by viewModels {
+        SuperheroDetailsVMFactory(Loading)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
