@@ -1,23 +1,27 @@
 package io.github.lordraydenmk.superheroesapp.superheroes.superherodetails
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import coil.compose.LocalImageLoader
 import io.github.lordraydenmk.superheroesapp.AppModule
-import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.appModule
 import io.github.lordraydenmk.superheroesapp.common.presentation.ViewModelAlgebra
-import io.github.lordraydenmk.superheroesapp.common.presentation.renderFlow
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroId
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.receiveAsFlow
 
-class SuperheroDetailsFragment : Fragment(R.layout.superhero_details_fragment) {
+class SuperheroDetailsFragment : Fragment() {
 
     private val superheroId: Long by lazy(LazyThreadSafetyMode.NONE) {
         val id = requireArguments().getLong(EXTRA_SUPERHERO_ID, -1)
@@ -29,17 +33,37 @@ class SuperheroDetailsFragment : Fragment(R.layout.superhero_details_fragment) {
         SuperheroDetailsVMFactory(Loading)
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View = ComposeView(requireContext()).apply {
+        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val screen = SuperheroDetailsScreen(view as ViewGroup, superheroId)
+        val composeView = view as ComposeView
 
         val module = object : SuperheroDetailsModule,
             AppModule by requireActivity().appModule(),
             ViewModelAlgebra<SuperheroDetailsViewState, SuperheroDetailsEffect> by viewModel {}
 
+        val actions = Channel<SuperheroDetailsAction>(Channel.UNLIMITED)
+
         with(module) {
+            composeView.setContent {
+                CompositionLocalProvider(LocalImageLoader provides this) {
+                    SuperheroDetailsScreen(
+                        stateFlow = viewState,
+                        superheroId = superheroId,
+                        actions = actions
+                    )
+                }
+            }
+
             lifecycleScope.launchWhenStarted {
-                merge(program(superheroId, screen.actions), renderFlow(screen)).collect()
+                program(superheroId, actions.receiveAsFlow()).collect()
             }
         }
 
