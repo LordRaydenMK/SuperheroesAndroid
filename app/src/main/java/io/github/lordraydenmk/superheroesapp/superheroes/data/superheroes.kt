@@ -1,6 +1,5 @@
 package io.github.lordraydenmk.superheroesapp.superheroes.data
 
-import io.github.lordraydenmk.superheroesapp.common.identity
 import io.github.lordraydenmk.superheroesapp.superheroes.NetworkError
 import io.github.lordraydenmk.superheroesapp.superheroes.ServerError
 import io.github.lordraydenmk.superheroesapp.superheroes.SuperheroException
@@ -9,6 +8,7 @@ import io.github.lordraydenmk.superheroesapp.superheroes.domain.Superhero
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroDetails
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroId
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.Superheroes
+import kotlinx.coroutines.CancellationException
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -35,25 +35,20 @@ private fun SuperheroDto.toDomain(): Superhero = Superhero.create(
     seriesCount = series.available
 )
 
-private suspend fun <A> runRefineError(f: suspend () -> A): A {
-    val result = runCatching { f() }
-    return result.fold(::identity, handleError())
-}
-
-private fun handleError() = { throwable: Throwable ->
-    val refined = when (throwable) {
-        is HttpException ->
-            when (throwable.code()) {
-                in 500..599 -> SuperheroException(
-                    ServerError(
-                        throwable.code(),
-                        throwable.message()
-                    )
-                )
-                else -> SuperheroException(Unrecoverable(throwable))
-            }
-        is IOException -> SuperheroException(NetworkError(throwable))
-        else -> SuperheroException(Unrecoverable(throwable))
+private suspend fun <A> runRefineError(f: suspend () -> A): A =
+    try {
+        f()
+    } catch (e: CancellationException) {
+        throw e
+    } catch (e: HttpException) {
+        throw when (e.code()) {
+            in 500..599 -> SuperheroException(
+                ServerError(e.code(), e.message())
+            )
+            else -> SuperheroException(Unrecoverable(e))
+        }
+    } catch (e: IOException) {
+        throw SuperheroException(NetworkError(e))
+    } catch (e: Throwable) {
+        throw SuperheroException(Unrecoverable(e))
     }
-    throw refined
-}
