@@ -67,7 +67,7 @@ class JetpackViewModelTest : FunSpec({
     }
 
     test("runEffect - no subscribers - adds effect to queue") {
-        val viewModel = JetpackViewModel<Unit, String>()
+        val viewModel = JetpackViewModel<Nothing, String>()
 
         viewModel.runEffect("First")
         viewModel.runEffect("Second")
@@ -80,7 +80,7 @@ class JetpackViewModelTest : FunSpec({
     }
 
     test("runEffect - subscriber - consumes effect") {
-        val viewModel = JetpackViewModel<Unit, String>()
+        val viewModel = JetpackViewModel<Nothing, String>()
 
         viewModel.effects.test {
             viewModel.runEffect("First")
