@@ -17,12 +17,9 @@ import io.github.lordraydenmk.superheroesapp.superheroes.testSuperheroService
 import io.kotest.assertions.fail
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.launch
 import okhttp3.HttpUrl.Companion.toHttpUrl
 
 class SuperheroesListKtTest : FunSpec({
@@ -63,7 +60,7 @@ class SuperheroesListKtTest : FunSpec({
             "Marvel rocks!"
         )
 
-        module.program(emptyFlow()).collect()
+        module.program(emptyFlow())
 
         viewModel.viewState.test {
             awaitItem() shouldBe Loading
@@ -80,7 +77,7 @@ class SuperheroesListKtTest : FunSpec({
 
         val problem = Problem(IdTextRes(R.string.error_unrecoverable))
 
-        module.program(emptyFlow()).collect()
+        module.program(emptyFlow())
 
         viewModel.viewState.test {
             awaitItem() shouldBe Loading
@@ -108,9 +105,9 @@ class SuperheroesListKtTest : FunSpec({
 
         val actions = MutableSharedFlow<SuperheroesAction>()
 
-        GlobalScope.launch { module.program(actions).collect() }
-
         viewModel.viewState.test {
+            module.program(actions)
+
             awaitItem() shouldBe Loading
             awaitItem()::class.java shouldBe Problem::class.java
 
@@ -126,7 +123,7 @@ class SuperheroesListKtTest : FunSpec({
         val module = testModule(testSuperheroService(emptyList()), viewModel)
 
         with(module) {
-            program(flowOf(LoadDetails(42))).collect()
+            program(flowOf(LoadDetails(42)))
         }
 
         viewModel.effects.test {
