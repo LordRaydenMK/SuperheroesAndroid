@@ -55,7 +55,7 @@ class SuperheroesListKtTest : FunSpec({
         val superhero = superheroDto(42, "Ant Man", "https://antman", "jpg")
         val service = testSuperheroService(listOf(superhero))
 
-        val viewModel = TestViewModel<SuperheroesViewState, SuperheroesEffect>(Loading)
+        val viewModel = TestViewModel<SuperheroesViewState, SuperheroesEffect>()
         val module = testModule(service, viewModel)
 
         val content = Content(
@@ -76,7 +76,7 @@ class SuperheroesListKtTest : FunSpec({
         val error = Exception("Unauthorised")
         val service = testSuperheroService(error)
 
-        val viewModel = TestViewModel<SuperheroesViewState, SuperheroesEffect>(Loading)
+        val viewModel = TestViewModel<SuperheroesViewState, SuperheroesEffect>()
         val module = testModule(service, viewModel)
 
         val problem = Problem(IdTextRes(R.string.error_unrecoverable))
@@ -105,7 +105,7 @@ class SuperheroesListKtTest : FunSpec({
                 fail("This should not be called")
         }
 
-        val viewModel = TestViewModel<SuperheroesViewState, SuperheroesEffect>(Loading)
+        val viewModel = TestViewModel<SuperheroesViewState, SuperheroesEffect>()
         val module = testModule(service, viewModel)
 
         val actions = MutableSharedFlow<SuperheroesAction>()
@@ -124,7 +124,7 @@ class SuperheroesListKtTest : FunSpec({
     }
 
     test("ShowDetailsAction - NavigateToDetails effect") {
-        val viewModel = TestViewModel<SuperheroesViewState, SuperheroesEffect>(Loading)
+        val viewModel = TestViewModel<SuperheroesViewState, SuperheroesEffect>()
         val module = testModule(testSuperheroService(emptyList()), viewModel)
 
         with(module) {

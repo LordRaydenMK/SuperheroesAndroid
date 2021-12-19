@@ -26,15 +26,16 @@ import io.github.lordraydenmk.superheroesapp.superheroes.ui.common.CopyrightView
 import io.github.lordraydenmk.superheroesapp.superheroes.ui.common.SuperheroProblem
 import io.github.lordraydenmk.superheroesapp.superheroes.ui.common.SuperherosLoading
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun SuperheroDetailsScreen(
-    stateFlow: StateFlow<SuperheroDetailsViewState>,
+    stateFlow: Flow<SuperheroDetailsViewState>,
+    initialState: SuperheroDetailsViewState,
     superheroId: SuperheroId,
     actions: Channel<SuperheroDetailsAction>
 ) {
-    val state by stateFlow.collectAsState()
+    val state by stateFlow.collectAsState(initialState)
 
     Column {
         SuperheroAppBar(state, actions)

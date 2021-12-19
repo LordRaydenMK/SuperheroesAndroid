@@ -13,7 +13,7 @@ import kotlinx.coroutines.withContext
 class JetpackViewModelTest : FunSpec({
 
     test("setState - updates viewState") {
-        val viewModel = JetpackViewModel<String, Nothing>("")
+        val viewModel = JetpackViewModel<String, Nothing>()
         viewModel.setState("Test")
 
         viewModel.viewState.test {
@@ -22,7 +22,7 @@ class JetpackViewModelTest : FunSpec({
     }
 
     test("setState twice - keeps last state") {
-        val viewModel = JetpackViewModel<String, Nothing>("")
+        val viewModel = JetpackViewModel<String, Nothing>()
         viewModel.setState("First")
         viewModel.setState("Second")
 
@@ -32,7 +32,7 @@ class JetpackViewModelTest : FunSpec({
     }
 
     test("runInitialize - new view model - runs") {
-        val viewModel = JetpackViewModel<String, Nothing>("")
+        val viewModel = JetpackViewModel<String, Nothing>()
 
         var hasRun = false
         viewModel.runInitialize { hasRun = true }
@@ -41,7 +41,7 @@ class JetpackViewModelTest : FunSpec({
     }
 
     test("runInitialize twice - executes lambda once") {
-        val viewModel = JetpackViewModel<String, Nothing>("")
+        val viewModel = JetpackViewModel<String, Nothing>()
 
         var count = 0
         viewModel.runInitialize { count++ }
@@ -50,7 +50,7 @@ class JetpackViewModelTest : FunSpec({
     }
 
     test("runInitialize concurrently - executes lambda once") {
-        val viewModel = JetpackViewModel<String, Nothing>("")
+        val viewModel = JetpackViewModel<String, Nothing>()
 
         var count = 0
         coroutineScope {
@@ -67,7 +67,7 @@ class JetpackViewModelTest : FunSpec({
     }
 
     test("runEffect - no subscribers - adds effect to queue") {
-        val viewModel = JetpackViewModel<Unit, String>(Unit)
+        val viewModel = JetpackViewModel<Unit, String>()
 
         viewModel.runEffect("First")
         viewModel.runEffect("Second")
@@ -80,7 +80,7 @@ class JetpackViewModelTest : FunSpec({
     }
 
     test("runEffect - subscriber - consumes effect") {
-        val viewModel = JetpackViewModel<Unit, String>(Unit)
+        val viewModel = JetpackViewModel<Unit, String>()
 
         viewModel.effects.test {
             viewModel.runEffect("First")

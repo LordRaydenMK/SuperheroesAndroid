@@ -54,7 +54,7 @@ class SuperheroDetailsKtTest : FunSpec({
         val hulkDto = superheroDto(42, "Hulk", "https://hulk", "jpg", 1, 2, 3, 4)
         val service = testSuperheroService(listOf(hulkDto))
 
-        val viewModel = TestViewModel<SuperheroDetailsViewState, SuperheroDetailsEffect>(Loading)
+        val viewModel = TestViewModel<SuperheroDetailsViewState, SuperheroDetailsEffect>()
         val module = module(service, viewModel)
 
         with(module) {
@@ -79,7 +79,7 @@ class SuperheroDetailsKtTest : FunSpec({
         val error = IOException("Bang")
         val service = testSuperheroService(error)
 
-        val viewModel = TestViewModel<SuperheroDetailsViewState, SuperheroDetailsEffect>(Loading)
+        val viewModel = TestViewModel<SuperheroDetailsViewState, SuperheroDetailsEffect>()
         val module = module(service, viewModel)
 
         with(module) {
@@ -94,7 +94,7 @@ class SuperheroDetailsKtTest : FunSpec({
     }
 
     test("Action Up - NavigateUp Effect") {
-        val viewModel = TestViewModel<SuperheroDetailsViewState, SuperheroDetailsEffect>(Loading)
+        val viewModel = TestViewModel<SuperheroDetailsViewState, SuperheroDetailsEffect>()
         val module = module(testSuperheroService(emptyList()), viewModel)
 
         with(module) {

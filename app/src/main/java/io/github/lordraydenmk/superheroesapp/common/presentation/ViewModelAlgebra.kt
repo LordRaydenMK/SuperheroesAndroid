@@ -2,7 +2,6 @@ package io.github.lordraydenmk.superheroesapp.common.presentation
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
 
 /**
  * Defines the algebra (set of operations) for a ViewModel
@@ -18,7 +17,7 @@ import kotlinx.coroutines.flow.StateFlow
  */
 interface ViewModelAlgebra<VS : Any, E : Any> {
 
-    val viewState: StateFlow<VS>
+    val viewState: Flow<VS>
 
     val scope: CoroutineScope
 

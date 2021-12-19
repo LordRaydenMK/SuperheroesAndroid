@@ -29,9 +29,7 @@ class SuperheroDetailsFragment : Fragment() {
         id
     }
 
-    private val viewModel: SuperheroDetailsViewModel by viewModels {
-        SuperheroDetailsVMFactory(Loading)
-    }
+    private val viewModel: SuperheroDetailsViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,6 +54,7 @@ class SuperheroDetailsFragment : Fragment() {
                 CompositionLocalProvider(LocalImageLoader provides this) {
                     SuperheroDetailsScreen(
                         stateFlow = viewState,
+                        initialState = Loading,
                         superheroId = superheroId,
                         actions = actions
                     )
