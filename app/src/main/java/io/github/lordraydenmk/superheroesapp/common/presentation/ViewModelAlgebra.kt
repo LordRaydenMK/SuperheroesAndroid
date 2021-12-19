@@ -21,7 +21,7 @@ interface ViewModelAlgebra<VS : Any, E : Any> {
 
     val scope: CoroutineScope
 
-    suspend fun isEmpty(): Boolean
+    suspend fun runInitialize(f: suspend () -> Unit)
 
     @Suppress("RedundantUnitReturnType")
     suspend fun setState(vs: VS): Unit

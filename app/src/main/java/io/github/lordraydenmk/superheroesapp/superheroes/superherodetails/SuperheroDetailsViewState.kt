@@ -1,6 +1,5 @@
 package io.github.lordraydenmk.superheroesapp.superheroes.superherodetails
 
-import io.github.lordraydenmk.superheroesapp.common.ErrorTextRes
 import io.github.lordraydenmk.superheroesapp.common.PlaceholderString
 import io.github.lordraydenmk.superheroesapp.common.TextRes
 import okhttp3.HttpUrl
@@ -14,7 +13,11 @@ data class SuperheroDetailsViewEntity(
     val series: PlaceholderString<Int>
 )
 
-sealed class SuperheroDetailsViewState
+sealed class SuperheroDetailsViewState {
+
+    val title: String
+        get() = if (this is Content) superhero.name else ""
+}
 
 object Loading : SuperheroDetailsViewState()
 
@@ -24,6 +27,3 @@ data class Content(
 ) : SuperheroDetailsViewState()
 
 data class Problem(val stringId: TextRes) : SuperheroDetailsViewState()
-
-val Problem.isRecoverable: Boolean
-    get() = stringId is ErrorTextRes

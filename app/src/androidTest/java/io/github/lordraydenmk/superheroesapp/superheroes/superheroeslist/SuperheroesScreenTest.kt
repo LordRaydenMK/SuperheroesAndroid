@@ -12,7 +12,7 @@ import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.Superher
 import io.github.lordraydenmk.superheroesapp.superheroes.superheroslist.SuperheroesScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.emptyFlow
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.junit.Rule
 import org.junit.Test
@@ -31,7 +31,7 @@ class SuperheroesScreenTest {
     @Test
     fun loadingState_progressBarDisplayed() {
         composeTestRule.setContent {
-            SuperheroesScreen(MutableStateFlow(Loading), actions = Channel())
+            SuperheroesScreen(emptyFlow(), Loading, actions = Channel())
         }
 
         superheroesScreen(composeTestRule) {
@@ -45,7 +45,8 @@ class SuperheroesScreenTest {
     fun recoverableProblemState_errorViewDisplayedWithRetryText() {
         composeTestRule.setContent {
             SuperheroesScreen(
-                MutableStateFlow(Problem(ErrorTextRes(R.string.error_recoverable_network))),
+                emptyFlow(),
+                Problem(ErrorTextRes(R.string.error_recoverable_network)),
                 actions = Channel()
             )
         }
@@ -63,7 +64,8 @@ class SuperheroesScreenTest {
     fun unrecoverableProblemState_errorViewDisplayed() {
         composeTestRule.setContent {
             SuperheroesScreen(
-                MutableStateFlow(Problem(ErrorTextRes(R.string.error_unrecoverable))),
+                emptyFlow(),
+                Problem(ErrorTextRes(R.string.error_unrecoverable)),
                 actions = Channel()
             )
         }
@@ -89,7 +91,7 @@ class SuperheroesScreenTest {
             "Copyright Marvel"
         )
         composeTestRule.setContent {
-            SuperheroesScreen(MutableStateFlow(viewState), actions = Channel())
+            SuperheroesScreen(emptyFlow(), viewState, actions = Channel())
         }
 
         superheroesScreen(composeTestRule) {

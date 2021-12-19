@@ -14,7 +14,7 @@ import io.github.lordraydenmk.superheroesapp.superheroes.Unrecoverable
 import io.github.lordraydenmk.superheroesapp.superheroes.data.superheroes
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
@@ -37,10 +37,9 @@ fun SuperheroesModule.program(actions: Flow<SuperheroesAction>): Flow<Unit> {
 }
 
 fun SuperheroesModule.firstLoad(): Flow<Unit> =
-    flow { emit(isEmpty()) }
-        .flatMapMerge { empty ->
-            if (empty) refreshSuperheroes() else emptyFlow()
-        }
+    flow {
+        runInitialize { refreshSuperheroes().collect() }
+    }
 
 fun SuperheroesModule.refreshSuperheroes(): Flow<Unit> =
     loadSuperheroes()

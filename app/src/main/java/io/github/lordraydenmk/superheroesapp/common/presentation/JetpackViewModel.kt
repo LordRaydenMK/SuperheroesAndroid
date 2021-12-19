@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.receiveAsFlow
+import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * A [ViewModelAlgebra] implemented using [ViewModel] from Jetpack
@@ -20,6 +21,8 @@ import kotlinx.coroutines.flow.receiveAsFlow
  */
 class JetpackViewModel<VS : Any, E : Any> : ViewModel(), ViewModelAlgebra<VS, E> {
 
+    private val initialized = AtomicBoolean(false)
+
     private val _viewState: MutableStateFlow<VS?> = MutableStateFlow(null)
     override val viewState: Flow<VS>
         get() = _viewState.filterNotNull()
@@ -27,7 +30,9 @@ class JetpackViewModel<VS : Any, E : Any> : ViewModel(), ViewModelAlgebra<VS, E>
     override val scope: CoroutineScope
         get() = viewModelScope
 
-    override suspend fun isEmpty(): Boolean = _viewState.value == null
+    override suspend fun runInitialize(f: suspend () -> Unit) {
+        if (initialized.compareAndSet(false, true)) f()
+    }
 
     override suspend fun setState(vs: VS): Unit = _viewState.emit(vs)
 
