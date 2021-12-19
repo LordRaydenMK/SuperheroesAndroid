@@ -68,7 +68,6 @@ class SuperheroesListKtTest : FunSpec({
         viewModel.viewState.test {
             awaitItem() shouldBe Loading
             awaitItem() shouldBe content
-            cancelAndIgnoreRemainingEvents()
         }
     }
 
@@ -86,7 +85,6 @@ class SuperheroesListKtTest : FunSpec({
         viewModel.viewState.test {
             awaitItem() shouldBe Loading
             awaitItem() shouldBe problem
-            cancelAndIgnoreRemainingEvents()
         }
     }
 
