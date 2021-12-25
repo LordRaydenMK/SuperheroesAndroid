@@ -62,7 +62,7 @@ class SuperheroDetailsFragment : Fragment() {
             }
 
             lifecycleScope.launchWhenStarted {
-                program(superheroId, actions.receiveAsFlow()).collect()
+                program(superheroId, actions.receiveAsFlow())
             }
         }
 

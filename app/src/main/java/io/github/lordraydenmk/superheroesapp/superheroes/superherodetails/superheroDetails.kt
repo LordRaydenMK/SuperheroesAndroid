@@ -5,10 +5,10 @@ import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.common.ErrorTextRes
 import io.github.lordraydenmk.superheroesapp.common.IdTextRes
 import io.github.lordraydenmk.superheroesapp.common.PlaceholderString
-import io.github.lordraydenmk.superheroesapp.common.fork
+import io.github.lordraydenmk.superheroesapp.common.forkAndForget
 import io.github.lordraydenmk.superheroesapp.common.identity
+import io.github.lordraydenmk.superheroesapp.common.parZip
 import io.github.lordraydenmk.superheroesapp.common.presentation.ViewModelAlgebra
-import io.github.lordraydenmk.superheroesapp.common.unit
 import io.github.lordraydenmk.superheroesapp.superheroes.NetworkError
 import io.github.lordraydenmk.superheroesapp.superheroes.ServerError
 import io.github.lordraydenmk.superheroesapp.superheroes.SuperheroException
@@ -18,50 +18,39 @@ import io.github.lordraydenmk.superheroesapp.superheroes.domain.Superhero
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroId
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flatMapMerge
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.merge
 
 interface SuperheroDetailsModule : AppModule,
     ViewModelAlgebra<SuperheroDetailsViewState, SuperheroDetailsEffect>
 
-fun SuperheroDetailsModule.program(
+suspend fun SuperheroDetailsModule.program(
     superheroId: SuperheroId,
     actions: Flow<SuperheroDetailsAction>
-): Flow<Unit> {
-    val flow = actions.flatMapMerge { action ->
-        when (action) {
-            is Refresh -> refreshSuperhero(action.superheroId)
-            Up -> flowOf(runEffect(NavigateUp))
-        }.fork(Dispatchers.Default, scope)
-            .unit()
-    }
-    return merge(flow, firstLoad(superheroId))
+): Unit =
+    parZip(Dispatchers.Default, { firstLoad(superheroId) }, { handleActions(actions) })
+    { _, _ -> }
+
+suspend fun SuperheroDetailsModule.handleActions(actions: Flow<SuperheroDetailsAction>): Unit =
+    actions.map { handleAction(it) }
+        .forkAndForget(Dispatchers.Default, scope)
+
+suspend fun SuperheroDetailsModule.handleAction(action: SuperheroDetailsAction) = when (action) {
+    is Refresh -> loadSuperhero(action.superheroId)
+    Up -> runEffect(NavigateUp)
 }
 
-fun SuperheroDetailsModule.firstLoad(superheroId: SuperheroId): Flow<Unit> =
-    flow {
-        runInitialize { refreshSuperhero(superheroId).collect() }
-    }
+suspend fun SuperheroDetailsModule.firstLoad(superheroId: SuperheroId): Unit {
+    runInitialize { loadSuperhero(superheroId) }
+}
 
-fun SuperheroDetailsModule.refreshSuperhero(superheroId: SuperheroId): Flow<Unit> =
-    loadSuperhero(superheroId)
-        .map { setState(it) }
-        .flowOn(Dispatchers.Default)
-
-fun SuperheroDetailsModule.loadSuperhero(superheroId: SuperheroId): Flow<SuperheroDetailsViewState> =
-    flow {
-        emit(Loading)
-        val state = runCatching { superheroDetails(superheroId) }
-            .map { (superhero, attribution) -> superhero.toViewEntity() to attribution }
-            .map { (superhero, attribution) -> Content(superhero, attribution) }
-            .fold(::identity, Throwable::toProblem)
-        emit(state)
-    }
+suspend fun SuperheroDetailsModule.loadSuperhero(superheroId: SuperheroId) {
+    setState(Loading)
+    val viewState = runCatching { superheroDetails(superheroId) }
+        .map { (superhero, attribution) -> superhero.toViewEntity() to attribution }
+        .map { (superhero, attribution) -> Content(superhero, attribution) }
+        .fold(::identity, Throwable::toProblem)
+    setState(viewState)
+}
 
 private fun Throwable.toProblem(): Problem = when (this) {
     is SuperheroException -> when (error) {
