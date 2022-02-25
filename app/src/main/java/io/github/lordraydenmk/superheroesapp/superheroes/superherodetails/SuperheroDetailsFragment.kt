@@ -1,18 +1,17 @@
 package io.github.lordraydenmk.superheroesapp.superheroes.superherodetails
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.platform.ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import coil.compose.LocalImageLoader
 import io.github.lordraydenmk.superheroesapp.AppModule
+import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.appModule
 import io.github.lordraydenmk.superheroesapp.common.presentation.ViewModelAlgebra
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroId
@@ -21,7 +20,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 
-class SuperheroDetailsFragment : Fragment() {
+class SuperheroDetailsFragment : Fragment(R.layout.fragment_compose) {
 
     private val superheroId: Long by lazy(LazyThreadSafetyMode.NONE) {
         val id = requireArguments().getLong(EXTRA_SUPERHERO_ID, -1)
@@ -31,17 +30,10 @@ class SuperheroDetailsFragment : Fragment() {
 
     private val viewModel: SuperheroDetailsViewModel by viewModels()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View = ComposeView(requireContext()).apply {
-        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val composeView = view as ComposeView
+        composeView.setViewCompositionStrategy(DisposeOnViewTreeLifecycleDestroyed)
 
         val module = object : SuperheroDetailsModule,
             AppModule by requireActivity().appModule(),
