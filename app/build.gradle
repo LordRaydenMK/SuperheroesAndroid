@@ -109,7 +109,7 @@ dependencies {
 
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose"
 
-    def kotest = "5.1.0"
+    def kotest = "5.2.1"
     testImplementation "io.kotest:kotest-runner-junit5-jvm:$kotest"
     testImplementation "io.kotest:kotest-assertions-core-jvm:$kotest"
     testImplementation 'app.cash.turbine:turbine:0.7.0'
