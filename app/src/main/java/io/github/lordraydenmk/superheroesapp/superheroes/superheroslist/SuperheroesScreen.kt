@@ -1,20 +1,12 @@
 package io.github.lordraydenmk.superheroesapp.superheroes.superheroslist
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
@@ -59,12 +51,10 @@ fun SuperheroesScreen(
     }
 }
 
-
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun Content(content: Content, loadDetails: (SuperheroId) -> Unit) {
     Column(Modifier.testTag("SuperheroesContent")) {
-        LazyVerticalGrid(cells = GridCells.Adaptive(175.dp), Modifier.weight(1f)) {
+        LazyVerticalGrid(GridCells.Adaptive(175.dp), Modifier.weight(1f)) {
             items(content.superheroes) {
                 SuperHeroItem(it, loadDetails)
             }
