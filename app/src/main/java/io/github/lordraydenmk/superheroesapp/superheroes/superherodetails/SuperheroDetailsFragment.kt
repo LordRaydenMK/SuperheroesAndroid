@@ -43,14 +43,12 @@ class SuperheroDetailsFragment : Fragment(R.layout.fragment_compose) {
 
         with(module) {
             composeView.setContent {
-                CompositionLocalProvider(LocalImageLoader provides this) {
-                    SuperheroDetailsScreen(
-                        stateFlow = viewState,
-                        initialState = Loading,
-                        superheroId = superheroId,
-                        actions = actions
-                    )
-                }
+                SuperheroDetailsScreen(
+                    stateFlow = viewState,
+                    initialState = Loading,
+                    superheroId = superheroId,
+                    actions = actions
+                )
             }
 
             lifecycleScope.launchWhenStarted {

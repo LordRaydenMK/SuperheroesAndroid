@@ -3,7 +3,6 @@ package io.github.lordraydenmk.superheroesapp.superheroes.superheroslist
 import app.cash.turbine.test
 import io.github.lordraydenmk.superheroesapp.AppModule
 import io.github.lordraydenmk.superheroesapp.R
-import io.github.lordraydenmk.superheroesapp.common.FakeImageLoader
 import io.github.lordraydenmk.superheroesapp.common.IdTextRes
 import io.github.lordraydenmk.superheroesapp.common.Paginated
 import io.github.lordraydenmk.superheroesapp.common.PaginatedEnvelope
@@ -44,7 +43,7 @@ class SuperheroesListKtTest : FunSpec({
         service: SuperheroesService,
         viewModel: ViewModelAlgebra<SuperheroesViewState, SuperheroesEffect>
     ): SuperheroesModule =
-        object : SuperheroesModule, AppModule by AppModule.create(FakeImageLoader, service),
+        object : SuperheroesModule, AppModule by AppModule.create(service),
             ViewModelAlgebra<SuperheroesViewState, SuperheroesEffect> by viewModel {}
 
 

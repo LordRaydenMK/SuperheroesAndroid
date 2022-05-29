@@ -2,14 +2,12 @@ package io.github.lordraydenmk.superheroesapp.superheroes.superheroslist
 
 import android.os.Bundle
 import android.view.View
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import coil.compose.LocalImageLoader
 import io.github.lordraydenmk.superheroesapp.AppModule
 import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.appModule
@@ -39,13 +37,11 @@ class SuperheroesFragment : Fragment(R.layout.fragment_compose) {
         with(module) {
             val viewState = viewState.onEach { afterBind(it) }
             composeView.setContent {
-                CompositionLocalProvider(LocalImageLoader provides this) {
-                    SuperheroesScreen(
-                        stateFlow = viewState,
-                        initialValue = Loading,
-                        actions = actions
-                    )
-                }
+                SuperheroesScreen(
+                    stateFlow = viewState,
+                    initialValue = Loading,
+                    actions = actions
+                )
             }
 
             lifecycleScope.launchWhenStarted {
