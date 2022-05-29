@@ -37,10 +37,11 @@ class SuperheroesFragment : Fragment(R.layout.fragment_compose) {
         val actions = Channel<SuperheroesAction>(Channel.UNLIMITED)
 
         with(module) {
+            val viewState = viewState.onEach { afterBind(it) }
             composeView.setContent {
                 CompositionLocalProvider(LocalImageLoader provides this) {
                     SuperheroesScreen(
-                        stateFlow = viewState.onEach { afterBind(it) },
+                        stateFlow = viewState,
                         initialValue = Loading,
                         actions = actions
                     )

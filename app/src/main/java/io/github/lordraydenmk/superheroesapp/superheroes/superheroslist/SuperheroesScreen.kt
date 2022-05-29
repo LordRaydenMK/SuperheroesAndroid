@@ -42,11 +42,13 @@ fun SuperheroesScreen(
         topBar = {
             TopAppBar(title = { Text(text = stringResource(id = R.string.app_name)) })
         }
-    ) {
-        when (val s = state) {
-            Loading -> SuperherosLoading()
-            is Content -> Content(s) { actions.trySend(LoadDetails(it)) }
-            is Problem -> SuperheroProblem(s.stringId) { actions.trySend(Refresh) }
+    ) { paddingValues ->
+        Box(modifier = Modifier.padding(bottom = paddingValues.calculateBottomPadding())) {
+            when (val s = state) {
+                Loading -> SuperherosLoading()
+                is Content -> Content(s) { actions.trySend(LoadDetails(it)) }
+                is Problem -> SuperheroProblem(s.stringId) { actions.trySend(Refresh) }
+            }
         }
     }
 }
