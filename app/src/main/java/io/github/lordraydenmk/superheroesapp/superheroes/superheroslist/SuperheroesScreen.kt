@@ -1,6 +1,5 @@
 package io.github.lordraydenmk.superheroesapp.superheroes.superheroslist
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -17,12 +16,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import coil.compose.LocalImageLoader
-import coil.compose.rememberImagePainter
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroId
 import io.github.lordraydenmk.superheroesapp.superheroes.ui.common.CopyrightView
@@ -67,19 +67,20 @@ private fun Content(content: Content, loadDetails: (SuperheroId) -> Unit) {
 
 @Composable
 fun SuperHeroItem(entity: SuperheroViewEntity, onClick: (SuperheroId) -> Unit) {
-    val imageLoader = LocalImageLoader.current
-
     Box(
         modifier = Modifier
             .clickable { onClick(entity.id) }
             .aspectRatio(1f)
             .semantics(mergeDescendants = true) {},
     ) {
-        Image(
-            painter = rememberImagePainter(entity.imageUrl, imageLoader),
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize(),
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(entity.imageUrl)
+                .crossfade(true)
+                .build(),
             contentScale = ContentScale.Crop,
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize()
         )
 
         Row(

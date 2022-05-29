@@ -1,7 +1,8 @@
 package io.github.lordraydenmk.superheroesapp.common
 
+import coil.ComponentRegistry
 import coil.ImageLoader
-import coil.bitmap.BitmapPool
+import coil.disk.DiskCache
 import coil.memory.MemoryCache
 import coil.request.DefaultRequestOptions
 import coil.request.Disposable
@@ -10,11 +11,11 @@ import coil.request.ImageResult
 
 object FakeImageLoader : ImageLoader {
 
-    override val bitmapPool: BitmapPool
-        get() = throw UnsupportedOperationException()
+    override val components: ComponentRegistry = ComponentRegistry()
 
-    override val defaults: DefaultRequestOptions
-        get() = throw UnsupportedOperationException()
+    override val defaults: DefaultRequestOptions = DefaultRequestOptions()
+
+    override val diskCache: DiskCache? = null
 
     override val memoryCache: MemoryCache
         get() = throw UnsupportedOperationException()
