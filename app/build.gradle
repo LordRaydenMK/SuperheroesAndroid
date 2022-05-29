@@ -3,13 +3,12 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlinx-serialization'
 
 android {
-    compileSdkVersion 31
-    buildToolsVersion "31.0.0"
+    compileSdkVersion 32
 
     defaultConfig {
         applicationId "io.github.lordraydenmk.superheroesapp"
         minSdkVersion 26
-        targetSdkVersion 31
+        targetSdkVersion 32
         versionCode 1
         versionName "1.0"
 
@@ -33,7 +32,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion "1.0.4"
+        kotlinCompilerExtensionVersion "1.2.0-beta02"
     }
 
     sourceSets {
@@ -73,26 +72,23 @@ android {
 }
 
 dependencies {
-    def coroutines = "1.6.0"
+    def coroutines = "1.6.1"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines"
 
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'androidx.activity:activity-compose:1.4.0'
-    def compose = "1.0.5"
+    def compose = "1.2.0-beta02"
     implementation "androidx.compose.ui:ui:$compose"
     implementation "androidx.compose.foundation:foundation:$compose"
     implementation "androidx.compose.material:material:$compose"
     implementation "androidx.compose.ui:ui-tooling:$compose"
 
     implementation 'androidx.appcompat:appcompat:1.4.1'
-    implementation 'com.google.android.material:material:1.5.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
-    implementation "androidx.coordinatorlayout:coordinatorlayout:1.1.0"
+    implementation 'com.google.android.material:material:1.6.0'
     def lifecycle = "2.4.1"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle"
     implementation 'androidx.fragment:fragment-ktx:1.4.1'
-    implementation 'androidx.recyclerview:recyclerview:1.2.1'
     def nav_version = "2.4.2"
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
@@ -109,7 +105,7 @@ dependencies {
 
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose"
 
-    def kotest = "5.2.3"
+    def kotest = "5.3.0"
     testImplementation "io.kotest:kotest-runner-junit5-jvm:$kotest"
     testImplementation "io.kotest:kotest-assertions-core-jvm:$kotest"
     testImplementation 'app.cash.turbine:turbine:0.7.0'
