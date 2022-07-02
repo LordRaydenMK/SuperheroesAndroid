@@ -1,11 +1,6 @@
 package io.github.lordraydenmk.superheroesapp.superheroes.superherodetails
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
@@ -17,10 +12,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import coil.compose.LocalImageLoader
-import coil.compose.rememberImagePainter
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroId
 import io.github.lordraydenmk.superheroesapp.superheroes.ui.common.CopyrightView
 import io.github.lordraydenmk.superheroesapp.superheroes.ui.common.SuperheroProblem
@@ -67,16 +64,18 @@ private fun SuperheroAppBar(
 
 @Composable
 fun SuperheroContent(content: Content) {
-    val imageLoader = LocalImageLoader.current
-
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
             .testTag("SuperheroDetailsContent")
     ) {
-        Image(
-            painter = rememberImagePainter(content.superhero.thumbnail, imageLoader),
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(content.superhero.thumbnail)
+                .crossfade(true)
+                .build(),
+            contentScale = ContentScale.Crop,
             contentDescription = content.superhero.name,
             modifier = Modifier
                 .aspectRatio(1f)

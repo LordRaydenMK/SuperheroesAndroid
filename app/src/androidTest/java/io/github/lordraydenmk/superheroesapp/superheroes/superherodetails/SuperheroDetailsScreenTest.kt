@@ -1,11 +1,8 @@
 package io.github.lordraydenmk.superheroesapp.superheroes.superherodetails
 
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
-import coil.compose.LocalImageLoader
-import io.github.lordraydenmk.superheroesapp.FakeImageLoader
 import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.common.ErrorTextRes
 import io.github.lordraydenmk.superheroesapp.common.IdTextRes
@@ -90,9 +87,7 @@ class SuperheroDetailsScreenTest {
         )
 
         composeTestRule.setContent {
-            CompositionLocalProvider(LocalImageLoader provides FakeImageLoader) {
-                SuperheroDetailsScreen(emptyFlow(), viewState, superheroId = 0, actions = Channel())
-            }
+            SuperheroDetailsScreen(emptyFlow(), viewState, superheroId = 0, actions = Channel())
         }
 
         superheroDetails(composeTestRule) {
