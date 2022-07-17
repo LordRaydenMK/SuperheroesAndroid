@@ -16,6 +16,18 @@
 # debugging stack traces.
 #-keepattributes SourceFile,LineNumberTable
 
-# If you keep the line number information, uncomm</manifest>ent this to
+# If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# region KotlinX
+-keepattributes *Annotation*, InnerClasses
+-dontnote kotlinx.serialization.SerializationKt
+-keep,includedescriptorclasses class io.github.lordraydenmk.superheroesapp.**$$serializer { *; }
+-keepclassmembers class io.github.lordraydenmk.superheroesapp.** {
+    *** Companion;
+}
+-keepclasseswithmembers class io.github.lordraydenmk.superheroesapp.** {
+    kotlinx.serialization.KSerializer serializer(...);
+}
+# endregion
