@@ -16,11 +16,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Setup secrets
+        run: |
+          echo "marvel_public_api_key=${{ secrets.MARVEL_PUBLIC_API_KEY }}" >> gradle.properties
+          echo "marvel_private_api_key=${{ secrets.MARVEL_PRIVATE_API_KEY }}" >> gradle.properties
+
       - name: Unit Tests
-        run: ./gradlew test -Pmarvel_public_api_key=${{ secrets.MARVEL_PUBLIC_API_KEY }} -Pmarvel_private_api_key=${{ secrets.MARVEL_PRIVATE_API_KEY }}
+        run: ./gradlew test
     
       - name: Build the app
-        run: ./gradlew assemble -Pmarvel_public_api_key=${{ secrets.MARVEL_PUBLIC_API_KEY }} -Pmarvel_private_api_key=${{ secrets.MARVEL_PRIVATE_API_KEY }}
+        run: ./gradlew assemble
 
 
   test:
@@ -35,11 +40,16 @@ jobs:
         distribution: 'adopt'
         java-version: '11'
 
+    - name: Setup secrets
+      run: |
+        echo "marvel_public_api_key=${{ secrets.MARVEL_PUBLIC_API_KEY }}" >> gradle.properties
+        echo "marvel_private_api_key=${{ secrets.MARVEL_PRIVATE_API_KEY }}" >> gradle.properties
+
     - name: Run Espresso UI Tests
       uses: reactivecircus/android-emulator-runner@v2
       with:
         api-level: 29
-        script: ./gradlew connectedCheck -Pandroid.testInstrumentationRunnerArguments.size=medium -Pmarvel_public_api_key=${{ secrets.MARVEL_PUBLIC_API_KEY }} -Pmarvel_private_api_key=${{ secrets.MARVEL_PRIVATE_API_KEY }} --stacktrace
+        script: ./gradlew connectedCheck -Pandroid.testInstrumentationRunnerArguments.size=medium --stacktrace
 
     - name: Install Maestro
       run: | 
@@ -51,7 +61,7 @@ jobs:
       with:
         api-level: 29
         script: |
-          ./gradlew installDebug -Pmarvel_public_api_key=${{ secrets.MARVEL_PUBLIC_API_KEY }} -Pmarvel_private_api_key=${{ secrets.MARVEL_PRIVATE_API_KEY }}
+          ./gradlew installDebug
           maestro test app/src/maestro/flows/flow.yml
 
     - name: Archive test results
