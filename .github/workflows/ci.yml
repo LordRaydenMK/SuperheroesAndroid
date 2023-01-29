@@ -18,8 +18,8 @@ jobs:
 
       - name: Setup secrets
         run: |
-          echo "marvel_public_api_key=${{ secrets.MARVEL_PUBLIC_API_KEY }}" >> gradle.properties
-          echo "marvel_private_api_key=${{ secrets.MARVEL_PRIVATE_API_KEY }}" >> gradle.properties
+          echo marvel_public_api_key=${{ secrets.MARVEL_PUBLIC_API_KEY }} >> gradle.properties
+          echo marvel_private_api_key=${{ secrets.MARVEL_PRIVATE_API_KEY }} >> gradle.properties
 
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
@@ -67,8 +67,8 @@ jobs:
 
     - name: Setup secrets
       run: |
-        echo "marvel_public_api_key=${{ secrets.MARVEL_PUBLIC_API_KEY }}" >> gradle.properties
-        echo "marvel_private_api_key=${{ secrets.MARVEL_PRIVATE_API_KEY }}" >> gradle.properties
+        echo marvel_public_api_key=${{ secrets.MARVEL_PUBLIC_API_KEY }} >> gradle.properties
+        echo marvel_private_api_key=${{ secrets.MARVEL_PRIVATE_API_KEY }} >> gradle.properties
 
     - name: Run Espresso UI Tests
       uses: reactivecircus/android-emulator-runner@v2
