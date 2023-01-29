@@ -47,6 +47,24 @@ jobs:
     - name: Setup Gradle
       uses: gradle/gradle-build-action@v2
 
+    - name: AVD cache
+      uses: actions/cache@v3
+      id: avd-cache
+      with:
+        path: |
+          ~/.android/avd/*
+          ~/.android/adb*
+        key: avd
+
+    - name: create AVD and generate snapshot for caching
+      if: steps.avd-cache.outputs.cache-hit != 'true'
+      uses: reactivecircus/android-emulator-runner@v2
+      with:
+        api-level: 33
+        force-avd-creation: false
+        emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+        script: echo "Generated AVD snapshot for caching."
+
     - name: Setup secrets
       run: |
         echo "marvel_public_api_key=${{ secrets.MARVEL_PUBLIC_API_KEY }}" >> gradle.properties
@@ -55,7 +73,10 @@ jobs:
     - name: Run Espresso UI Tests
       uses: reactivecircus/android-emulator-runner@v2
       with:
-        api-level: 29
+        api-level: 33
+        force-avd-creation: false
+        emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+        disable-animations: true
         script: ./gradlew connectedCheck -Pandroid.testInstrumentationRunnerArguments.size=medium --stacktrace
 
     - name: Install Maestro
@@ -67,6 +88,9 @@ jobs:
       uses: reactivecircus/android-emulator-runner@v2
       with:
         api-level: 29
+        force-avd-creation: false
+        emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+        disable-animations: true
         script: |
           ./gradlew installDebug
           maestro test app/src/maestro/flows/flow.yml
