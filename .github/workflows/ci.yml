@@ -14,13 +14,21 @@ jobs:
     
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+
+      - name: Setup secrets
+        run: |
+          echo marvel_public_api_key=${{ secrets.MARVEL_PUBLIC_API_KEY }} >> gradle.properties
+          echo marvel_private_api_key=${{ secrets.MARVEL_PRIVATE_API_KEY }} >> gradle.properties
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
 
       - name: Unit Tests
-        run: ./gradlew test -Pmarvel_public_api_key=${{ secrets.MARVEL_PUBLIC_API_KEY }} -Pmarvel_private_api_key=${{ secrets.MARVEL_PRIVATE_API_KEY }}
+        run: ./gradlew test
     
       - name: Build the app
-        run: ./gradlew assemble -Pmarvel_public_api_key=${{ secrets.MARVEL_PUBLIC_API_KEY }} -Pmarvel_private_api_key=${{ secrets.MARVEL_PRIVATE_API_KEY }}
+        run: ./gradlew assemble
 
 
   test:
@@ -28,18 +36,49 @@ jobs:
     timeout-minutes: 30
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
+
     - name: Setup Java (Adopt OpenJDK v11)
-      uses: actions/setup-java@v2
+      uses: actions/setup-java@v3
       with:
         distribution: 'adopt'
         java-version: '11'
+
+    - name: Setup Gradle
+      uses: gradle/gradle-build-action@v2
+
+    - name: AVD cache
+      uses: actions/cache@v3
+      id: avd-cache
+      with:
+        path: |
+          ~/.android/avd/*
+          ~/.android/adb*
+        key: avd
+
+    - name: create AVD and generate snapshot for caching
+      if: steps.avd-cache.outputs.cache-hit != 'true'
+      uses: reactivecircus/android-emulator-runner@v2
+      with:
+        api-level: 29
+        force-avd-creation: false
+        emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+        disable-animations: false
+        script: echo "Generated AVD snapshot for caching."
+
+    - name: Setup secrets
+      run: |
+        echo marvel_public_api_key=${{ secrets.MARVEL_PUBLIC_API_KEY }} >> gradle.properties
+        echo marvel_private_api_key=${{ secrets.MARVEL_PRIVATE_API_KEY }} >> gradle.properties
 
     - name: Run Espresso UI Tests
       uses: reactivecircus/android-emulator-runner@v2
       with:
         api-level: 29
-        script: ./gradlew connectedCheck -Pandroid.testInstrumentationRunnerArguments.size=medium -Pmarvel_public_api_key=${{ secrets.MARVEL_PUBLIC_API_KEY }} -Pmarvel_private_api_key=${{ secrets.MARVEL_PRIVATE_API_KEY }} --stacktrace
+        force-avd-creation: false
+        emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+        disable-animations: true
+        script: ./gradlew connectedCheck -Pandroid.testInstrumentationRunnerArguments.size=medium --stacktrace
 
     - name: Install Maestro
       run: | 
@@ -50,8 +89,11 @@ jobs:
       uses: reactivecircus/android-emulator-runner@v2
       with:
         api-level: 29
+        force-avd-creation: false
+        emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+        disable-animations: true
         script: |
-          ./gradlew installDebug -Pmarvel_public_api_key=${{ secrets.MARVEL_PUBLIC_API_KEY }} -Pmarvel_private_api_key=${{ secrets.MARVEL_PRIVATE_API_KEY }}
+          ./gradlew installDebug
           maestro test app/src/maestro/flows/flow.yml
 
     - name: Archive test results
