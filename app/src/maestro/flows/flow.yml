@@ -1,0 +1,10 @@
+appId: io.github.lordraydenmk.superheroesapp
+---
+- launchApp
+- tapOn: "3-D Man"
+- assertVisible: "Comics available: 12"
+- assertVisible: "Stories available: 21"
+- assertVisible: "Events available: 1"
+- assertVisible: "Series available: 3"
+- back
+- assertVisible: "3-D Man"
