@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import coil.ImageLoader
 import coil.ImageLoaderFactory
-import io.github.lordraydenmk.superheroesapp.common.CrashReportingTree
 import timber.log.Timber
 
 class App : Application(), ModuleOwner, ImageLoaderFactory {
@@ -15,7 +14,6 @@ class App : Application(), ModuleOwner, ImageLoaderFactory {
         super.onCreate()
 
         if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
-        else Timber.plant(CrashReportingTree())
     }
 
     override fun newImageLoader(): ImageLoader = ImageLoader(this)
