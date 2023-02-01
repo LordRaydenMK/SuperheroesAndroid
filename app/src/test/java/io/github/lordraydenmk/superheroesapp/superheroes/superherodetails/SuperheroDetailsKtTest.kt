@@ -92,8 +92,9 @@ class SuperheroDetailsKtTest : FunSpec({
     }
 
     test("Action Up - NavigateUp Effect") {
+        val hulkDto = superheroDto(42, "Hulk", "https://hulk", "jpg")
         val viewModel = TestViewModel<SuperheroDetailsViewState, SuperheroDetailsEffect>()
-        val module = module(testSuperheroService(emptyList()), viewModel)
+        val module = module(testSuperheroService(listOf(hulkDto)), viewModel)
 
         with(module) {
             program(42, flowOf(Up))
