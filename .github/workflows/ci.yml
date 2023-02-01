@@ -94,7 +94,8 @@ jobs:
         disable-animations: true
         script: |
           ./gradlew installDebug
-          maestro test app/src/maestro/flows/flow.yml
+          chmod +x e2e.sh
+          ./e2e.sh
 
     - name: Archive test results
       if: always()
