@@ -2,8 +2,6 @@ package io.github.lordraydenmk.superheroesapp.superheroes.superheroslist
 
 import app.cash.turbine.test
 import io.github.lordraydenmk.superheroesapp.AppModule
-import io.github.lordraydenmk.superheroesapp.R
-import io.github.lordraydenmk.superheroesapp.common.IdTextRes
 import io.github.lordraydenmk.superheroesapp.common.Paginated
 import io.github.lordraydenmk.superheroesapp.common.PaginatedEnvelope
 import io.github.lordraydenmk.superheroesapp.common.TestViewModel
@@ -20,6 +18,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 import okhttp3.HttpUrl.Companion.toHttpUrl
+import java.io.IOException
 
 class SuperheroesListKtTest : FunSpec({
 
@@ -67,25 +66,8 @@ class SuperheroesListKtTest : FunSpec({
         }
     }
 
-    test("FirstLoad - service fails with exception - Loading then Problem") {
-        val error = Exception("Unauthorised")
-        val service = testSuperheroService(error)
-
-        val viewModel = TestViewModel<SuperheroesViewState, SuperheroesEffect>()
-        val module = testModule(service, viewModel)
-
-        val problem = Problem(IdTextRes(R.string.error_unrecoverable))
-
-        module.program(emptyFlow())
-
-        viewModel.viewState.test {
-            awaitItem() shouldBe Loading
-            awaitItem() shouldBe problem
-        }
-    }
-
     test("First load then refresh - service fails, then succeeds - Loading, Problem, Loading Content") {
-        val error = Exception("Unauthorised")
+        val error = IOException("Network issue")
         val superhero = superheroDto(42, "Ant Man", "https://antman", "jpg")
         val service = object : SuperheroesService {
             var i = 0

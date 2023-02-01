@@ -5,7 +5,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.common.ErrorTextRes
-import io.github.lordraydenmk.superheroesapp.common.IdTextRes
 import io.github.lordraydenmk.superheroesapp.common.PlaceholderString
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.emptyFlow
@@ -51,21 +50,6 @@ class SuperheroDetailsScreenTest {
             "We could not connect to our server. Please check your internet connection \n\nTap to retry!"
         superheroDetails(composeTestRule) {
             assertErrorDisplayed(errorText)
-            assertLoadingHidden()
-            assertContentHidden()
-        }
-    }
-
-    @Test
-    fun unrecoverableProblemState_errorViewDisplayed() {
-        val viewState = Problem(IdTextRes(R.string.error_unrecoverable))
-
-        composeTestRule.setContent {
-            SuperheroDetailsScreen(emptyFlow(), viewState, superheroId = 0, actions = Channel())
-        }
-
-        superheroDetails(composeTestRule) {
-            assertErrorDisplayed("Ooops… Something went wrong!")
             assertLoadingHidden()
             assertContentHidden()
         }

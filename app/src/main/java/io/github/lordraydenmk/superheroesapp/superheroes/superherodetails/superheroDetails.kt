@@ -51,7 +51,7 @@ private fun Throwable.toProblem(): Problem = when (this) {
         is NetworkError -> Problem(ErrorTextRes(R.string.error_recoverable_network))
         is ServerError -> Problem(ErrorTextRes(R.string.error_recoverable_server))
     }
-    else -> Problem(IdTextRes(R.string.error_unrecoverable))
+    else -> throw this
 }
 
 private fun Superhero.toViewEntity(): SuperheroDetailsViewEntity =
