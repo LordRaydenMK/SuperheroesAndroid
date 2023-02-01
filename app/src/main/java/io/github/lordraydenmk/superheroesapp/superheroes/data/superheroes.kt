@@ -3,12 +3,10 @@ package io.github.lordraydenmk.superheroesapp.superheroes.data
 import io.github.lordraydenmk.superheroesapp.superheroes.NetworkError
 import io.github.lordraydenmk.superheroesapp.superheroes.ServerError
 import io.github.lordraydenmk.superheroesapp.superheroes.SuperheroException
-import io.github.lordraydenmk.superheroesapp.superheroes.Unrecoverable
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.Superhero
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroDetails
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroId
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.Superheroes
-import kotlinx.coroutines.CancellationException
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -38,17 +36,13 @@ private fun SuperheroDto.toDomain(): Superhero = Superhero.create(
 private suspend fun <A> runRefineError(f: suspend () -> A): A =
     try {
         f()
-    } catch (e: CancellationException) {
-        throw e
     } catch (e: HttpException) {
         throw when (e.code()) {
             in 500..599 -> SuperheroException(
                 ServerError(e.code(), e.message())
             )
-            else -> SuperheroException(Unrecoverable(e))
+            else -> throw IllegalStateException("This should NOT happen", e)
         }
     } catch (e: IOException) {
         throw SuperheroException(NetworkError(e))
-    } catch (e: Throwable) {
-        throw SuperheroException(Unrecoverable(e))
     }

@@ -4,7 +4,6 @@ import io.github.lordraydenmk.superheroesapp.common.PaginatedEnvelope
 import io.github.lordraydenmk.superheroesapp.superheroes.NetworkError
 import io.github.lordraydenmk.superheroesapp.superheroes.ServerError
 import io.github.lordraydenmk.superheroesapp.superheroes.SuperheroException
-import io.github.lordraydenmk.superheroesapp.superheroes.Unrecoverable
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.Resource
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.Superhero
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroDetails
@@ -67,8 +66,7 @@ class SuperheroesKtTest : FunSpec({
         val exception = RuntimeException("Bang!")
         val service = testSuperheroService(exception)
 
-        val e = shouldThrow<SuperheroException> { service.superheroes() }
-        e.error shouldBe Unrecoverable(exception)
+        shouldThrow<RuntimeException> { service.superheroes() }
     }
 
     test("superheroDetails - service with success - converts to domain") {

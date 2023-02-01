@@ -2,17 +2,11 @@ package io.github.lordraydenmk.superheroesapp.superheroes.superherodetails
 
 import io.github.lordraydenmk.superheroesapp.AppModule
 import io.github.lordraydenmk.superheroesapp.R
-import io.github.lordraydenmk.superheroesapp.common.ErrorTextRes
-import io.github.lordraydenmk.superheroesapp.common.IdTextRes
-import io.github.lordraydenmk.superheroesapp.common.PlaceholderString
-import io.github.lordraydenmk.superheroesapp.common.forkAndForget
-import io.github.lordraydenmk.superheroesapp.common.identity
-import io.github.lordraydenmk.superheroesapp.common.parZip
+import io.github.lordraydenmk.superheroesapp.common.*
 import io.github.lordraydenmk.superheroesapp.common.presentation.ViewModelAlgebra
 import io.github.lordraydenmk.superheroesapp.superheroes.NetworkError
 import io.github.lordraydenmk.superheroesapp.superheroes.ServerError
 import io.github.lordraydenmk.superheroesapp.superheroes.SuperheroException
-import io.github.lordraydenmk.superheroesapp.superheroes.Unrecoverable
 import io.github.lordraydenmk.superheroesapp.superheroes.data.superheroDetails
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.Superhero
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroId
@@ -56,7 +50,6 @@ private fun Throwable.toProblem(): Problem = when (this) {
     is SuperheroException -> when (error) {
         is NetworkError -> Problem(ErrorTextRes(R.string.error_recoverable_network))
         is ServerError -> Problem(ErrorTextRes(R.string.error_recoverable_server))
-        is Unrecoverable -> Problem(IdTextRes(R.string.error_unrecoverable))
     }
     else -> Problem(IdTextRes(R.string.error_unrecoverable))
 }

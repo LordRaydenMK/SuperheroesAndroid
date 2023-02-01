@@ -10,7 +10,6 @@ import io.github.lordraydenmk.superheroesapp.common.presentation.ViewModelAlgebr
 import io.github.lordraydenmk.superheroesapp.superheroes.NetworkError
 import io.github.lordraydenmk.superheroesapp.superheroes.ServerError
 import io.github.lordraydenmk.superheroesapp.superheroes.SuperheroException
-import io.github.lordraydenmk.superheroesapp.superheroes.Unrecoverable
 import io.github.lordraydenmk.superheroesapp.superheroes.data.superheroes
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -53,7 +52,6 @@ private fun mapError(t: Throwable) = when (t) {
     is SuperheroException -> when (t.error) {
         is NetworkError -> Problem(ErrorTextRes(R.string.error_recoverable_network))
         is ServerError -> Problem(ErrorTextRes(R.string.error_recoverable_server))
-        is Unrecoverable -> Problem(IdTextRes(R.string.error_unrecoverable))
     }
     else -> Problem(IdTextRes(R.string.error_unrecoverable))
 }
