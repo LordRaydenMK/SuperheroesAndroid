@@ -18,7 +18,6 @@ import io.github.lordraydenmk.superheroesapp.superheroes.superherodetails.Superh
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
@@ -38,7 +37,6 @@ class SuperheroesFragment : Fragment(R.layout.fragment_compose) {
         val actions = Channel<SuperheroesAction>(Channel.UNLIMITED)
 
         with(module) {
-            val viewState = viewState.onEach { afterBind(it) }
             composeView.setContent {
                 SuperheroesScreen(
                     stateFlow = viewState,
