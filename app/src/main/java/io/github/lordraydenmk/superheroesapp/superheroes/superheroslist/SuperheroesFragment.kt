@@ -6,7 +6,9 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import io.github.lordraydenmk.superheroesapp.AppModule
 import io.github.lordraydenmk.superheroesapp.R
@@ -18,6 +20,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
 
 class SuperheroesFragment : Fragment(R.layout.fragment_compose) {
 
@@ -44,8 +47,10 @@ class SuperheroesFragment : Fragment(R.layout.fragment_compose) {
                 )
             }
 
-            lifecycleScope.launchWhenStarted {
-                program(actions.receiveAsFlow())
+            lifecycleScope.launch {
+                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    program(actions.receiveAsFlow())
+                }
             }
         }
 
