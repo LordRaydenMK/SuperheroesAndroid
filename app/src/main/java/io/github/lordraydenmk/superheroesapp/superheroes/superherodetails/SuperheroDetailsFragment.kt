@@ -2,14 +2,14 @@ package io.github.lordraydenmk.superheroesapp.superheroes.superherodetails
 
 import android.os.Bundle
 import android.view.View
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle.State
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import coil.compose.LocalImageLoader
 import io.github.lordraydenmk.superheroesapp.AppModule
 import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.appModule
@@ -19,6 +19,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
 
 class SuperheroDetailsFragment : Fragment(R.layout.fragment_compose) {
 
@@ -51,8 +52,10 @@ class SuperheroDetailsFragment : Fragment(R.layout.fragment_compose) {
                 )
             }
 
-            lifecycleScope.launchWhenStarted {
-                program(superheroId, actions.receiveAsFlow())
+            lifecycleScope.launch {
+                viewLifecycleOwner.repeatOnLifecycle(State.STARTED) {
+                    program(superheroId, actions.receiveAsFlow())
+                }
             }
         }
 
