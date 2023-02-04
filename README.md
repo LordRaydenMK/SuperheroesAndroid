@@ -2,9 +2,9 @@
 
 A sample project using the Marvel API to show a list of superheroes and some stats about them.
 
-| Superheroes List | Superhero Details | Error & Retry |
--------------------|-------------------|----------------
-|![Superheroes List](/images/superheroes.png) | ![Superhero Details](/images/details.png) | ![Error Loading](/images/error.png) |
+| Superheroes List                             | Superhero Details                         | Error & Retry                       |
+|----------------------------------------------|-------------------------------------------|-------------------------------------|
+| ![Superheroes List](/images/superheroes.png) | ![Superhero Details](/images/details.png) | ![Error Loading](/images/error.png) |
 
 ## Marvel API KEY
 
@@ -29,7 +29,7 @@ The app uses a reactive architecture built atop Flow. The app follows a layered 
 
 ### Data Layer
 
-The API call is modeled using Retrofit, KotlinX Serialization as the converter. The data layer converts the DTO objects to Domain objects. Any errors that happen up to this point are mapped to a sealed class `SuperheroError` (categorised as Recoverable on Unrecoverable). A custom exception `SuperheroException` that contains a property of the error is delivered as an RxJava error in the stream.
+The API call is modeled using Retrofit, KotlinX Serialization as the converter. The data layer converts the DTO objects to Domain objects. Any expected errors that happen up to this point are mapped to a sealed class `SuperheroError`. A custom exception `SuperheroException` that contains a property of the error is delivered as an `Flow` error in the stream.
 
 ### Domain Layer
 
@@ -37,7 +37,7 @@ The main class here is `Superhero`. It has a static `create` function that conve
 
 ### Presentation Layer
 
-The `Fragment` is not the view (MVVM view) here. There is a separate class that implements a `Screen` interface that handles all logic related to the view. It uses [ViewBinding][view-binding] for `findViewById`. Data flows to this class trough the `bind` function that takes a view state (a class that describes the content of the screen). A screen exposes `Flow<Action>` for the user interactions (e.g. open details, retry...) to the Fragment.
+Each screen is represented by a `Fragment` which plays the role of glue code. It's responsible for DI, forwarding actions from the view (Compose) to the `ViewModel` and forwarding state from the `ViewModel` to the view. It also handles any side effect emitted by the `ViewModel` e.g. navigation events.
 
 Each fragment has a Jetpack ViewModel that:
 
@@ -61,7 +61,9 @@ The logic is written as extension functions on top of a module (collection of de
 
 This sample uses [kotest][kotest] as a testing library. The presentation logic is tested by mocking the Retrofit Service and using a `TestViewModel` that uses `MutableSharedFlow` instead of `MutableStateFlow` and remembers all events. Tests use the real schedulers and Turbine for testing `Flow`.
 
-The view is tested in isolation using Espresso, by setting a ViewState using `bind()` and verifying the correct elements are displayed/hidden and the text matches the expected. There is also one E2E espresso test that uses `MockWebServer` and tests both fragments + activity together. The E2E test is a bit flaky.
+The view is tested in isolation using Espresso, by setting a ViewState and verifying the correct elements are displayed/hidden and the text matches the expected. 
+
+There is also one E2E (black box) test using Maestro that tests both fragments + activity together.
 
 ## Acknowledgments
 
