@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# clear logcat contents
+adb logcat -c
+
 # run first command
 maestro test app/src/maestro/flows/flow.yml
 result=$?
@@ -9,7 +12,7 @@ if [ $result -ne 0 ]; then
   echo "Printing hierarchy"
   maestro hierarchy
   echo "Printing logcat for app"
-  adb logcat -d | grep "io.github.lordraydenmk.superheroesapp"
+  adb logcat -d
 fi
 
 # return the result of the first command as the result of the script
