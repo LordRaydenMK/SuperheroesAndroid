@@ -86,7 +86,7 @@ dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.8.0'
-    def lifecycle = "2.5.1"
+    def lifecycle = "2.6.1"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle"
     implementation 'androidx.fragment:fragment-ktx:1.5.7'
     def nav_version = "2.5.3"
