@@ -21,6 +21,12 @@ jobs:
           echo marvel_public_api_key=${{ secrets.MARVEL_PUBLIC_API_KEY }} >> gradle.properties
           echo marvel_private_api_key=${{ secrets.MARVEL_PRIVATE_API_KEY }} >> gradle.properties
 
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
@@ -38,11 +44,11 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Setup Java (Adopt OpenJDK v11)
+    - name: Setup Java
       uses: actions/setup-java@v3
       with:
-        distribution: 'adopt'
-        java-version: '11'
+        distribution: 'temurin'
+        java-version: '17'
 
     - name: Setup Gradle
       uses: gradle/gradle-build-action@v2
