@@ -4,6 +4,7 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.serialization'
 }
 android {
+    namespace 'io.github.lordraydenmk.superheroesapp'
     compileSdkVersion 33
 
     defaultConfig {
