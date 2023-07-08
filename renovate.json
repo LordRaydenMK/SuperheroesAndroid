@@ -15,6 +15,18 @@
         "org.jetbrains.kotlin.*"
       ],
       "groupName": "kotlin"
+    },
+    {
+      "matchPackagePatterns": [
+        "androidx.compose.*"
+      ],
+      "groupName": "androidx.compose"
+    },
+    {
+      "matchPackagePatterns": [
+        "androidx.*"
+      ],
+      "groupName": "androidx"
     }
   ]
 }
