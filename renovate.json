@@ -6,6 +6,12 @@
   "packageRules": [
     {
       "matchPackagePatterns": [
+        "androidx.compose.*"
+      ],
+      "groupName": "androidx.compose"
+    },
+    {
+      "matchPackagePatterns": [
         "androidx.compose.compiler:compiler"
       ],
       "groupName": "kotlin"
@@ -15,15 +21,6 @@
         "org.jetbrains.kotlin.*"
       ],
       "groupName": "kotlin"
-    },
-    {
-      "matchPackagePatterns": [
-        "androidx.compose.*"
-      ],
-      "excludePackagePatterns": [
-        "androidx.compose.compiler:compiler"
-      ]
-      "groupName": "androidx.compose"
     }
   ]
 }
