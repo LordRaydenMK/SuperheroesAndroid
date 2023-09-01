@@ -5,7 +5,7 @@ plugins {
 }
 
 ext {
-    composeCompiler = "1.5.1"
+    composeCompiler = "1.5.3"
 }
 
 android {
