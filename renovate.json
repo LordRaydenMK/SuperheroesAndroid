@@ -21,12 +21,6 @@
         "androidx.compose.*"
       ],
       "groupName": "androidx.compose"
-    },
-    {
-      "matchPackagePatterns": [
-        "androidx.*"
-      ],
-      "groupName": "androidx"
     }
   ]
 }
