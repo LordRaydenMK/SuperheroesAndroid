@@ -6,6 +6,12 @@
   "packageRules": [
     {
       "matchPackagePatterns": [
+        "androidx.*"
+      ],
+      "groupName": "androidx"
+    },
+    {
+      "matchPackagePatterns": [
         "androidx.compose.*"
       ],
       "groupName": "androidx.compose"
