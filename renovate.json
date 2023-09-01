@@ -20,6 +20,9 @@
       "matchPackagePatterns": [
         "androidx.compose.*"
       ],
+      "excludePackagePatterns": [
+        "androidx.compose.compiler:compiler"
+      ]
       "groupName": "androidx.compose"
     }
   ]
