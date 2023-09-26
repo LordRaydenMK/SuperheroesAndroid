@@ -1,7 +1,12 @@
 package io.github.lordraydenmk.superheroesapp.common
 
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -16,11 +21,13 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
 val unit: Flow<Unit> = flowOf(Unit)
 
+@OptIn(ExperimentalCoroutinesApi::class)
 fun <A> Flow<A>.unit(): Flow<Unit> = flatMapMerge { unit }
 
 data class FlowFiber<A>(val join: Flow<A>, val cancel: Job)
@@ -58,3 +65,13 @@ suspend inline fun <A, B, C> parZip(
     @Suppress("UNCHECKED_CAST")
     f(a as A, b as B)
 }
+
+fun <A> Flow<A>.observeIn(
+    lifecycleOwner: LifecycleOwner,
+    state: Lifecycle.State = Lifecycle.State.STARTED
+): Job =
+    lifecycleOwner.lifecycleScope.launch {
+        lifecycleOwner.lifecycle.repeatOnLifecycle(state) {
+            collect()
+        }
+    }

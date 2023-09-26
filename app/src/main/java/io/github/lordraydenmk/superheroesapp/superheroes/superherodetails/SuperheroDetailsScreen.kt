@@ -1,6 +1,10 @@
 package io.github.lordraydenmk.superheroesapp.superheroes.superherodetails
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
@@ -8,7 +12,6 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,6 +19,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import io.github.lordraydenmk.superheroesapp.superheroes.domain.SuperheroId
@@ -32,7 +36,7 @@ fun SuperheroDetailsScreen(
     superheroId: SuperheroId,
     actions: Channel<SuperheroDetailsAction>
 ) {
-    val state by stateFlow.collectAsState(initialState)
+    val state by stateFlow.collectAsStateWithLifecycle(initialState)
 
     Column {
         SuperheroAppBar(state, actions)
