@@ -13,10 +13,10 @@ import androidx.navigation.fragment.findNavController
 import io.github.lordraydenmk.superheroesapp.AppModule
 import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.appModule
+import io.github.lordraydenmk.superheroesapp.common.observeIn
 import io.github.lordraydenmk.superheroesapp.common.presentation.ViewModelAlgebra
 import io.github.lordraydenmk.superheroesapp.superheroes.superherodetails.SuperheroDetailsFragment
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -56,15 +56,13 @@ class SuperheroesFragment : Fragment(R.layout.fragment_compose) {
     }
 
     private fun handleEffects() {
-        lifecycleScope.launchWhenStarted {
-            viewModel.effects.map { effect ->
-                when (effect) {
-                    is NavigateToDetails -> findNavController().navigate(
-                        R.id.action_details,
-                        SuperheroDetailsFragment.newBundle(effect.superheroId)
-                    )
-                }
-            }.collect()
-        }
+        viewModel.effects.map { effect ->
+            when (effect) {
+                is NavigateToDetails -> findNavController().navigate(
+                    R.id.action_details,
+                    SuperheroDetailsFragment.newBundle(effect.superheroId)
+                )
+            }
+        }.observeIn(this)
     }
 }
