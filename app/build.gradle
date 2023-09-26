@@ -20,7 +20,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "io.github.lordraydenmk.superheroesapp.TestRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         if (project.hasProperty("marvel_public_api_key")) {
             def marvelPublicKey = '"' + project.property("marvel_public_api_key") + '"'
@@ -84,6 +84,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3"
 
     // this helps renovate detect and update the compose compiler
+    //noinspection GroovyUnusedAssignment
     def composeCompiler =  "androidx.compose.compiler:compiler:${project.ext.composeCompiler}"
 
     implementation 'androidx.core:core-ktx:1.12.0'
