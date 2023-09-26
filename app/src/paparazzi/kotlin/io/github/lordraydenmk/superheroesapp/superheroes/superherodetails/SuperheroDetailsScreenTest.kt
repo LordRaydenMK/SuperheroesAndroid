@@ -1,28 +1,42 @@
 package io.github.lordraydenmk.superheroesapp.superheroes.superherodetails
 
-import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.filters.MediumTest
+import app.cash.paparazzi.DeviceConfig
+import app.cash.paparazzi.Paparazzi
+import coil.annotation.ExperimentalCoilApi
 import io.github.lordraydenmk.superheroesapp.R
 import io.github.lordraydenmk.superheroesapp.common.ErrorTextRes
+import io.github.lordraydenmk.superheroesapp.common.MainDispatcherRule
 import io.github.lordraydenmk.superheroesapp.common.PlaceholderString
+import io.github.lordraydenmk.superheroesapp.common.setupCoil
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.emptyFlow
 import okhttp3.HttpUrl.Companion.toHttpUrl
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@MediumTest
-@RunWith(AndroidJUnit4::class)
+@ExperimentalCoilApi
+@ExperimentalCoroutinesApi
 class SuperheroDetailsScreenTest {
 
     @get:Rule
-    val composeTestRule = createComposeRule()
+    val paparazzi = Paparazzi(
+        deviceConfig = DeviceConfig.PIXEL_5,
+        theme = "android:Theme.Material.Light.NoActionBar"
+    )
+
+    @get:Rule
+    val rule = MainDispatcherRule()
+
+    @Before
+    fun setUp() {
+        setupCoil(paparazzi)
+    }
 
     @Test
-    fun loadingState_progressBarDisplayed() {
-        composeTestRule.setContent {
+    fun loadingState() {
+        paparazzi.snapshot {
             SuperheroDetailsScreen(
                 stateFlow = emptyFlow(),
                 initialState = Loading,
@@ -30,33 +44,19 @@ class SuperheroDetailsScreenTest {
                 actions = Channel()
             )
         }
-
-        superheroDetails(composeTestRule) {
-            assertLoadingDisplayed()
-            assertContentHidden()
-            assertErrorHidden()
-        }
     }
 
     @Test
-    fun recoverableProblemState_errorViewDisplayedWithRetryText() {
+    fun errorStateWithRetry() {
         val viewState = Problem(ErrorTextRes(R.string.error_recoverable_network))
 
-        composeTestRule.setContent {
+        paparazzi.snapshot {
             SuperheroDetailsScreen(emptyFlow(), viewState, superheroId = 0, actions = Channel())
-        }
-
-        val errorText =
-            "We could not connect to our server. Please check your internet connection \n\nTap to retry!"
-        superheroDetails(composeTestRule) {
-            assertErrorDisplayed(errorText)
-            assertLoadingHidden()
-            assertContentHidden()
         }
     }
 
     @Test
-    fun contentState_statsAndCopyrightViewDisplayed() {
+    fun contentState() {
         val url = "http://i.annihil.us/u/prod/marvel/i/mg/c/e0/535fecbbb9784.jpg".toHttpUrl()
         val viewState = Content(
             SuperheroDetailsViewEntity(
@@ -70,20 +70,8 @@ class SuperheroDetailsScreenTest {
             "Copyright Marvel"
         )
 
-        composeTestRule.setContent {
+        paparazzi.snapshot {
             SuperheroDetailsScreen(emptyFlow(), viewState, superheroId = 0, actions = Channel())
-        }
-
-        superheroDetails(composeTestRule) {
-            assertContentDisplayed(
-                comicsText = "Comics available: 1",
-                storiesText = "Stories available: 2",
-                eventsText = "Events available: 3",
-                seriesText = "Series available: 4",
-                copyrightText = "Copyright Marvel"
-            )
-            assertLoadingHidden()
-            assertErrorHidden()
         }
     }
 }
