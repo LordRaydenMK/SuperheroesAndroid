@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'org.jetbrains.kotlin.plugin.serialization'
+    id 'app.cash.paparazzi'
 }
 
 ext {
@@ -44,6 +45,7 @@ android {
 
     sourceSets {
         test.java.srcDirs += "src/testFixtures/kotlin"
+        test.java.srcDirs += "src/paparazzi/kotlin"
     }
 
     compileOptions {
@@ -103,7 +105,9 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
     implementation 'com.jakewharton.timber:timber:5.0.1'
-    implementation "io.coil-kt:coil-compose:2.4.0"
+
+    def coil_version = "2.4.0"
+    implementation "io.coil-kt:coil-compose:$coil_version"
 
     def retrofit = "2.9.0"
     def okhttp = "4.11.0"
@@ -118,6 +122,8 @@ dependencies {
     testImplementation "io.kotest:kotest-runner-junit5-jvm:$kotest"
     testImplementation "io.kotest:kotest-assertions-core-jvm:$kotest"
     testImplementation 'app.cash.turbine:turbine:1.0.0'
+    testImplementation 'org.junit.vintage:junit-vintage-engine:5.10.0'
+    testImplementation "io.coil-kt:coil-test:$coil_version"
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     def espresso = "3.5.1"
