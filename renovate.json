@@ -6,15 +6,15 @@
   "packageRules": [
     {
       "matchPackagePatterns": [
-        "androidx.*"
+        "*"
       ],
-      "groupName": "androidx"
+      "groupName": "Update other dependencies"
     },
     {
       "matchPackagePatterns": [
-        "androidx.compose.*"
+        "androidx.*"
       ],
-      "groupName": "androidx.compose"
+      "groupName": "Update Androidx"
     },
     {
       "matchPackagePatterns": [
