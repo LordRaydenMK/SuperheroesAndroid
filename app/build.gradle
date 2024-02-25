@@ -104,7 +104,7 @@ dependencies {
 
     implementation 'com.jakewharton.timber:timber:5.0.1'
 
-    def coil_version = "2.5.0"
+    def coil_version = "2.6.0"
     implementation "io.coil-kt:coil-compose:$coil_version"
 
     def retrofit = "2.9.0"
