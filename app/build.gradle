@@ -108,7 +108,7 @@ dependencies {
     def coil_version = "2.6.0"
     implementation "io.coil-kt:coil-compose:$coil_version"
 
-    def retrofit = "2.9.0"
+    def retrofit = "2.10.0"
     def okhttp = "4.12.0"
     implementation "com.squareup.retrofit2:retrofit:$retrofit"
     implementation "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0"
@@ -117,10 +117,10 @@ dependencies {
 
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose"
 
-    def kotest = "5.8.0"
+    def kotest = "5.8.1"
     testImplementation "io.kotest:kotest-runner-junit5-jvm:$kotest"
     testImplementation "io.kotest:kotest-assertions-core-jvm:$kotest"
-    testImplementation 'app.cash.turbine:turbine:1.0.0'
+    testImplementation 'app.cash.turbine:turbine:1.1.0'
     testImplementation 'org.junit.vintage:junit-vintage-engine:5.10.2'
     testImplementation "io.coil-kt:coil-test:$coil_version"
 
