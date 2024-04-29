@@ -84,13 +84,13 @@ dependencies {
     //noinspection GroovyUnusedAssignment
     def composeCompiler = "androidx.compose.compiler:compiler:${project.ext.composeCompiler}"
 
-    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'androidx.core:core-ktx:1.13.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'androidx.activity:activity-compose:1.8.2'
-    def compose = "1.6.5"
+    implementation 'androidx.activity:activity-compose:1.9.0'
+    def compose = "1.6.6"
     implementation "androidx.compose.ui:ui:$compose"
-    implementation "androidx.compose.foundation:foundation:1.6.5"
-    implementation "androidx.compose.material:material:1.6.5"
+    implementation "androidx.compose.foundation:foundation:1.6.6"
+    implementation "androidx.compose.material:material:1.6.6"
     implementation "androidx.compose.ui:ui-tooling:$compose"
 
     implementation 'androidx.appcompat:appcompat:1.6.1'
