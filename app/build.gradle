@@ -94,7 +94,7 @@ dependencies {
     implementation "androidx.compose.ui:ui-tooling:$compose"
 
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'com.google.android.material:material:1.12.0'
     def lifecycle = "2.7.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle"
     implementation "androidx.lifecycle:lifecycle-runtime-compose:$lifecycle"
@@ -117,7 +117,7 @@ dependencies {
 
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose"
 
-    def kotest = "5.8.1"
+    def kotest = "5.9.0"
     testImplementation "io.kotest:kotest-runner-junit5-jvm:$kotest"
     testImplementation "io.kotest:kotest-assertions-core-jvm:$kotest"
     testImplementation 'app.cash.turbine:turbine:1.1.0'
