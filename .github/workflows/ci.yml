@@ -72,7 +72,8 @@ jobs:
         key: avd
 
     - name: create AVD and generate snapshot for caching
-      if: steps.avd-cache.outputs.cache-hit != 'true'
+      # if: steps.avd-cache.outputs.cache-hit != 'true'
+      if: false # temporary disable caching
       uses: reactivecircus/android-emulator-runner@v2
       with:
         api-level: 29
