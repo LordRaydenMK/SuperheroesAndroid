@@ -2,9 +2,10 @@ package io.github.lordraydenmk.superheroesapp.superheroes.superherodetails
 
 import android.os.Bundle
 import android.view.View
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.fragment.compose.content
 import androidx.lifecycle.Lifecycle.State
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -32,6 +33,8 @@ class SuperheroDetailsFragment : Fragment(R.layout.fragment_compose) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val composeView = view as ComposeView
+        composeView.setViewCompositionStrategy(DisposeOnViewTreeLifecycleDestroyed)
 
         val module = object : SuperheroDetailsModule,
             AppModule by requireActivity().appModule(),
@@ -39,10 +42,8 @@ class SuperheroDetailsFragment : Fragment(R.layout.fragment_compose) {
 
         val actions = Channel<SuperheroDetailsAction>(Channel.UNLIMITED)
 
-        handleEffects()
-
         with(module) {
-            content {
+            composeView.setContent {
                 SuperheroDetailsScreen(
                     stateFlow = viewState,
                     initialState = Loading,
@@ -57,6 +58,8 @@ class SuperheroDetailsFragment : Fragment(R.layout.fragment_compose) {
                 }
             }
         }
+
+        handleEffects()
     }
 
     private fun handleEffects() {
