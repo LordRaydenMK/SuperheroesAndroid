@@ -62,26 +62,6 @@ jobs:
     - name: Setup Gradle
       uses: gradle/gradle-build-action@v3
 
-    - name: AVD cache
-      uses: actions/cache@v4
-      id: avd-cache
-      with:
-        path: |
-          ~/.android/avd/*
-          ~/.android/adb*
-        key: avd
-
-    - name: create AVD and generate snapshot for caching
-      # if: steps.avd-cache.outputs.cache-hit != 'true'
-      if: false # temporary disable caching
-      uses: reactivecircus/android-emulator-runner@v2
-      with:
-        api-level: 29
-        force-avd-creation: false
-        emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-        disable-animations: false
-        script: echo "Generated AVD snapshot for caching."
-
     - name: Setup secrets
       run: |
         echo marvel_public_api_key=${{ secrets.MARVEL_PUBLIC_API_KEY }} >> gradle.properties
@@ -96,7 +76,6 @@ jobs:
       uses: reactivecircus/android-emulator-runner@v2
       with:
         api-level: 29
-        force-avd-creation: false
         emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
         disable-animations: true
         script: |
