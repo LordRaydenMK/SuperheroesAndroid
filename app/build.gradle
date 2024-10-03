@@ -1,12 +1,9 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.plugin.compose'
     id 'org.jetbrains.kotlin.plugin.serialization'
     id 'app.cash.paparazzi'
-}
-
-ext {
-    composeCompiler = "1.5.12"
 }
 
 android {
@@ -38,10 +35,6 @@ android {
     buildFeatures {
         compose true
         buildConfig true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion project.ext.composeCompiler
     }
 
     sourceSets {
@@ -80,25 +73,21 @@ android {
 dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0"
 
-    // this helps renovate detect and update the compose compiler
-    //noinspection GroovyUnusedAssignment
-    def composeCompiler = "androidx.compose.compiler:compiler:${project.ext.composeCompiler}"
-
     implementation 'androidx.core:core-ktx:1.13.1'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'androidx.activity:activity-compose:1.9.0'
-    def compose = "1.6.7"
+    def compose = "1.6.8"
     implementation "androidx.compose.ui:ui:$compose"
-    implementation "androidx.compose.foundation:foundation:1.6.7"
-    implementation "androidx.compose.material:material:1.6.7"
+    implementation "androidx.compose.foundation:foundation:1.6.8"
+    implementation "androidx.compose.material:material:1.6.8"
     implementation "androidx.compose.ui:ui-tooling:$compose"
 
-    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'com.google.android.material:material:1.12.0'
-    def lifecycle = "2.7.0"
+    def lifecycle = "2.8.2"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle"
     implementation "androidx.lifecycle:lifecycle-runtime-compose:$lifecycle"
-    implementation 'androidx.fragment:fragment-ktx:1.7.0'
+    implementation 'androidx.fragment:fragment-ktx:1.8.0'
     def nav_version = "2.7.7"
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
