@@ -110,7 +110,7 @@ dependencies {
     def kotest = "5.9.1"
     testImplementation "io.kotest:kotest-runner-junit5-jvm:$kotest"
     testImplementation "io.kotest:kotest-assertions-core-jvm:$kotest"
-    testImplementation 'app.cash.turbine:turbine:1.1.0'
+    testImplementation 'app.cash.turbine:turbine:1.2.0'
     testImplementation 'org.junit.vintage:junit-vintage-engine:5.11.2'
     testImplementation "io.coil-kt:coil-test:$coil_version"
 
