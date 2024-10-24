@@ -8,12 +8,12 @@ plugins {
 
 android {
     namespace 'io.github.lordraydenmk.superheroesapp'
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
         applicationId "io.github.lordraydenmk.superheroesapp"
         minSdkVersion 26
-        targetSdkVersion 34
+        targetSdkVersion 35
         versionCode 1
         versionName "1.0"
 
@@ -43,12 +43,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
     }
     // For Kotlin projects
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "21"
     }
 
     testOptions {
