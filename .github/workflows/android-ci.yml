@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  android-build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -18,8 +18,8 @@ jobs:
 
       - name: Setup secrets
         run: |
-          echo marvel_public_api_key=${{ secrets.MARVEL_PUBLIC_API_KEY }} >> gradle.properties
-          echo marvel_private_api_key=${{ secrets.MARVEL_PRIVATE_API_KEY }} >> gradle.properties
+          echo marvel_public_api_key=${{ secrets.MARVEL_PUBLIC_API_KEY }} >> android/gradle.properties
+          echo marvel_private_api_key=${{ secrets.MARVEL_PRIVATE_API_KEY }} >> android/gradle.properties
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -31,16 +31,16 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Paparazzi tests
-        run: ./gradlew verifyPaparazziDebug
+        run: ./gradlew android:app:verifyPaparazziDebug
 
       - name: Unit Tests
-        run: ./gradlew test
+        run: ./gradlew android:app:test
     
       - name: Build the app
-        run: ./gradlew assemble
+        run: ./gradlew android:app:assemble
 
 
-  test:
+  android-test:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -64,8 +64,8 @@ jobs:
 
     - name: Setup secrets
       run: |
-        echo marvel_public_api_key=${{ secrets.MARVEL_PUBLIC_API_KEY }} >> gradle.properties
-        echo marvel_private_api_key=${{ secrets.MARVEL_PRIVATE_API_KEY }} >> gradle.properties
+        echo marvel_public_api_key=${{ secrets.MARVEL_PUBLIC_API_KEY }} >> android/gradle.properties
+        echo marvel_private_api_key=${{ secrets.MARVEL_PRIVATE_API_KEY }} >> android/gradle.properties
 
     - name: Install Maestro
       run: | 
@@ -79,13 +79,13 @@ jobs:
         emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
         disable-animations: true
         script: |
-          ./gradlew installDebug
-          chmod +x e2e.sh
-          ./e2e.sh
+          ./gradlew android:app:installDebug
+          chmod +x android/e2e.sh
+          android/e2e.sh
 
     - name: Archive test results
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: test-results
-        path: app/build/reports/androidTests/connected/
+        path: android/app/build/reports/androidTests/connected/
