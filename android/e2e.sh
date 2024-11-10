@@ -1,10 +1,11 @@
 #!/bin/bash
 
-# run first command
-maestro test app/src/maestro/flows/flow.yml
+# run maestro tests
+# on CI this command is executed from the root folder so it stars with `android/`
+maestro test android/app/src/maestro/flows/flow.yml
 result=$?
 
-# run second command if first one fails
+# if tests fail, print the hierarchy and logcat
 if [ $result -ne 0 ]; then
   echo "Printing hierarchy"
   maestro hierarchy
