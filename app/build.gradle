@@ -75,7 +75,7 @@ dependencies {
 
     implementation 'androidx.core:core-ktx:1.15.0'
     implementation 'androidx.appcompat:appcompat:1.7.0'
-    implementation 'androidx.activity:activity-compose:1.10.0'
+    implementation 'androidx.activity:activity-compose:1.10.1'
     def compose = "1.7.8"
     implementation "androidx.compose.ui:ui:$compose"
     implementation "androidx.compose.foundation:foundation:1.7.8"
@@ -89,7 +89,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle"
     implementation "androidx.lifecycle:lifecycle-runtime-compose:$lifecycle"
     implementation 'androidx.fragment:fragment-ktx:1.8.6'
-    def nav_version = "2.8.7"
+    def nav_version = "2.8.8"
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
