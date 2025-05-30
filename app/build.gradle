@@ -111,7 +111,7 @@ dependencies {
     testImplementation "io.kotest:kotest-runner-junit5-jvm:$kotest"
     testImplementation "io.kotest:kotest-assertions-core-jvm:$kotest"
     testImplementation 'app.cash.turbine:turbine:1.2.0'
-    testImplementation 'org.junit.vintage:junit-vintage-engine:5.12.2'
+    testImplementation 'org.junit.vintage:junit-vintage-engine:5.13.0'
     testImplementation "io.coil-kt:coil-test:$coil_version"
 
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'
