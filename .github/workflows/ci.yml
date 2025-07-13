@@ -18,8 +18,7 @@ jobs:
 
       - name: Setup secrets
         run: |
-          echo marvel_public_api_key=${{ secrets.MARVEL_PUBLIC_API_KEY }} >> gradle.properties
-          echo marvel_private_api_key=${{ secrets.MARVEL_PRIVATE_API_KEY }} >> gradle.properties
+          echo tmdb_api_key=${{ secrets.TMDB_API_KEY }} >> gradle.properties
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -43,6 +42,13 @@ jobs:
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+
+    services:
+      wiremock:
+        image: ghcr.io/lordraydenmk/wiremock
+        ports:
+          - 8080:8080
+
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -64,8 +70,7 @@ jobs:
 
     - name: Setup secrets
       run: |
-        echo marvel_public_api_key=${{ secrets.MARVEL_PUBLIC_API_KEY }} >> gradle.properties
-        echo marvel_private_api_key=${{ secrets.MARVEL_PRIVATE_API_KEY }} >> gradle.properties
+        echo tmdb_api_key=${{ secrets.TMDB_API_KEY }} >> gradle.properties
 
     - name: Install Maestro
       run: | 
@@ -79,7 +84,7 @@ jobs:
         emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
         disable-animations: true
         script: |
-          ./gradlew installDebug
+          ./gradlew installDebug -Ptmdb_base_url=http://10.0.2.2:8080/
           chmod +x e2e.sh
           ./e2e.sh
 

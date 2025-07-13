@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/movie/1011477"
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "karate-kid.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}
