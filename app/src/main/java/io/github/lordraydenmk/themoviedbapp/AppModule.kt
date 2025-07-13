@@ -50,7 +50,7 @@ interface AppModule : TheMovieDbService {
         }
 
         private val retrofit = Retrofit.Builder()
-            .baseUrl("https://api.themoviedb.org/3/")
+            .baseUrl(BuildConfig.TMDB_BASE_URL)
             .addConverterFactory(converter.asConverterFactory(contentType))
             .client(client)
             .build()

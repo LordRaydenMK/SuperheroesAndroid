@@ -42,6 +42,13 @@ jobs:
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+
+    services:
+      wiremock:
+        image: wiremock/wiremock:3
+        ports:
+          - 8080:8080
+
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -70,6 +77,12 @@ jobs:
         curl -Ls "https://get.maestro.mobile.dev" | bash
         echo "$HOME/.maestro/bin" >> $GITHUB_PATH
 
+    - name: Assemble APK
+      run: ./gradlew app:assembleDebug -Ptmdb_base_url=http://10.0.2.2:8080/
+
+    - name: Upload Wireock Mappings
+      run: wiremock/upload-wiremock.sh
+
     - name: Run Maestro E2E Tests
       uses: reactivecircus/android-emulator-runner@v2
       with:
@@ -77,7 +90,7 @@ jobs:
         emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
         disable-animations: true
         script: |
-          ./gradlew installDebug
+          ./gradlew installDebug -Ptmdb_base_url=http://10.0.2.2:8080/
           chmod +x e2e.sh
           ./e2e.sh
 
