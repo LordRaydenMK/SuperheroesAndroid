@@ -45,7 +45,7 @@ jobs:
 
     services:
       wiremock:
-        image: wiremock/wiremock:latest
+        image: ghcr.io/lordraydenmk/wiremock
         ports:
           - 8080:8080
 
@@ -76,14 +76,6 @@ jobs:
       run: | 
         curl -Ls "https://get.maestro.mobile.dev" | bash
         echo "$HOME/.maestro/bin" >> $GITHUB_PATH
-
-    - name: Assemble APK
-      run: ./gradlew app:assembleDebug -Ptmdb_base_url=http://10.0.2.2:8080/
-
-    - name: Upload Wireock Mappings
-      run: |
-        chmod +x wiremock/upload-wiremock.sh
-        wiremock/upload-wiremock.sh
 
     - name: Run Maestro E2E Tests
       uses: reactivecircus/android-emulator-runner@v2
