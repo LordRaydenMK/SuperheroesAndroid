@@ -18,8 +18,7 @@ jobs:
 
       - name: Setup secrets
         run: |
-          echo marvel_public_api_key=${{ secrets.MARVEL_PUBLIC_API_KEY }} >> gradle.properties
-          echo marvel_private_api_key=${{ secrets.MARVEL_PRIVATE_API_KEY }} >> gradle.properties
+          echo tmdb_api_key=${{ secrets.TMDB_API_KEY }} >> gradle.properties
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -64,8 +63,7 @@ jobs:
 
     - name: Setup secrets
       run: |
-        echo marvel_public_api_key=${{ secrets.MARVEL_PUBLIC_API_KEY }} >> gradle.properties
-        echo marvel_private_api_key=${{ secrets.MARVEL_PRIVATE_API_KEY }} >> gradle.properties
+        echo tmdb_api_key=${{ secrets.TMDB_API_KEY }} >> gradle.properties
 
     - name: Install Maestro
       run: | 
