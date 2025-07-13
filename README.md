@@ -76,5 +76,5 @@ Approaches is this sample are heavily inspired by open source code I have read. 
 [fun-stream]: https://github.com/47degrees/FunctionalStreamsSpringSample
 [simple-di]: https://gist.github.com/raulraja/97e2d5bf60e9d96680cf1fddcc90ee67
 [view-binding]: https://developer.android.com/topic/libraries/view-binding
-[fork]: app/src/main/java/io/github/lordraydenmk/superheroesapp/common/observable.kt
+[fork]: app/src/main/java/io/github/lordraydenmk/themoviedbapp/common/observable.kt
 [kotest]: https://github.com/kotest/kotest

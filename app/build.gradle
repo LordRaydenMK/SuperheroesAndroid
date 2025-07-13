@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace 'io.github.lordraydenmk.superheroesapp'
+    namespace 'io.github.lordraydenmk.themoviedbapp'
     compileSdk 35
 
     defaultConfig {
@@ -19,16 +19,13 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        if (project.hasProperty("marvel_public_api_key")) {
-            def marvelPublicKey = '"' + project.property("marvel_public_api_key") + '"'
-            def marvelPrivateKey = '"' + project.property("marvel_private_api_key") + '"'
-            buildConfigField("String", "MARVEL_PUBLIC_API_KEY", marvelPublicKey)
-            buildConfigField("String", "MARVEL_PRIVATE_API_KEY", marvelPrivateKey)
+        if (project.hasProperty("tmdb_api_key")) {
+            def tmbdApiKey = '"' + project.property("tmdb_api_key") + '"'
+            buildConfigField("String", "TMDB_API_KEY", tmbdApiKey)
         } else {
-            // the app needs `marvel_public_api_key` and `marvel_private_api_key`
-            // as gradle properties to run
-            // to get one visit: https://developer.marvel.com/account
-            throw new GradleException("Please provide the Marvel API keys as gradle properties")
+            // the app needs a `tmdb_api_key as a gradle property to run
+            // to get one visit: https://developer.themoviedb.org/reference/intro/getting-started
+            throw new GradleException("Please provide the TMDB API key as a gradle property")
         }
     }
 
