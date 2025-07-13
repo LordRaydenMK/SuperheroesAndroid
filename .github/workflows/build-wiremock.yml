@@ -25,5 +25,5 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker build -t ghcr.io/stojan/superheroesandroid-wiremock ./wiremock
-          docker push ghcr.io/stojan/superheroesandroid-wiremock
+          docker build -t ghcr.io/lordraydenmk/superheroesandroid-wiremock ./wiremock
+          docker push ghcr.io/lordraydenmk/superheroesandroid-wiremock
