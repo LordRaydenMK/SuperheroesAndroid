@@ -1,7 +1,6 @@
 appId: io.github.lordraydenmk.themoviedbapp
 ---
 - launchApp
-- tapOn: "Karate Kid"
-- assertVisible: "Comics available: 0"
+- tapOn: "Karate Kid: Legends"
 - back
-- assertVisible: "Karate Kid"
+- assertVisible: "Karate Kid: Legends"
