@@ -19,6 +19,9 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
+        def baseUrl = '"' + project.property("tmdb_base_url") + '"'
+        buildConfigField("String", "TMDB_BASE_URL", baseUrl)
+
         if (project.hasProperty("tmdb_api_key")) {
             def tmbdApiKey = '"' + project.property("tmdb_api_key") + '"'
             buildConfigField("String", "TMDB_API_KEY", tmbdApiKey)
