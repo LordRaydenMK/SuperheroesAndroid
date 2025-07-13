@@ -81,7 +81,9 @@ jobs:
       run: ./gradlew app:assembleDebug -Ptmdb_base_url=http://10.0.2.2:8080/
 
     - name: Upload Wireock Mappings
-      run: wiremock/upload-wiremock.sh
+      run: |
+        chmod +x wiremock/upload-wiremock.sh
+        wiremock/upload-wiremock.sh
 
     - name: Run Maestro E2E Tests
       uses: reactivecircus/android-emulator-runner@v2
