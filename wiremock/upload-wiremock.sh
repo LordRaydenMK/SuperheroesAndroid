@@ -22,12 +22,11 @@ fi
 
 echo "📤 Uploading files from $FILES_DIR..."
 if compgen -G "$FILES_DIR/*" > /dev/null; then
-  for file in "$FILES_DIR"/*; do
-    filename=$(basename "$file")
+  for filename in "$FILES_DIR"/*; do
     echo "→ $filename"
     curl -sS -X PUT "$WIREMOCK_URL/files/$filename" \
       -H "Content-Type: application/json" \
-      --data-binary @"$file"
+      --data-binary @"$filename"
   done
 else
   echo "⚠️  No files found in $FILES_DIR"
