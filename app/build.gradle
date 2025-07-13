@@ -11,7 +11,7 @@ android {
     compileSdk 35
 
     defaultConfig {
-        applicationId "iio.github.lordraydenmk.themoviedbapp"
+        applicationId "io.github.lordraydenmk.themoviedbapp"
         minSdkVersion 26
         targetSdkVersion 35
         versionCode 1
