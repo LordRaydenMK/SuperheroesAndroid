@@ -1,23 +1,36 @@
 #!/bin/bash
 set -euo pipefail
 
-WIREMOCK_ADMIN_URL="http://localhost:8080/__admin"
+WIREMOCK_URL="http://localhost:8080/__admin"
 
-echo "Uploading WireMock mappings..."
-for mapping in __mappings/*.json; do
-  echo "Uploading mapping: $mapping"
-  curl -sS -X POST "${WIREMOCK_ADMIN_URL}/mappings" \
-    -H "Content-Type: application/json" \
-    --data-binary @"$mapping"
-done
+# Get the script's directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+MAPPINGS_DIR="$SCRIPT_DIR/__mappings"
+FILES_DIR="$SCRIPT_DIR/__files"
 
-echo "Uploading WireMock files..."
-for file in __files/*; do
-  filename=$(basename "$file")
-  echo "Uploading file: $filename"
-  curl -sS -X PUT "${WIREMOCK_ADMIN_URL}/files/${filename}" \
-    -H "Content-Type: application/json" \
-    --data-binary @"$file"
-done
+echo "📤 Uploading mappings from $MAPPINGS_DIR..."
+if compgen -G "$MAPPINGS_DIR/*.json" > /dev/null; then
+  for mapping in "$MAPPINGS_DIR"/*.json; do
+    echo "→ $mapping"
+    curl -sS -X POST "$WIREMOCK_URL/mappings" \
+      -H "Content-Type: application/json" \
+      --data-binary @"$mapping"
+  done
+else
+  echo "⚠️  No mapping files found in $MAPPINGS_DIR"
+fi
 
-echo "All mappings and files uploaded successfully."
+echo "📤 Uploading files from $FILES_DIR..."
+if compgen -G "$FILES_DIR/*" > /dev/null; then
+  for file in "$FILES_DIR"/*; do
+    filename=$(basename "$file")
+    echo "→ $filename"
+    curl -sS -X PUT "$WIREMOCK_URL/files/$filename" \
+      -H "Content-Type: application/json" \
+      --data-binary @"$file"
+  done
+else
+  echo "⚠️  No files found in $FILES_DIR"
+fi
+
+echo "✅ All mappings and files uploaded!"
