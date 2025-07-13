@@ -45,7 +45,7 @@ jobs:
 
     services:
       wiremock:
-        image: wiremock/wiremock:3
+        image: wiremock/wiremock:latest
         ports:
           - 8080:8080
 
