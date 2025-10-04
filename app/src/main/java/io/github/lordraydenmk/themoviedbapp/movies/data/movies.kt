@@ -11,15 +11,15 @@ import retrofit2.HttpException
 import java.io.IOException
 
 suspend fun TheMovieDbService.popularMovies(): PopularMovies {
-    val superheroesDto = runRefineError { getPopularMovies() }
-    val superheroes = superheroesDto.results.map { it.toDomain() }
-    return PopularMovies(superheroes)
+    val popularMovieDtos = runRefineError { getPopularMovies() }
+    val popularMovies = popularMovieDtos.results.map { it.toDomain() }
+    return PopularMovies(popularMovies)
 }
 
 suspend fun TheMovieDbService.movieDetails(id: MovieId): MovieDetails {
-    val superheroDto = runRefineError { getMovieDetails(id) }
-    val superhero = superheroDto.toDomain()
-    return MovieDetails(superhero)
+    val movieDto = runRefineError { getMovieDetails(id) }
+    val movie = movieDto.toDomain()
+    return MovieDetails(movie)
 }
 
 private fun MovieDto.toDomain(): Movie = Movie.create(

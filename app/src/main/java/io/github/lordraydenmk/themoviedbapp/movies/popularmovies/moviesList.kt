@@ -14,7 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-interface TheMovieDbModule : AppModule, ViewModelAlgebra<SuperheroesViewState, MoviesEffect>
+interface TheMovieDbModule : AppModule, ViewModelAlgebra<PopularMoviesViewState, MoviesEffect>
 
 suspend fun TheMovieDbModule.program(actions: Flow<MoviesAction>): Unit =
     parZip(Dispatchers.Default, { firstLoad() }, { handleActions(actions) })
@@ -26,18 +26,18 @@ suspend fun TheMovieDbModule.handleActions(actions: Flow<MoviesAction>) =
 
 suspend fun TheMovieDbModule.handleAction(action: MoviesAction) = when (action) {
     is LoadDetails -> runEffect(NavigateToDetails(action.id))
-    Refresh -> loadSuperheroOne()
+    Refresh -> loadMovieOne()
 }
 
 suspend fun TheMovieDbModule.firstLoad(): Unit =
-    runInitialize { loadSuperheroOne() }
+    runInitialize { loadMovieOne() }
 
-suspend fun TheMovieDbModule.loadSuperheroOne(): Unit {
+suspend fun TheMovieDbModule.loadMovieOne(): Unit {
     setState(Loading)
     val state = try {
         val popularMovies = popularMovies().movies
-            .map { SuperheroViewEntity(it.id, it.name, it.thumbnail) }
-        Content(popularMovies, "")
+            .map { MovieViewEntity(it.id, it.name, it.thumbnail) }
+        Content(popularMovies)
     } catch (t: MovieException) {
         mapError(t)
     }

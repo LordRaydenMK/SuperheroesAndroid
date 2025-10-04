@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 class MovieDetailsFragment : Fragment(R.layout.fragment_compose) {
 
     private val movieId: Long by lazy(LazyThreadSafetyMode.NONE) {
-        val id = requireArguments().getLong(EXTRA_SUPERHERO_ID, -1)
+        val id = requireArguments().getLong(EXTRA_MOVIE_ID, -1)
         check(id != -1L) { "Please use newBundle() for creating the arguments" }
         id
     }
@@ -72,11 +72,11 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_compose) {
 
     companion object {
 
-        private const val EXTRA_SUPERHERO_ID = "EXTRA_SUPERHERO_ID"
+        private const val EXTRA_MOVIE_ID = "EXTRA_MOVIE_ID"
 
         fun newBundle(movieId: MovieId): Bundle =
             Bundle().apply {
-                putLong(EXTRA_SUPERHERO_ID, movieId)
+                putLong(EXTRA_MOVIE_ID, movieId)
             }
     }
 }

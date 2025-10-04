@@ -1,7 +1,6 @@
 package io.github.lordraydenmk.themoviedbapp.movies.moviedetails
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,7 +21,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import io.github.lordraydenmk.themoviedbapp.movies.domain.MovieId
-import io.github.lordraydenmk.themoviedbapp.movies.ui.common.CopyrightView
 import io.github.lordraydenmk.themoviedbapp.movies.ui.common.MovieLoading
 import io.github.lordraydenmk.themoviedbapp.movies.ui.common.MovieProblem
 import kotlinx.coroutines.channels.Channel
@@ -75,16 +73,14 @@ fun MovieContent(content: Content) {
     ) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
-                .data(content.superhero.thumbnail)
+                .data(content.movie.thumbnail)
                 .crossfade(true)
                 .build(),
             contentScale = ContentScale.Crop,
-            contentDescription = content.superhero.name,
+            contentDescription = content.movie.name,
             modifier = Modifier
                 .aspectRatio(1f)
                 .fillMaxWidth()
         )
-        Spacer(modifier = Modifier.weight(1f))
-        CopyrightView(text = content.attribution)
     }
 }

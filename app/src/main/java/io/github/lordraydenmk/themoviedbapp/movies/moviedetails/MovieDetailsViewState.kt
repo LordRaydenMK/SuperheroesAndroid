@@ -11,14 +11,11 @@ data class MovieDetailsViewEntity(
 sealed class MovieDetailsViewState {
 
     val title: String
-        get() = if (this is Content) superhero.name else ""
+        get() = if (this is Content) movie.name else ""
 }
 
 object Loading : MovieDetailsViewState()
 
-data class Content(
-    val superhero: MovieDetailsViewEntity,
-    val attribution: String
-) : MovieDetailsViewState()
+data class Content(val movie: MovieDetailsViewEntity) : MovieDetailsViewState()
 
 data class Problem(val stringId: TextRes) : MovieDetailsViewState()

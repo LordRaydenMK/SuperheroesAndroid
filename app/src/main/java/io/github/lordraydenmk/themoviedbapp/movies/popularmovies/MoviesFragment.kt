@@ -32,13 +32,13 @@ class MoviesFragment : Fragment(R.layout.fragment_compose) {
 
         val module: TheMovieDbModule = object : TheMovieDbModule,
             AppModule by requireActivity().appModule(),
-            ViewModelAlgebra<SuperheroesViewState, MoviesEffect> by viewModel {}
+            ViewModelAlgebra<PopularMoviesViewState, MoviesEffect> by viewModel {}
 
         val actions = Channel<MoviesAction>(Channel.UNLIMITED)
 
         with(module) {
             composeView.setContent {
-                SuperheroesScreen(
+                PopularMoviesScreen(
                     stateFlow = viewState,
                     initialValue = Loading,
                     actions = actions

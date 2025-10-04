@@ -7,7 +7,7 @@ import io.github.lordraydenmk.themoviedbapp.movies.ServerError
 import io.github.lordraydenmk.themoviedbapp.movies.domain.Movie
 import io.github.lordraydenmk.themoviedbapp.movies.domain.MovieDetails
 import io.github.lordraydenmk.themoviedbapp.movies.domain.PopularMovies
-import io.github.lordraydenmk.themoviedbapp.movies.testSuperheroService
+import io.github.lordraydenmk.themoviedbapp.movies.testMovieDbService
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -25,7 +25,7 @@ class MovieKtTest : FunSpec({
             "Hulk",
             "/poster.jpg",
         )
-        val service = testSuperheroService(listOf(hulkDto))
+        val service = testMovieDbService(listOf(hulkDto))
 
 
         val hulk = Movie(
@@ -39,7 +39,7 @@ class MovieKtTest : FunSpec({
     test("popularMovies - service with 5XX exception - ServerError") {
         val body = """{}""".toResponseBody()
         val exception = HttpException(Response.error<Envelope<MovieDto>>(500, body))
-        val service = testSuperheroService(exception)
+        val service = testMovieDbService(exception)
 
         val e = shouldThrow<MovieException> { service.popularMovies() }
         e.error shouldBe ServerError(500, "Response.error()")
@@ -47,7 +47,7 @@ class MovieKtTest : FunSpec({
 
     test("popularMovies - service fails with IOException - NetworkError") {
         val exception = IOException("No Internet!")
-        val service = testSuperheroService(exception)
+        val service = testMovieDbService(exception)
 
         val e = shouldThrow<MovieException> { service.popularMovies() }
         e.error shouldBe NetworkError(exception)
@@ -55,7 +55,7 @@ class MovieKtTest : FunSpec({
 
     test("popularMovies - service fails with other error - Unrecoverable") {
         val exception = RuntimeException("Bang!")
-        val service = testSuperheroService(exception)
+        val service = testMovieDbService(exception)
 
         shouldThrow<RuntimeException> { service.popularMovies() }
     }
@@ -66,7 +66,7 @@ class MovieKtTest : FunSpec({
             "Hulk",
             "/poster.jpg",
         )
-        val service = testSuperheroService(listOf(hulkDto))
+        val service = testMovieDbService(listOf(hulkDto))
 
 
         val hulk = Movie(

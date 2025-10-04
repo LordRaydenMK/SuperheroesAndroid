@@ -4,18 +4,15 @@ import io.github.lordraydenmk.themoviedbapp.common.ErrorTextRes
 import io.github.lordraydenmk.themoviedbapp.common.TextRes
 import okhttp3.HttpUrl
 
-data class SuperheroViewEntity(val id: Long, val name: String, val imageUrl: HttpUrl)
+data class MovieViewEntity(val id: Long, val name: String, val imageUrl: HttpUrl)
 
-sealed class SuperheroesViewState
+sealed class PopularMoviesViewState
 
-object Loading : SuperheroesViewState()
+object Loading : PopularMoviesViewState()
 
-data class Content(
-    val superheroes: List<SuperheroViewEntity>,
-    val copyright: String
-) : SuperheroesViewState()
+data class Content(val movies: List<MovieViewEntity>) : PopularMoviesViewState()
 
-data class Problem(val stringId: TextRes) : SuperheroesViewState()
+data class Problem(val stringId: TextRes) : PopularMoviesViewState()
 
 val Problem.isRecoverable: Boolean
     get() = stringId is ErrorTextRes

@@ -10,4 +10,4 @@ data class LoadDetails(val id: MovieId) : MoviesAction()
 sealed class MoviesEffect
 data class NavigateToDetails(val movieId: MovieId) : MoviesEffect()
 
-typealias MoviesViewModel = JetpackViewModel<SuperheroesViewState, MoviesEffect>
+typealias MoviesViewModel = JetpackViewModel<PopularMoviesViewState, MoviesEffect>

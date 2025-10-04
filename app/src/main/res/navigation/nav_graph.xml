@@ -1,22 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/superheroes">
+    app:startDestination="@id/popularMovies">
 
     <fragment
-        android:id="@+id/superheroes"
-        android:name="io.github.lordraydenmk.themoviedbapp.movies.popularmovies.MoviesFragment"
-        tools:layout="@layout/superheroes_screen">
+        android:id="@+id/popularMovies"
+        android:name="io.github.lordraydenmk.themoviedbapp.movies.popularmovies.MoviesFragment">
         <action
             android:id="@+id/action_details"
-            app:destination="@+id/superheroDetails" />
+            app:destination="@+id/movieDetails" />
     </fragment>
 
     <fragment
-        android:id="@+id/superheroDetails"
-        android:name="io.github.lordraydenmk.themoviedbapp.movies.moviedetails.MovieDetailsFragment"
-        tools:layout="@layout/superhero_details_screen" />
+        android:id="@+id/movieDetails"
+        android:name="io.github.lordraydenmk.themoviedbapp.movies.moviedetails.MovieDetailsFragment" />
 
 </navigation>

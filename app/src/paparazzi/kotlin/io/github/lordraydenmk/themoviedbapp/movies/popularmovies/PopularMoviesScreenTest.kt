@@ -17,7 +17,7 @@ import org.junit.Test
 
 @ExperimentalCoilApi
 @ExperimentalCoroutinesApi
-class SuperheroesScreenTest {
+class PopularMoviesScreenTest {
 
     @get:Rule
     val paparazzi = Paparazzi(
@@ -36,14 +36,14 @@ class SuperheroesScreenTest {
     @Test
     fun loadingState() {
         paparazzi.snapshot {
-            SuperheroesScreen(emptyFlow(), Loading, actions = Channel())
+            PopularMoviesScreen(emptyFlow(), Loading, actions = Channel())
         }
     }
 
     @Test
     fun errorWithRetry() {
         paparazzi.snapshot {
-            SuperheroesScreen(
+            PopularMoviesScreen(
                 emptyFlow(),
                 Problem(ErrorTextRes(R.string.error_recoverable_network)),
                 actions = Channel()
@@ -56,15 +56,14 @@ class SuperheroesScreenTest {
         val url = "http://i.annihil.us/u/prod/marvel/i/mg/c/e0/535fecbbb9784.jpg".toHttpUrl()
         val viewState = Content(
             listOf(
-                SuperheroViewEntity(42, "Ant Man", url),
-                SuperheroViewEntity(43, "Spider Man", url),
-                SuperheroViewEntity(44, "Iron Man", url),
-                SuperheroViewEntity(45, "Hulk", url)
-            ),
-            "Copyright Marvel"
+                MovieViewEntity(42, "Ant Man", url),
+                MovieViewEntity(43, "Spider Man", url),
+                MovieViewEntity(44, "Iron Man", url),
+                MovieViewEntity(45, "Hulk", url)
+            )
         )
         paparazzi.snapshot {
-            SuperheroesScreen(emptyFlow(), viewState, actions = Channel())
+            PopularMoviesScreen(emptyFlow(), viewState, actions = Channel())
         }
 
     }

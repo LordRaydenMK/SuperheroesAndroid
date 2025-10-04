@@ -7,7 +7,7 @@ import io.github.lordraydenmk.themoviedbapp.common.TestViewModel
 import io.github.lordraydenmk.themoviedbapp.common.presentation.ViewModelAlgebra
 import io.github.lordraydenmk.themoviedbapp.movies.data.MovieDto
 import io.github.lordraydenmk.themoviedbapp.movies.data.TheMovieDbService
-import io.github.lordraydenmk.themoviedbapp.movies.testSuperheroService
+import io.github.lordraydenmk.themoviedbapp.movies.testMovieDbService
 import io.kotest.assertions.fail
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -32,22 +32,27 @@ class PopularMoviesKtTest : FunSpec({
 
     fun testModule(
         service: TheMovieDbService,
-        viewModel: ViewModelAlgebra<SuperheroesViewState, MoviesEffect>
+        viewModel: ViewModelAlgebra<PopularMoviesViewState, MoviesEffect>
     ): TheMovieDbModule =
         object : TheMovieDbModule, AppModule by AppModule.create(service),
-            ViewModelAlgebra<SuperheroesViewState, MoviesEffect> by viewModel {}
+            ViewModelAlgebra<PopularMoviesViewState, MoviesEffect> by viewModel {}
 
 
     test("FirstLoad - service returns a single movie - Loading then Content list with 1 item") {
-        val superhero = movieDto(42, "Ant Man", "/poster.jpg")
-        val service = testSuperheroService(listOf(superhero))
+        val movieDto = movieDto(42, "Ant Man", "/poster.jpg")
+        val service = testMovieDbService(listOf(movieDto))
 
-        val viewModel = TestViewModel<SuperheroesViewState, MoviesEffect>()
+        val viewModel = TestViewModel<PopularMoviesViewState, MoviesEffect>()
         val module = testModule(service, viewModel)
 
         val content = Content(
-            listOf(SuperheroViewEntity(42, "Ant Man", "https://image.tmdb.org/t/p/w500/poster.jpg".toHttpUrl())),
-            ""
+            listOf(
+                MovieViewEntity(
+                    42,
+                    "Ant Man",
+                    "https://image.tmdb.org/t/p/w500/poster.jpg".toHttpUrl()
+                )
+            )
         )
 
         module.program(emptyFlow())
@@ -60,12 +65,12 @@ class PopularMoviesKtTest : FunSpec({
 
     test("First load then refresh - service fails, then succeeds - Loading, Problem, Loading Content") {
         val error = IOException("Network issue")
-        val superhero = movieDto(42, "Ant Man", "/poster.jpg")
+        val movieDto = movieDto(42, "Ant Man", "/poster.jpg")
         val service = object : TheMovieDbService {
             var i = 0
             override suspend fun getPopularMovies(): Envelope<MovieDto> = when (i++) {
                 0 -> throw error
-                1 -> Envelope(listOf(superhero))
+                1 -> Envelope(listOf(movieDto))
                 else -> throw IllegalStateException("This should not happen")
             }
 
@@ -73,7 +78,7 @@ class PopularMoviesKtTest : FunSpec({
                 fail("This should not be called")
         }
 
-        val viewModel = TestViewModel<SuperheroesViewState, MoviesEffect>()
+        val viewModel = TestViewModel<PopularMoviesViewState, MoviesEffect>()
         val module = testModule(service, viewModel)
 
         val actions = MutableSharedFlow<MoviesAction>()
@@ -92,8 +97,8 @@ class PopularMoviesKtTest : FunSpec({
     }
 
     test("ShowDetailsAction - NavigateToDetails effect") {
-        val viewModel = TestViewModel<SuperheroesViewState, MoviesEffect>()
-        val module = testModule(testSuperheroService(emptyList()), viewModel)
+        val viewModel = TestViewModel<PopularMoviesViewState, MoviesEffect>()
+        val module = testModule(testMovieDbService(emptyList()), viewModel)
 
         with(module) {
             program(flowOf(LoadDetails(42)))

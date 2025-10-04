@@ -32,16 +32,15 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import io.github.lordraydenmk.themoviedbapp.R
 import io.github.lordraydenmk.themoviedbapp.movies.domain.MovieId
-import io.github.lordraydenmk.themoviedbapp.movies.ui.common.CopyrightView
 import io.github.lordraydenmk.themoviedbapp.movies.ui.common.MovieLoading
 import io.github.lordraydenmk.themoviedbapp.movies.ui.common.MovieProblem
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 
 @Composable
-fun SuperheroesScreen(
-    stateFlow: Flow<SuperheroesViewState>,
-    initialValue: SuperheroesViewState,
+fun PopularMoviesScreen(
+    stateFlow: Flow<PopularMoviesViewState>,
+    initialValue: PopularMoviesViewState,
     actions: Channel<MoviesAction>
 ) {
     val state by stateFlow.collectAsStateWithLifecycle(initialValue)
@@ -62,18 +61,17 @@ fun SuperheroesScreen(
 
 @Composable
 private fun Content(content: Content, loadDetails: (MovieId) -> Unit) {
-    Column(Modifier.testTag("SuperheroesContent")) {
+    Column(Modifier.testTag("PopularMoviesContent")) {
         LazyVerticalGrid(GridCells.Adaptive(175.dp), Modifier.weight(1f)) {
-            items(content.superheroes) {
-                SuperHeroItem(it, loadDetails)
+            items(content.movies) {
+                MovieItem(it, loadDetails)
             }
         }
-        CopyrightView(text = content.copyright)
     }
 }
 
 @Composable
-fun SuperHeroItem(entity: SuperheroViewEntity, onClick: (MovieId) -> Unit) {
+fun MovieItem(entity: MovieViewEntity, onClick: (MovieId) -> Unit) {
     Box(
         modifier = Modifier
             .clickable { onClick(entity.id) }

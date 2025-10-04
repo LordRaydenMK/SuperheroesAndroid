@@ -6,7 +6,6 @@ import coil.annotation.ExperimentalCoilApi
 import io.github.lordraydenmk.themoviedbapp.R
 import io.github.lordraydenmk.themoviedbapp.common.ErrorTextRes
 import io.github.lordraydenmk.themoviedbapp.common.MainDispatcherRule
-import io.github.lordraydenmk.themoviedbapp.common.PlaceholderString
 import io.github.lordraydenmk.themoviedbapp.common.setupCoil
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
@@ -18,7 +17,7 @@ import org.junit.Test
 
 @ExperimentalCoilApi
 @ExperimentalCoroutinesApi
-class SuperheroDetailsScreenTest {
+class MovieDetailsScreenTest {
 
     @get:Rule
     val paparazzi = Paparazzi(
@@ -58,17 +57,7 @@ class SuperheroDetailsScreenTest {
     @Test
     fun contentState() {
         val url = "http://i.annihil.us/u/prod/marvel/i/mg/c/e0/535fecbbb9784.jpg".toHttpUrl()
-        val viewState = Content(
-            MovieDetailsViewEntity(
-                "Hulk",
-                url,
-                PlaceholderString(R.string.superhero_details_comics, 1),
-                PlaceholderString(R.string.superhero_details_stories, 2),
-                PlaceholderString(R.string.superhero_details_events, 3),
-                PlaceholderString(R.string.superhero_details_series, 4)
-            ),
-            "Copyright Marvel"
-        )
+        val viewState = Content(MovieDetailsViewEntity("Hulk", url))
 
         paparazzi.snapshot {
             MovieDetailsScreen(emptyFlow(), viewState, movieId = 0, actions = Channel())

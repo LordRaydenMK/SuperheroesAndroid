@@ -8,7 +8,7 @@ import io.github.lordraydenmk.themoviedbapp.common.TestViewModel
 import io.github.lordraydenmk.themoviedbapp.common.presentation.ViewModelAlgebra
 import io.github.lordraydenmk.themoviedbapp.movies.data.MovieDto
 import io.github.lordraydenmk.themoviedbapp.movies.data.TheMovieDbService
-import io.github.lordraydenmk.themoviedbapp.movies.testSuperheroService
+import io.github.lordraydenmk.themoviedbapp.movies.testMovieDbService
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.flow.emptyFlow
@@ -38,7 +38,7 @@ class MovieDetailsKtTest : FunSpec({
 
     test("FirstLoad - service with success - Movie") {
         val hulkDto = movieDto(42, "Hulk", "/poster.jpg")
-        val service = testSuperheroService(listOf(hulkDto))
+        val service = testMovieDbService(listOf(hulkDto))
 
         val viewModel = TestViewModel<MovieDetailsViewState, MovieDetailsEffect>()
         val module = module(service, viewModel)
@@ -52,14 +52,14 @@ class MovieDetailsKtTest : FunSpec({
             )
             viewModel.viewState.test {
                 awaitItem() shouldBe Loading
-                awaitItem() shouldBe Content(hulk, "")
+                awaitItem() shouldBe Content(hulk)
             }
         }
     }
 
     test("FirstLoad - service with error - Problem") {
         val error = IOException("Bang")
-        val service = testSuperheroService(error)
+        val service = testMovieDbService(error)
 
         val viewModel = TestViewModel<MovieDetailsViewState, MovieDetailsEffect>()
         val module = module(service, viewModel)
@@ -78,7 +78,7 @@ class MovieDetailsKtTest : FunSpec({
     test("Action Up - NavigateUp Effect") {
         val hulkDto = movieDto(42, "Hulk", "/poster.jpg")
         val viewModel = TestViewModel<MovieDetailsViewState, MovieDetailsEffect>()
-        val module = module(testSuperheroService(listOf(hulkDto)), viewModel)
+        val module = module(testMovieDbService(listOf(hulkDto)), viewModel)
 
         with(module) {
             program(42, flowOf(Up))

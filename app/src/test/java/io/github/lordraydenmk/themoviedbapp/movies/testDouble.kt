@@ -6,21 +6,21 @@ import io.github.lordraydenmk.themoviedbapp.movies.data.TheMovieDbService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-fun testSuperheroService(superheroes: List<MovieDto>): TheMovieDbService =
+fun testMovieDbService(movies: List<MovieDto>): TheMovieDbService =
     object : TheMovieDbService {
 
         override suspend fun getPopularMovies(): Envelope<MovieDto> =
             withContext(Dispatchers.IO) {
-                Envelope(superheroes)
+                Envelope(movies)
             }
 
         override suspend fun getMovieDetails(movieId: Long): MovieDto =
             withContext(Dispatchers.IO) {
-                superheroes.first { it.id == movieId }
+                movies.first { it.id == movieId }
             }
     }
 
-fun testSuperheroService(t: Throwable): TheMovieDbService = object : TheMovieDbService {
+fun testMovieDbService(t: Throwable): TheMovieDbService = object : TheMovieDbService {
 
     override suspend fun getPopularMovies(): Envelope<MovieDto> = throw t
 

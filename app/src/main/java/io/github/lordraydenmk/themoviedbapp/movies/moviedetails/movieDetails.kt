@@ -44,7 +44,7 @@ suspend fun MovieDetailsModule.loadMovieDetails(movieId: MovieId) {
     setState(Loading)
     val viewState = runCatching { movieDetails(movieId) }
         .map { (movie) -> movie.toViewEntity() }
-        .map { movie -> Content(movie, "") }
+        .map { movie -> Content(movie) }
         .fold(::identity, Throwable::toProblem)
     setState(viewState)
 }
