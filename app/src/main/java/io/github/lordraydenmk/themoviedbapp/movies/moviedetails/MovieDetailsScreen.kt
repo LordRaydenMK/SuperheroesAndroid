@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
@@ -55,6 +56,7 @@ private fun MovieDetailsAppBar(
 ) {
     TopAppBar(
         title = { Text(text = state.title) },
+        modifier = Modifier.statusBarsPadding(),
         navigationIcon = {
             IconButton(onClick = { actions.trySend(Up).getOrThrow() }) {
                 Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "")

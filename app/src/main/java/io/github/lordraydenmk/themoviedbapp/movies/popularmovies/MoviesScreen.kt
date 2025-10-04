@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -46,10 +47,13 @@ fun PopularMoviesScreen(
     val state by stateFlow.collectAsStateWithLifecycle(initialValue)
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text(text = stringResource(id = R.string.app_name)) })
+            TopAppBar(
+                title = { Text(text = stringResource(id = R.string.app_name)) },
+                modifier = Modifier.statusBarsPadding()
+            )
         }
-    ) { paddingValues ->
-        Box(modifier = Modifier.padding(bottom = paddingValues.calculateBottomPadding())) {
+    ) { innerPadding ->
+        Box(modifier = Modifier.padding(innerPadding)) {
             when (val s = state) {
                 Loading -> MovieLoading()
                 is Content -> Content(s) { actions.trySend(LoadDetails(it)) }
