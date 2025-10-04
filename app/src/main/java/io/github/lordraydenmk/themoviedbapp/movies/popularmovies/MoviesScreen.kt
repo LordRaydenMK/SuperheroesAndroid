@@ -23,14 +23,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import coil3.compose.AsyncImage
 import io.github.lordraydenmk.themoviedbapp.R
 import io.github.lordraydenmk.themoviedbapp.movies.domain.MovieId
 import io.github.lordraydenmk.themoviedbapp.movies.ui.common.MovieLoading
@@ -83,10 +81,7 @@ fun MovieItem(entity: MovieViewEntity, onClick: (MovieId) -> Unit) {
             .semantics(mergeDescendants = true) {},
     ) {
         AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(entity.imageUrl)
-                .crossfade(true)
-                .build(),
+            model = entity.imageUrl.toString(),
             contentScale = ContentScale.Crop,
             contentDescription = null,
             modifier = Modifier.fillMaxSize()

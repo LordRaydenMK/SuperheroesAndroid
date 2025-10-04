@@ -2,7 +2,6 @@ package io.github.lordraydenmk.themoviedbapp.movies.moviedetails
 
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
-import coil.annotation.ExperimentalCoilApi
 import io.github.lordraydenmk.themoviedbapp.R
 import io.github.lordraydenmk.themoviedbapp.common.ErrorTextRes
 import io.github.lordraydenmk.themoviedbapp.common.MainDispatcherRule
@@ -15,7 +14,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-@ExperimentalCoilApi
 @ExperimentalCoroutinesApi
 class MovieDetailsScreenTest {
 

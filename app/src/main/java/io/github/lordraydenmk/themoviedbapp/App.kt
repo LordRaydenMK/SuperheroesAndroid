@@ -2,11 +2,13 @@ package io.github.lordraydenmk.themoviedbapp
 
 import android.app.Application
 import android.content.Context
-import coil.ImageLoader
-import coil.ImageLoaderFactory
+import coil3.ImageLoader
+import coil3.PlatformContext
+import coil3.SingletonImageLoader
+import coil3.request.crossfade
 import timber.log.Timber
 
-class App : Application(), ModuleOwner, ImageLoaderFactory {
+class App : Application(), ModuleOwner, SingletonImageLoader.Factory {
 
     override val appModule by lazy { AppModule.create() }
 
@@ -16,7 +18,10 @@ class App : Application(), ModuleOwner, ImageLoaderFactory {
         if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
     }
 
-    override fun newImageLoader(): ImageLoader = ImageLoader(this)
+    override fun newImageLoader(context: PlatformContext): ImageLoader =
+        ImageLoader(context).newBuilder()
+            .crossfade(true)
+            .build()
 }
 
 fun Context.appModule(): AppModule = (applicationContext as ModuleOwner).appModule

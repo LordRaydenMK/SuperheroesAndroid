@@ -8,13 +8,13 @@ import io.github.lordraydenmk.themoviedbapp.common.presentation.ViewModelAlgebra
 import io.github.lordraydenmk.themoviedbapp.movies.data.MovieDto
 import io.github.lordraydenmk.themoviedbapp.movies.data.TheMovieDbService
 import io.github.lordraydenmk.themoviedbapp.movies.testMovieDbService
-import io.kotest.assertions.fail
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 import okhttp3.HttpUrl.Companion.toHttpUrl
+import org.junit.jupiter.api.fail
 import java.io.IOException
 
 class PopularMoviesKtTest : FunSpec({

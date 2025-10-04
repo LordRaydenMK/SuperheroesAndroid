@@ -16,11 +16,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import coil3.compose.AsyncImage
 import io.github.lordraydenmk.themoviedbapp.movies.domain.MovieId
 import io.github.lordraydenmk.themoviedbapp.movies.ui.common.MovieLoading
 import io.github.lordraydenmk.themoviedbapp.movies.ui.common.MovieProblem
@@ -74,10 +72,7 @@ fun MovieContent(content: Content) {
             .testTag("MovieDetailsContent")
     ) {
         AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(content.movie.thumbnail)
-                .crossfade(true)
-                .build(),
+            model = content.movie.thumbnail.toString(),
             contentScale = ContentScale.Crop,
             contentDescription = content.movie.name,
             modifier = Modifier
