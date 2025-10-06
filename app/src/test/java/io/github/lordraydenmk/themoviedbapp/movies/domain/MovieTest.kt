@@ -1,12 +1,13 @@
 package io.github.lordraydenmk.themoviedbapp.movies.domain
 
-import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import okhttp3.HttpUrl.Companion.toHttpUrl
+import org.junit.Test
 
-class MovieTest : FunSpec({
+class MovieTest {
 
-    test("create valid movie") {
+    @Test
+    fun `create valid movie`() {
         val actual = Movie.create(42, "Ant Man", "/poster.jpg")
 
         actual shouldBe Movie(
@@ -15,4 +16,4 @@ class MovieTest : FunSpec({
             "https://image.tmdb.org/t/p/w500/poster.jpg".toHttpUrl(),
         )
     }
-})
+}

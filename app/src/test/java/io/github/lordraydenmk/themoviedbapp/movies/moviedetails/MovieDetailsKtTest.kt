@@ -9,14 +9,15 @@ import io.github.lordraydenmk.themoviedbapp.common.presentation.ViewModelAlgebra
 import io.github.lordraydenmk.themoviedbapp.movies.data.MovieDto
 import io.github.lordraydenmk.themoviedbapp.movies.data.TheMovieDbService
 import io.github.lordraydenmk.themoviedbapp.movies.testMovieDbService
-import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.runTest
 import okhttp3.HttpUrl.Companion.toHttpUrl
+import org.junit.Test
 import java.io.IOException
 
-class MovieDetailsKtTest : FunSpec({
+class MovieDetailsKtTest {
 
     fun movieDto(
         id: Long,
@@ -32,11 +33,12 @@ class MovieDetailsKtTest : FunSpec({
     fun module(
         service: TheMovieDbService,
         viewModelAlgebra: ViewModelAlgebra<MovieDetailsViewState, MovieDetailsEffect>
-    ) = object : MovieDetailsModule, AppModule by AppModule.create(service),
+    ): MovieDetailsModule = object : MovieDetailsModule, AppModule by AppModule.create(service),
         ViewModelAlgebra<MovieDetailsViewState, MovieDetailsEffect> by viewModelAlgebra {}
 
 
-    test("FirstLoad - service with success - Movie") {
+    @Test
+    fun `FirstLoad - service with success - Movie`() = runTest {
         val hulkDto = movieDto(42, "Hulk", "/poster.jpg")
         val service = testMovieDbService(listOf(hulkDto))
 
@@ -57,7 +59,8 @@ class MovieDetailsKtTest : FunSpec({
         }
     }
 
-    test("FirstLoad - service with error - Problem") {
+    @Test
+    fun `FirstLoad - service with error - Problem`() = runTest {
         val error = IOException("Bang")
         val service = testMovieDbService(error)
 
@@ -75,7 +78,8 @@ class MovieDetailsKtTest : FunSpec({
         }
     }
 
-    test("Action Up - NavigateUp Effect") {
+    @Test
+    fun `Action Up - NavigateUp Effect`() = runTest {
         val hulkDto = movieDto(42, "Hulk", "/poster.jpg")
         val viewModel = TestViewModel<MovieDetailsViewState, MovieDetailsEffect>()
         val module = module(testMovieDbService(listOf(hulkDto)), viewModel)
@@ -88,4 +92,4 @@ class MovieDetailsKtTest : FunSpec({
             }
         }
     }
-})
+}
