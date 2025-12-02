@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace 'io.github.lordraydenmk.themoviedbapp'
-    compileSdk 36
+    compileSdkVersion 36
 
     defaultConfig {
         applicationId "io.github.lordraydenmk.themoviedbapp"
@@ -42,14 +42,9 @@ android {
         test.java.srcDirs += "src/paparazzi/kotlin"
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_21
-        targetCompatibility JavaVersion.VERSION_21
-    }
-    // For Kotlin projects
-    kotlinOptions {
-        jvmTarget = "21"
-    }
+   kotlin {
+       jvmToolchain(21)
+   }
 
     testOptions {
         unitTests.all {
