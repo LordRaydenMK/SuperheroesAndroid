@@ -1,5 +1,6 @@
 package io.github.lordraydenmk.themoviedbapp.movies.popularmovies
 
+import androidx.compose.material3.ExperimentalMaterial3Api
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
 import io.github.lordraydenmk.themoviedbapp.R
@@ -14,6 +15,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@ExperimentalMaterial3Api
 @ExperimentalCoroutinesApi
 class PopularMoviesScreenTest {
 

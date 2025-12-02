@@ -2,6 +2,7 @@ package io.github.lordraydenmk.themoviedbapp.movies.popularmovies
 
 import android.os.Bundle
 import android.view.View
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
 import androidx.fragment.app.Fragment
@@ -21,6 +22,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
+@ExperimentalMaterial3Api
 class MoviesFragment : Fragment(R.layout.fragment_compose) {
 
     private val viewModel: MoviesViewModel by viewModels()
