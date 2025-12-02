@@ -1,27 +1,26 @@
-# Superheroes App
+# Movies App
 
-A sample project using the Marvel API to show a list of superheroes and some stats about them.
+A sample project using the TMDB API to show a list of popular movies and some stats about them.
 
-| Superheroes List                             | Superhero Details                         | Error & Retry                       |
-|----------------------------------------------|-------------------------------------------|-------------------------------------|
-| ![Superheroes List](/images/superheroes.png) | ![Superhero Details](/images/details.png) | ![Error Loading](/images/error.png) |
+| Popular Movies List                             | Movie Details                         | Error & Retry                       |
+|-------------------------------------------------|---------------------------------------|-------------------------------------|
+| ![Popular Movies List](/images/popular.png) | ![Movie Details](/images/details.png) | ![Error Loading](/images/error.png) |
 
-## Marvel API KEY
+## TMDB API KEY
 
-The project need `marvel_public_api_key` and `marvel_private_api_key` to build. You can add them to your home level `gradle.properties` file (located in `~/.gradle` on Unix based systems):
-
-```
-marvel_public_api_key=<PUBLIC API KEY HERE>
-marvel_private_api_key=<PRIVATE API KEY HERE>
-```
-
-or using `-Pmarvel_public_api_key=<PUBLIC API KEY HERE> -Pmarvel_private_api_key=<PRIVATE API KEY HERE>` to each gradle command e.g.:
+The project need `tmdb_api_key` to build. You can add it to your home level `gradle.properties` file (located in `~/.gradle` on Unix based systems):
 
 ```
-./gradlew assembleDebug -Pmarvel_public_api_key=<PUBLIC API KEY HERE> -Pmarvel_private_api_key=<PRIVATE API KEY HERE>
+tmdb_api_key=<API KEY HERE>
+```
+
+or using `-Ptmdb_api_key=<API KEY HERE>` to each gradle command e.g.:
+
+```
+./gradlew assembleDebug -Ptmdb_api_key=<PUBLIC API KEY HERE>
 ``` 
 
-Check out the [Marvel Developer portal][mdp] for more info.
+Check out the [TMDB developer documentation][tmdb] for more info.
 
 ## App Architecture
 
@@ -29,11 +28,11 @@ The app uses a reactive architecture built atop Flow. The app follows a layered 
 
 ### Data Layer
 
-The API call is modeled using Retrofit, KotlinX Serialization as the converter. The data layer converts the DTO objects to Domain objects. Any expected errors that happen up to this point are mapped to a sealed class `SuperheroError`. A custom exception `SuperheroException` that contains a property of the error is delivered as an `Flow` error in the stream.
+The API call is modeled using Retrofit, KotlinX Serialization as the converter. The data layer converts the DTO objects to Domain objects. Any expected errors that happen up to this point are mapped to a sealed class `MovieError`. A custom exception `MovieException` that contains a property of the error is delivered as an `Flow` error in the stream.
 
 ### Domain Layer
 
-The main class here is `Superhero`. It has a static `create` function that converts the string that comes from the API (as a thumbnail) into a `HttpUrl` also making sure it's https (so it works on Android).
+The main class here is `Movie`. It has a static `create` function that converts the string that comes from the API into a typesafe `HttpUrl`.
 
 ### Presentation Layer
 
@@ -59,9 +58,9 @@ The logic is written as extension functions on top of a module (collection of de
 
 ### Testing
 
-This sample uses [kotest][kotest] as a testing library. The presentation logic is tested by mocking the Retrofit Service and using a `TestViewModel` that uses `MutableSharedFlow` instead of `MutableStateFlow` and remembers all events. Tests use the real schedulers and Turbine for testing `Flow`.
+This sample uses JUnit as a testing library and [kotest assertions][kotest] for assertions. The presentation logic is tested by mocking the Retrofit Service and using a `TestViewModel` that uses `MutableSharedFlow` instead of `MutableStateFlow` and remembers all events. Tests use the real schedulers and Turbine for testing `Flow`.
 
-The view is tested in isolation using Espresso, by setting a ViewState and verifying the correct elements are displayed/hidden and the text matches the expected. 
+The view is tested in isolation using Paparazzi, by setting a ViewState and verifying the current image matches the golden images from the repo. 
 
 There is also one E2E (black box) test using Maestro that tests both fragments + activity together.
 
@@ -72,7 +71,7 @@ Approaches is this sample are heavily inspired by open source code I have read. 
 - [47degrees/FunctionalStreamsSpringSample][fun-stream]
 - [Simple Kotlin DI][simple-di]
 
-[mdp]: https://developer.marvel.com/
+[tmdb]: https://developer.themoviedb.org/docs/getting-started
 [fun-stream]: https://github.com/47degrees/FunctionalStreamsSpringSample
 [simple-di]: https://gist.github.com/raulraja/97e2d5bf60e9d96680cf1fddcc90ee67
 [view-binding]: https://developer.android.com/topic/libraries/view-binding
