@@ -23,11 +23,11 @@
 # region KotlinX
 -keepattributes *Annotation*, InnerClasses
 -dontnote kotlinx.serialization.SerializationKt
--keep,includedescriptorclasses class io.github.lordraydenmk.superheroesapp.**$$serializer { *; }
--keepclassmembers class io.github.lordraydenmk.superheroesapp.** {
+-keep,includedescriptorclasses class io.github.lordraydenmk.themoviedbapp.**$$serializer { *; }
+-keepclassmembers class io.github.lordraydenmk.themoviedbapp.** {
     *** Companion;
 }
--keepclasseswithmembers class io.github.lordraydenmk.superheroesapp.** {
+-keepclasseswithmembers class io.github.lordraydenmk.themoviedbapp.** {
     kotlinx.serialization.KSerializer serializer(...);
 }
 # endregion

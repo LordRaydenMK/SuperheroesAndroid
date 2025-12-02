@@ -1,10 +1,6 @@
 <resources>
-    <string name="app_name">Superheroes App</string>
+    <string name="app_name">Movies App</string>
     <string name="error_recoverable_network">We could not connect to our server. Please check your internet connection %s</string>
     <string name="error_recoverable_server">Looks like our servers are having problems. %s</string>
     <string name="error_retry_text">\n\nTap to retry!</string>
-    <string name="superhero_details_comics">Comics available: %d</string>
-    <string name="superhero_details_stories">Stories available: %d</string>
-    <string name="superhero_details_events">Events available: %d</string>
-    <string name="superhero_details_series">Series available: %d</string>
 </resources>

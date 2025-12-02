@@ -1,10 +1,6 @@
-appId: io.github.lordraydenmk.superheroesapp
+appId: io.github.lordraydenmk.themoviedbapp
 ---
 - launchApp
-- tapOn: "3-D Man"
-- assertVisible: "Comics available: 12"
-- assertVisible: "Stories available: 21"
-- assertVisible: "Events available: 1"
-- assertVisible: "Series available: 3"
+- tapOn: "Karate Kid: Legends"
 - back
-- assertVisible: "3-D Man"
+- assertVisible: "Karate Kid: Legends"
