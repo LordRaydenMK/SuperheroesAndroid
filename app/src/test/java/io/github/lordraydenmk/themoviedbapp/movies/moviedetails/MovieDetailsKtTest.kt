@@ -22,11 +22,15 @@ class MovieDetailsKtTest {
     fun movieDto(
         id: Long,
         name: String,
+        overview: String,
+        voteAverage: Float,
         thumbnailPath: String,
     ): MovieDto =
         MovieDto(
             id,
             name,
+            overview,
+            voteAverage,
             thumbnailPath,
         )
 
@@ -39,7 +43,13 @@ class MovieDetailsKtTest {
 
     @Test
     fun `FirstLoad - service with success - Movie`() = runTest {
-        val hulkDto = movieDto(42, "Hulk", "/poster.jpg")
+        val hulkDto = movieDto(
+            42,
+            "Hulk",
+            "Movie overview",
+            7.45f,
+            "/poster.jpg"
+        )
         val service = testMovieDbService(listOf(hulkDto))
 
         val viewModel = TestViewModel<MovieDetailsViewState, MovieDetailsEffect>()
@@ -50,6 +60,8 @@ class MovieDetailsKtTest {
 
             val hulk = MovieDetailsViewEntity(
                 "Hulk",
+                "Movie overview",
+                VoteAverage(0.745f, "7.4"),
                 "https://image.tmdb.org/t/p/w500/poster.jpg".toHttpUrl(),
             )
             viewModel.viewState.test {
@@ -80,7 +92,13 @@ class MovieDetailsKtTest {
 
     @Test
     fun `Action Up - NavigateUp Effect`() = runTest {
-        val hulkDto = movieDto(42, "Hulk", "/poster.jpg")
+        val hulkDto = movieDto(
+            42,
+            "Hulk",
+            "Movie overview",
+            7.45f,
+            "/poster.jpg"
+        )
         val viewModel = TestViewModel<MovieDetailsViewState, MovieDetailsEffect>()
         val module = module(testMovieDbService(listOf(hulkDto)), viewModel)
 

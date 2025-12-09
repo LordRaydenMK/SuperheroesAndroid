@@ -25,6 +25,8 @@ suspend fun TheMovieDbService.movieDetails(id: MovieId): MovieDetails {
 private fun MovieDto.toDomain(): Movie = Movie.create(
     id = id,
     name = title,
+    overview = overview,
+    voteAverage = voteAverage,
     posterPath = posterPath,
 )
 

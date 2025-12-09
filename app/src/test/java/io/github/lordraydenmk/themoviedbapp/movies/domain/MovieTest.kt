@@ -8,11 +8,19 @@ class MovieTest {
 
     @Test
     fun `create valid movie`() {
-        val actual = Movie.create(42, "Ant Man", "/poster.jpg")
+        val actual = Movie.create(
+            42,
+            "Ant Man",
+            "Movie overview",
+            7.45f,
+            "/poster.jpg"
+        )
 
         actual shouldBe Movie(
             42,
             "Ant Man",
+            "Movie overview",
+            7.45f,
             "https://image.tmdb.org/t/p/w500/poster.jpg".toHttpUrl(),
         )
     }

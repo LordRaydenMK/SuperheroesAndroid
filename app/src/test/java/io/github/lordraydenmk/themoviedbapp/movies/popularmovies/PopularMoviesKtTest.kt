@@ -22,11 +22,15 @@ class PopularMoviesKtTest {
     fun movieDto(
         id: Long,
         name: String,
+        overview: String,
+        voteAverage: Float,
         thumbnailPath: String,
     ): MovieDto =
         MovieDto(
             id,
             name,
+            overview,
+            voteAverage,
             thumbnailPath,
         )
 
@@ -40,7 +44,13 @@ class PopularMoviesKtTest {
 
     @Test
     fun `FirstLoad - service returns a single movie - Loading then Content list `() = runTest {
-        val movieDto = movieDto(42, "Ant Man", "/poster.jpg")
+        val movieDto = movieDto(
+            42,
+            "Ant Man",
+            "Movie overview",
+            7.45f,
+            "/poster.jpg"
+        )
         val service = testMovieDbService(listOf(movieDto))
 
         val viewModel = TestViewModel<PopularMoviesViewState, MoviesEffect>()
@@ -68,7 +78,13 @@ class PopularMoviesKtTest {
     fun `First load then refresh - service fails, then succeeds - Loading, Problem, Loading Content`() =
         runTest {
             val error = IOException("Network issue")
-            val movieDto = movieDto(42, "Ant Man", "/poster.jpg")
+            val movieDto = movieDto(
+                42,
+                "Ant Man",
+                "Movie overview",
+                7.45f,
+                "/poster.jpg"
+            )
             val service = object : TheMovieDbService {
                 var i = 0
                 override suspend fun getPopularMovies(): Envelope<MovieDto> = when (i++) {
