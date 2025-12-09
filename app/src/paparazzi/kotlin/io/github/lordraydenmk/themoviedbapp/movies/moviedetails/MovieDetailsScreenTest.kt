@@ -55,7 +55,12 @@ class MovieDetailsScreenTest {
     @Test
     fun contentState() {
         val url = "http://i.annihil.us/u/prod/marvel/i/mg/c/e0/535fecbbb9784.jpg".toHttpUrl()
-        val viewState = Content(MovieDetailsViewEntity("Hulk", url))
+        val viewState = Content(MovieDetailsViewEntity(
+            "Hulk",
+            "Movie overview",
+            VoteAverage(0.745f, "7.5"),
+            url
+        ))
 
         paparazzi.snapshot {
             MovieDetailsScreen(emptyFlow(), viewState, movieId = 0, actions = Channel())

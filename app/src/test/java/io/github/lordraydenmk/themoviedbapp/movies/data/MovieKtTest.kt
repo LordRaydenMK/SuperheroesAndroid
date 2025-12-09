@@ -25,6 +25,8 @@ class MovieKtTest {
         val hulkDto = MovieDto(
             42,
             "Hulk",
+            "Movie overview",
+            7.45f,
             "/poster.jpg",
         )
         val service = testMovieDbService(listOf(hulkDto))
@@ -33,6 +35,8 @@ class MovieKtTest {
         val hulk = Movie(
             42,
             "Hulk",
+            "Movie overview",
+            7.45f,
             "https://image.tmdb.org/t/p/w500/poster.jpg".toHttpUrl(),
         )
         service.popularMovies() shouldBe PopularMovies(listOf(hulk))
@@ -70,6 +74,8 @@ class MovieKtTest {
         val hulkDto = MovieDto(
             42,
             "Hulk",
+            "Movie overview",
+            7.45f,
             "/poster.jpg",
         )
         val service = testMovieDbService(listOf(hulkDto))
@@ -78,6 +84,8 @@ class MovieKtTest {
         val hulk = Movie(
             42,
             "Hulk",
+            "Movie overview",
+            7.45f,
             "https://image.tmdb.org/t/p/w500/poster.jpg".toHttpUrl(),
         )
         service.movieDetails(42) shouldBe MovieDetails(hulk)

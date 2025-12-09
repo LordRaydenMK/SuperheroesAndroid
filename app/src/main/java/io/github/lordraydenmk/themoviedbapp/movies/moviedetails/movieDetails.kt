@@ -58,8 +58,15 @@ private fun Throwable.toProblem(): Problem = when (this) {
     else -> throw this
 }
 
-private fun Movie.toViewEntity(): MovieDetailsViewEntity =
-    MovieDetailsViewEntity(
+private fun Movie.toViewEntity(): MovieDetailsViewEntity {
+    val voteAverageData = VoteAverage(
+        progress = voteAverage / 10f,
+        text = "%.1f".format(voteAverage)
+    )
+    return MovieDetailsViewEntity(
         name = name,
+        overview = overview,
+        voteAverage = voteAverageData,
         thumbnail = thumbnail,
     )
+}

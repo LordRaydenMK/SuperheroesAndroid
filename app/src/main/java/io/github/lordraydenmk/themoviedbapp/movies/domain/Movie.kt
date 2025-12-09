@@ -8,6 +8,8 @@ typealias MovieId = Long
 data class Movie(
     val id: MovieId,
     val name: String,
+    val overview: String,
+    val voteAverage: Float,
     val thumbnail: HttpUrl,
 ) {
 
@@ -16,10 +18,14 @@ data class Movie(
         fun create(
             id: Long,
             name: String,
+            overview: String,
+            voteAverage: Float,
             posterPath: String,
         ): Movie = Movie(
             id = id,
             name = name,
+            overview = overview,
+            voteAverage = voteAverage,
             thumbnail = "https://image.tmdb.org/t/p/w500$posterPath".toHttpUrl(),
         )
     }
