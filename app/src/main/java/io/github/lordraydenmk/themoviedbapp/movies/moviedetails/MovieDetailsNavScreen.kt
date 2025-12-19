@@ -5,34 +5,36 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.lordraydenmk.themoviedbapp.AppModule
-import io.github.lordraydenmk.themoviedbapp.appModule
-import io.github.lordraydenmk.themoviedbapp.common.observeIn
+import io.github.lordraydenmk.themoviedbapp.BackStack
 import io.github.lordraydenmk.themoviedbapp.common.presentation.ViewModelAlgebra
-import io.github.lordraydenmk.themoviedbapp.movies.Screen
 import io.github.lordraydenmk.themoviedbapp.movies.domain.MovieId
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 
 @Composable
 fun MovieDetailsNavScreen(
+    appModule: AppModule,
     movieId: MovieId,
-    backStack: SnapshotStateList<Screen>,
+    backStack: BackStack,
     viewModel: MovieDetailsViewModel = viewModel()
 ) {
-    val module = object : MovieDetailsModule,
-        AppModule by LocalContext.current.appModule(),
-        ViewModelAlgebra<MovieDetailsViewState, MovieDetailsEffect> by viewModel {}
+    val module = remember {
+        object : MovieDetailsModule,
+            AppModule by appModule,
+            ViewModelAlgebra<MovieDetailsViewState, MovieDetailsEffect> by viewModel {
+            override val actions: Channel<MovieDetailsAction> = Channel(Channel.UNLIMITED)
+        }
+    }
 
 
-    val actions = remember { Channel<MovieDetailsAction>(Channel.UNLIMITED) }
     with(module) {
         val lifecycleOwner = LocalLifecycleOwner.current
         LaunchedEffect(lifecycleOwner) {
@@ -41,13 +43,15 @@ fun MovieDetailsNavScreen(
             }
         }
         LaunchedEffect(lifecycleOwner) {
-            viewModel.effects.map { effect ->
-                when (effect) {
-                    is NavigateUp -> backStack.removeLastOrNull()
-                }
-            }.observeIn(lifecycleOwner)
+            viewModel.effects
+                .flowWithLifecycle(lifecycleOwner.lifecycle)
+                .map { effect ->
+                    when (effect) {
+                        is NavigateUp -> backStack.removeLastOrNull()
+                    }
+                }.collect()
         }
     }
     val state by viewModel.viewState.collectAsState(Loading)
-    MovieDetailsScreen(state, movieId, actions)
+    MovieDetailsScreen(state, movieId, module.actions)
 }

@@ -11,10 +11,13 @@ import io.github.lordraydenmk.themoviedbapp.movies.NetworkError
 import io.github.lordraydenmk.themoviedbapp.movies.ServerError
 import io.github.lordraydenmk.themoviedbapp.movies.data.popularMovies
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-interface TheMovieDbModule : AppModule, ViewModelAlgebra<PopularMoviesViewState, MoviesEffect>
+interface TheMovieDbModule : AppModule, ViewModelAlgebra<PopularMoviesViewState, MoviesEffect> {
+    val actions: Channel<MoviesAction>
+}
 
 suspend fun TheMovieDbModule.program(actions: Flow<MoviesAction>): Unit =
     parZip(Dispatchers.Default, { firstLoad() }, { handleActions(actions) })

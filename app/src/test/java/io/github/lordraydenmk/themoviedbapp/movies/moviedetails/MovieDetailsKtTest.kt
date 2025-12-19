@@ -10,6 +10,7 @@ import io.github.lordraydenmk.themoviedbapp.movies.data.MovieDto
 import io.github.lordraydenmk.themoviedbapp.movies.data.TheMovieDbService
 import io.github.lordraydenmk.themoviedbapp.movies.testMovieDbService
 import io.kotest.matchers.shouldBe
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -38,7 +39,11 @@ class MovieDetailsKtTest {
         service: TheMovieDbService,
         viewModelAlgebra: ViewModelAlgebra<MovieDetailsViewState, MovieDetailsEffect>
     ): MovieDetailsModule = object : MovieDetailsModule, AppModule by AppModule.create(service),
-        ViewModelAlgebra<MovieDetailsViewState, MovieDetailsEffect> by viewModelAlgebra {}
+        ViewModelAlgebra<MovieDetailsViewState, MovieDetailsEffect> by viewModelAlgebra {
+        override val actions: Channel<MovieDetailsAction>
+            get() = TODO("Not yet implemented")
+
+    }
 
 
     @Test
