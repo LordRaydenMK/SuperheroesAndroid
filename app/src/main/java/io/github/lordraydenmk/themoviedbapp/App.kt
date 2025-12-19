@@ -8,9 +8,9 @@ import coil3.SingletonImageLoader
 import coil3.request.crossfade
 import timber.log.Timber
 
-class App : Application(), ModuleOwner, SingletonImageLoader.Factory {
+class App : Application(), SingletonImageLoader.Factory {
 
-    override val appModule by lazy { AppModule.create() }
+    val appModule by lazy { AppModule.create() }
 
     override fun onCreate() {
         super.onCreate()
@@ -24,4 +24,4 @@ class App : Application(), ModuleOwner, SingletonImageLoader.Factory {
             .build()
 }
 
-fun Context.appModule(): AppModule = (applicationContext as ModuleOwner).appModule
+fun Context.appModule(): AppModule = (applicationContext as App).appModule
