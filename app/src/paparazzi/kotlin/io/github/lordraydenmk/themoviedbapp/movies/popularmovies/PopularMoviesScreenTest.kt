@@ -9,7 +9,6 @@ import io.github.lordraydenmk.themoviedbapp.common.MainDispatcherRule
 import io.github.lordraydenmk.themoviedbapp.common.setupCoil
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.emptyFlow
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.junit.Before
 import org.junit.Rule
@@ -36,7 +35,7 @@ class PopularMoviesScreenTest {
     @Test
     fun loadingState() {
         paparazzi.snapshot {
-            PopularMoviesScreen(emptyFlow(), Loading, actions = Channel())
+            PopularMoviesScreen(Loading, actions = Channel())
         }
     }
 
@@ -44,7 +43,6 @@ class PopularMoviesScreenTest {
     fun errorWithRetry() {
         paparazzi.snapshot {
             PopularMoviesScreen(
-                emptyFlow(),
                 Problem(ErrorTextRes(R.string.error_recoverable_network)),
                 actions = Channel()
             )
@@ -53,7 +51,7 @@ class PopularMoviesScreenTest {
 
     @Test
     fun content() {
-        val url = "http://i.annihil.us/u/prod/marvel/i/mg/c/e0/535fecbbb9784.jpg".toHttpUrl()
+        val url = "https://i.annihil.us/u/prod/marvel/i/mg/c/e0/535fecbbb9784.jpg".toHttpUrl()
         val viewState = Content(
             listOf(
                 MovieViewEntity(42, "Ant Man", url),
@@ -63,8 +61,7 @@ class PopularMoviesScreenTest {
             )
         )
         paparazzi.snapshot {
-            PopularMoviesScreen(emptyFlow(), viewState, actions = Channel())
+            PopularMoviesScreen(viewState, actions = Channel())
         }
-
     }
 }
