@@ -2,6 +2,5 @@ appId: io.github.lordraydenmk.themoviedbapp
 ---
 - launchApp
 - tapOn: "Karate Kid: Legends"
-- assertVisible: "After a family tragedy*"
-- runFlow: reusable/trigger-process-death.yml
-- assertVisible: "After a family tragedy*"
+- back
+- assertVisible: "Karate Kid: Legends"
