@@ -24,7 +24,7 @@ Check out the [TMDB developer documentation][tmdb] for more info.
 
 ## App Architecture
 
-The app uses a reactive architecture built atop Flow. The app follows a layered architecture with data, domain and presentation layer. The package structure is an attempt to package by feature, however both screens share the data and domain layers. The app uses a single activity + fragments and the Jetpack Navigation Component.
+The app uses a reactive architecture built atop Flow. The app follows a layered architecture with data, domain and presentation layer. The package structure is an attempt to package by feature, however both screens share the data and domain layers. The app uses a single activity approach. Each screen is represented by a `@Composable` function and navigation is handled by Jatpack Navigation 3.
 
 ### Data Layer
 
@@ -36,23 +36,23 @@ The main class here is `Movie`. It has a static `create` function that converts 
 
 ### Presentation Layer
 
-Each screen is represented by a `Fragment` which plays the role of glue code. It's responsible for DI, forwarding actions from the view (Compose) to the `ViewModel` and forwarding state from the `ViewModel` to the view. It also handles any side effect emitted by the `ViewModel` e.g. navigation events.
+Each screen is represented by a `@Composable` function which plays the role of glue code. It's responsible for DI, forwarding actions from the view (Compose) to the `ViewModel` and forwarding state from the `ViewModel` to the view. It also handles any side effect emitted by the `ViewModel` e.g. navigation events.
 
-Each fragment has a Jetpack ViewModel that:
+Each screen has a Jetpack ViewModel that:
 
 - exposes a single `Flow<ViewState>` backed by a `MutableStateFlow` (caching the last item) describing the state of the view at a given time
 - exposes a single `Flow<Effect>` backed by a `Channel` for side effects like navigation, Snackbar or similar. Event that happen when no-one is subscribed are cached. All events are delivered when subscribed
 - exposes a `CoroutineScope` with operations tied to it's lifecycle
 
-The Fragment observes the `Flow<ViewState>` between `onStart` and `onStop` and updates the `Sceen`. The Fragment observes `Flow<Effect>` between `onStart` and `onStop` making sure fragment transactions are executed only when the view is active.
+The screen observes the `Flow<ViewState>` between `onStart` and `onStop` and updates the `Screen`. The screen observes `Flow<Effect>` between `onStart` and `onStop` making sure navigation happens only when the view is active.
 
-The Fragment observes the `Flow<Action>` from `onStart` until `onStop`. However any network calls that result from those interactions are de-coupled from this lifecycle. The operations triggered by the view actions are coupled to the `ViewModel` lifecycle and are only disposed in the `ViewMode.onDispose()` function. Check the [fork() function][fork] for more details. 
+The screen observes the `Flow<Action>` from `onStart` until `onStop`. However any network calls that result from those interactions are de-coupled from this lifecycle. The operations triggered by the view actions are coupled to the `ViewModel` lifecycle and are only disposed in the `ViewModel.onDispose()` function. Check the [fork() function][fork] for more details. 
 
 The logic is written as extension functions on top of a module (collection of dependencies).
 
 ### Dependency Injection
 
-The sample uses the DI approach from [Simple Kotlin DI][simple-di]. The dependencies with Singleton scope live in the app as `AppModule`. Each fragment uses the `AppModule` dependencies and can add it's own (e.g. the `ViewModel`) that are un-scoped or use Jetpack for scoping (e.g. `ViewModel`).
+The sample uses the DI approach from [Simple Kotlin DI][simple-di]. The dependencies with Singleton scope live in the app as `AppModule`. Each screen uses the `AppModule` dependencies and can add it's own (e.g. the `ViewModel`) that are un-scoped or use Jetpack for scoping (e.g. `ViewModel`).
 
 The logic is written as extension functions on top of a module (collection of dependencies).
 
@@ -62,7 +62,7 @@ This sample uses JUnit as a testing library and [kotest assertions][kotest] for 
 
 The view is tested in isolation using Paparazzi, by setting a ViewState and verifying the current image matches the golden images from the repo. 
 
-There is also one E2E (black box) test using Maestro that tests both fragments + activity together.
+There is also one E2E (black box) test using Maestro that tests everything glued together. The test uses a test server using Wiremock.
 
 ## Acknowledgments
 
@@ -74,6 +74,5 @@ Approaches is this sample are heavily inspired by open source code I have read. 
 [tmdb]: https://developer.themoviedb.org/docs/getting-started
 [fun-stream]: https://github.com/47degrees/FunctionalStreamsSpringSample
 [simple-di]: https://gist.github.com/raulraja/97e2d5bf60e9d96680cf1fddcc90ee67
-[view-binding]: https://developer.android.com/topic/libraries/view-binding
-[fork]: app/src/main/java/io/github/lordraydenmk/themoviedbapp/common/observable.kt
+[fork]: app/src/main/java/io/github/lordraydenmk/themoviedbapp/common/flow.kt
 [kotest]: https://github.com/kotest/kotest
