@@ -1,0 +1,6 @@
+appId: io.github.lordraydenmk.themoviedbapp
+---
+- pressKey: Home # Puts the app into the background
+- killApp # Kills the app (adb shell am kill)
+- launchApp: # Relaunches the app
+    stopApp: false # Without adb shell am stop
