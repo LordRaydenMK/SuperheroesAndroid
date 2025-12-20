@@ -8,7 +8,6 @@ import io.github.lordraydenmk.themoviedbapp.common.MainDispatcherRule
 import io.github.lordraydenmk.themoviedbapp.common.setupCoil
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.emptyFlow
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.junit.Before
 import org.junit.Rule
@@ -35,8 +34,7 @@ class MovieDetailsScreenTest {
     fun loadingState() {
         paparazzi.snapshot {
             MovieDetailsScreen(
-                stateFlow = emptyFlow(),
-                initialState = Loading,
+                Loading,
                 movieId = 0,
                 actions = Channel()
             )
@@ -48,22 +46,24 @@ class MovieDetailsScreenTest {
         val viewState = Problem(ErrorTextRes(R.string.error_recoverable_network))
 
         paparazzi.snapshot {
-            MovieDetailsScreen(emptyFlow(), viewState, movieId = 0, actions = Channel())
+            MovieDetailsScreen(viewState, movieId = 0, actions = Channel())
         }
     }
 
     @Test
     fun contentState() {
-        val url = "http://i.annihil.us/u/prod/marvel/i/mg/c/e0/535fecbbb9784.jpg".toHttpUrl()
-        val viewState = Content(MovieDetailsViewEntity(
-            "Hulk",
-            "Movie overview",
-            VoteAverage(0.745f, "7.5"),
-            url
-        ))
+        val url = "https://i.annihil.us/u/prod/marvel/i/mg/c/e0/535fecbbb9784.jpg".toHttpUrl()
+        val viewState = Content(
+            MovieDetailsViewEntity(
+                "Hulk",
+                "Movie overview",
+                VoteAverage(0.745f, "7.5"),
+                url
+            )
+        )
 
         paparazzi.snapshot {
-            MovieDetailsScreen(emptyFlow(), viewState, movieId = 0, actions = Channel())
+            MovieDetailsScreen(viewState, movieId = 0, actions = Channel())
         }
     }
 }

@@ -14,11 +14,14 @@ import io.github.lordraydenmk.themoviedbapp.movies.data.movieDetails
 import io.github.lordraydenmk.themoviedbapp.movies.domain.Movie
 import io.github.lordraydenmk.themoviedbapp.movies.domain.MovieId
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 interface MovieDetailsModule : AppModule,
-    ViewModelAlgebra<MovieDetailsViewState, MovieDetailsEffect>
+    ViewModelAlgebra<MovieDetailsViewState, MovieDetailsEffect> {
+    val actions: Channel<MovieDetailsAction>
+}
 
 suspend fun MovieDetailsModule.program(
     movieId: MovieId,

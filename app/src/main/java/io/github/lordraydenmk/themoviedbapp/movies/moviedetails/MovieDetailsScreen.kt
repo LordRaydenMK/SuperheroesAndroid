@@ -21,7 +21,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,32 +29,27 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import io.github.lordraydenmk.themoviedbapp.movies.domain.MovieId
 import io.github.lordraydenmk.themoviedbapp.movies.ui.common.MovieLoading
 import io.github.lordraydenmk.themoviedbapp.movies.ui.common.MovieProblem
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
 import okhttp3.HttpUrl.Companion.toHttpUrl
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MovieDetailsScreen(
-    stateFlow: Flow<MovieDetailsViewState>,
-    initialState: MovieDetailsViewState,
+    state: MovieDetailsViewState,
     movieId: MovieId,
     actions: Channel<MovieDetailsAction>
 ) {
-    val state by stateFlow.collectAsStateWithLifecycle(initialState)
-
     Column {
         MovieDetailsAppBar(state, actions)
 
-        when (val viewState = state) {
-            is Content -> MovieContent(content = viewState)
+        when (state) {
+            is Content -> MovieContent(content = state)
             Loading -> MovieLoading()
-            is Problem -> MovieProblem(textRes = viewState.stringId) {
+            is Problem -> MovieProblem(textRes = state.stringId) {
                 actions.trySend(Refresh(movieId))
             }
         }
